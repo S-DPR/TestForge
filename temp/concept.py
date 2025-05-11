@@ -1,6 +1,7 @@
 # $v는 이전에 지정한 변수
 # 입력포맷 : [ line ]
-# line : { variable: [ var.. ], repeat: $v, format: { ... } }
+# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str) }
+# line.type은 graph나 line..
 # var: { name: (str), type: (str), range: [int, int] }
 # format: 뭐 이런저런 옵션들... 뭐 separator나 sequence..
 
@@ -54,6 +55,7 @@ def process(lines):
     variables = {}
     for i in lines:
         formats = i.get('format', {})
+        line_type = i.get('type', 'line')
         sequence = formats.get('sequence', [])  # formats에서 sequence는 variable에 지정한 변수를 사용 가능하다 하자
         separator = formats.get('separator', ' ')  # 그리고 세퍼레이터. 기본값은 스페이스
 
