@@ -1,0 +1,139 @@
+import random
+from collections import deque
+
+from dsl.expression import safe_eval_helper
+from error.exception import ConfigValueError
+from input_generator.base_generator import BaseGenerator, BaseConfig
+from input_generator.line_generator import line_generator
+
+class UndirectedGraphConfig(BaseConfig):
+    def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):
+        try:
+            self.node_count = safe_eval_helper(variables, config, 'node_count', None)  # 노드 개수
+        except ValueError:
+            raise ConfigValueError('node_count', 'node_count는 그래프 config에 반드시 포함되어있어야 합니다.')
+
+        self.is_zero_start = config.get('is_zero_start', False) # 노드 번호가 0부터인지 여부
+        self.start, self.end = [0, self.node_count-1] if self.is_zero_start else [1, self.node_count]
+
+        self.is_perfect = config.get('is_perfect', False) # 완전그래프 여부
+        # is_connect = config.get('is_connect', True) # 연결그래프 여부
+        self.is_connect = True # 일단 이거 켜두자 너무 복잡해진다
+        self.is_cycle = config.get('is_cycle', True) # 사이클 여부
+        self.is_tree = self.is_connect and not self.is_cycle
+        # is_self_cycle = config.get('is_self_cycle', False) 이건 일반적으로 문제에 없으니까 나중에 생각하자
+        self.edge_count = self.get_edge_count(variables, config) # 간선 개수
+        self.validate()
+
+    def get_edge_count(self, variables, config) -> int:
+        node_count = self.node_count
+        if 'edge_count' in config:
+            return safe_eval_helper(variables, config, 'edge_count', None)
+        if self.is_perfect:
+            return node_count * (node_count - 1) // 2
+        if self.is_tree:
+            return node_count - 1
+        if self.is_connect:
+            return random.randint(node_count - 1, node_count * (node_count - 1) // 2)
+        return random.randint(0, node_count * (node_count - 1) // 2)
+
+    def validate(self) -> None:
+        n = self.node_count
+        e = self.edge_count
+
+        if self.is_perfect:
+            if not self.is_connect:
+                raise ConfigValueError("edge_count", "완전그래프가 연결그래프가 아닐 수 없습니다.")
+            expected = n * (n - 1) // 2
+            if e != expected:
+                raise ConfigValueError("edge_count", f"완전그래프는 간선 개수가 {expected}여야 합니다. 현재 {e}개입니다.")
+
+        min_edge = n - 1
+        max_edge = n * (n - 1) // 2
+
+        if self.is_connect and not min_edge <= e <= max_edge:
+            raise ConfigValueError("edge_count", f"연결그래프는 {min_edge}개부터 {max_edge}개까지의 간선만을 가질 수 있습니다. 현재 {e}개입니다.")
+
+        if self.is_tree and e != min_edge:
+            raise ConfigValueError("edge_count", f"트리의 간선 개수는 {min_edge}여야 합니다. 현재 {e}개입니다.")
+
+class UndirectedGraphGenerator(BaseGenerator):
+    def generate(self, variables, sequence, config: UndirectedGraphConfig):
+        def create_perfect_graph():
+            graph = []
+            start, end = config.start, config.end
+            for _s in range(start, end+1):
+                for _e in range(_s+1, end+1):
+                    variables['_s'] = (_s, 'int')
+                    variables['_e'] = (_e, 'int')
+                    graph.extend(line_generator.generate(variables, sequence, config))
+            return graph
+
+        # 초기 vis는 cur을 제외한 모든 노드가 한 번씩 들어간 데이터
+        def create_tree(cur, vis):
+            graph = []
+            if len(vis) != config.node_count-1: # 루트가 아니라면
+                is_leaf = random.randint(0, 1)
+                if is_leaf or not vis: return graph
+            while vis:
+                nxt = vis.pop()
+                variables['_s'] = (cur, 'int')
+                variables['_e'] = (nxt, 'int')
+                graph.extend(line_generator.generate(variables, sequence, config))
+                graph.extend(create_tree(nxt, vis))
+            return graph
+
+        def create_general_graph(left_edge_count):
+            start, end = config.start, config.end
+            nodes = [*range(start, end + 1)]
+            all_nodes = set(nodes)
+            random.shuffle(nodes)
+            deq = deque([nodes.pop()])
+            conn_graph = [set() for _ in ' '*(end+1)]
+            single_conn_graph = [[] for _ in ' '*(end+1)]
+
+            # bfs를 통해 일단 연결그래프 그리기
+            while deq:
+                cur = deq.popleft()
+                if not min(len(nodes), left_edge_count): continue
+                connect_nodes = random.randint(1, min(len(nodes), left_edge_count))
+                left_edge_count -= connect_nodes
+                for _ in range(connect_nodes):
+                    nxt = nodes.pop()
+                    conn_graph[cur].add(nxt)
+                    conn_graph[nxt].add(cur)
+                    single_conn_graph[cur].append(nxt)
+                    deq.append(nxt)
+
+            # 남은 간선은 이어지지 않은 간선끼리 이어주기
+            nodes = [*all_nodes]
+            for cur in nodes:
+                not_conn = list(all_nodes^{ cur }^conn_graph[cur])
+                connect_nodes = random.randint(0, min(len(not_conn), left_edge_count))
+                left_edge_count -= connect_nodes
+                for _ in range(connect_nodes):
+                    nxt = not_conn.pop()
+                    conn_graph[cur].add(nxt)
+                    conn_graph[nxt].add(cur)
+                    single_conn_graph[cur].append(nxt)
+
+            # 라인 만들기
+            graph = []
+            for _s in range(start, end+1):
+                for _e in single_conn_graph[_s]:
+                    variables['_s'] = (_s, 'int')
+                    variables['_e'] = (_e, 'int')
+                    graph.extend(line_generator.generate(variables, sequence, config))
+            return graph
+
+        if config.is_perfect:
+            graph = create_perfect_graph()
+        elif config.is_tree:
+            nodes = [*range(config.start, config.end+1)]
+            random.shuffle(nodes)
+            graph = create_tree(nodes.pop(), nodes)
+        else:
+            graph = create_general_graph(config.edge_count)
+        return graph
+
+undirected_graph_generator = UndirectedGraphGenerator()
