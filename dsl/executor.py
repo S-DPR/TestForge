@@ -26,7 +26,7 @@ def resolve_generator_config(type_name: str, variables: dict, config: dict) -> t
 # $v는 이전에 지정한 변수
 # 입력포맷 : [ variable, line ]
 # 입력포맷의 variable은 초기init
-# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str), line_repeat: $v }
+# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str), block_repeat: $v }
 # line.type은 graph나 line..
 # var: { name: (str), type: (str), range: [int, int] }
 # format: 뭐 이런저런 옵션들... 뭐 separator나 sequence..
@@ -35,9 +35,9 @@ def process(variable_format, lines):
     result = []
     variables = create_variables(variable_format)
     for i in lines:
-        line_repeat = safe_eval_helper(variables, i, 'line_repeat', '1')
+        block_repeat = safe_eval_helper(variables, i, 'block_repeat', '1')
         config = i.get('config', {})
-        for _ in range(line_repeat):
+        for _ in range(block_repeat):
             formats = i.get('format', {})
             line_type = i.get('type', 'line')
             sequence = formats.get('sequence', [])  # formats에서 sequence는 variable에 지정한 변수를 사용 가능하다 하자
@@ -49,35 +49,53 @@ def process(variable_format, lines):
             for _ in range(repeat_count):
                 generator, config = resolve_generator_config(line_type, variables, config)
                 variables |= create_variables(variable_format)
+                print('gen', generator.generate(variables, sequence, config))
                 current_line_data.extend(generator.generate(variables, sequence, config))
             for line_data in current_line_data:
                 result.append(separator.join(map(str, line_data)))
+            print(current_line_data)
+            # print(result)
     return '\n'.join(result)
 
-print(process([], [
+print(process([
+        {'name': 'N', 'type': 'int', 'range': [[3, 3]]}
+    ], [
     {
         'variable': [
-            { 'name': 'n', 'type': 'int', 'range': [10, 15] },
+            {'name': 'x', 'type': 'int', 'range': [[1, 5]]}
         ],
-        'format': { 'sequence': ['$n'] }
-    },
-    {
-        'type': 'undirected_graph',
-        'config': {
-            'node_count': '$n',
-            'is_cycle': False
-        },
-        'format': { 'sequence': ['$_s', '$_e'] }
+        'type': 'line',
+        'repeat': '$N',
+        'format': {
+            'sequence': ['$x']
+        }
     }
 ]))
 
-print()
-
+# print(process([], [
+#     {
+#         'variable': [
+#             { 'name': 'n', 'type': 'int', 'range': [[10, 15]] },
+#         ],
+#         'format': { 'sequence': ['$n'] }
+#     },
+#     {
+#         'type': 'undirected_graph',
+#         'config': {
+#             'node_count': '$n',
+#             'is_cycle': False
+#         },
+#         'format': { 'sequence': ['$_s', '$_e'] }
+#     }
+# ]))
+#
+# print()
+#
 print(process([], [
     {
         'variable': [
-            { 'name': 'n', 'type': 'int', 'range': [5, 10] },
-            { 'name': 'm', 'type': 'int', 'range': ['$n-1', '$n*($n-1)//2'] }
+            { 'name': 'n', 'type': 'int', 'range': [[2, 3], [8, 10]] },
+            { 'name': 'm', 'type': 'int', 'range': [['$n-1', '$n*($n-1)//2']] }
         ],
         'format': { 'sequence': ['$n', '$m'] }
     },

@@ -16,7 +16,7 @@ class LineGenerator(BaseGenerator):
         for seq in sequence:
             if seq[0] == '$':
                 value, types = variables[seq[1:]]
-                line_data.append(TYPE_FUNCTION[types](value))
+                line_data.append(str(TYPE_FUNCTION[types](value)))
             else:
                 line_data.append(seq)
         return [line_data]
