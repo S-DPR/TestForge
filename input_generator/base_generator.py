@@ -7,5 +7,5 @@ class BaseConfig(ABC):
 
 class BaseGenerator(ABC):
     @abstractmethod
-    def generate(self, variables: dict[str, tuple[int, str]], sequence: [str], config: BaseConfig) -> list[list[str]]:
+    def generate(self, variables: dict[str, tuple[int, str]], sequence: list[str], config: BaseConfig) -> list[list[str]]:
         raise NotImplementedError
