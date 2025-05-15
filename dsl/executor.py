@@ -38,7 +38,7 @@ def process(variable_format, lines):
         block_repeat = safe_eval_helper(variables, i, 'block_repeat', '1')
         config = i.get('config', {})
         for _ in range(block_repeat):
-            formats = i.get('format', {})
+            formats = i.get('output', {})
             line_type = i.get('type', 'line')
             sequence = formats.get('sequence', [])  # formats에서 sequence는 variable에 지정한 변수를 사용 가능하다 하자
             separator = formats.get('separator', ' ')  # 그리고 세퍼레이터. 기본값은 스페이스
@@ -66,7 +66,7 @@ print(process([
         ],
         'type': 'line',
         'repeat': '$N',
-        'format': {
+        'output': {
             'sequence': ['$x']
         }
     }
@@ -77,7 +77,7 @@ print(process([
 #         'variable': [
 #             { 'name': 'n', 'type': 'int', 'range': [[10, 15]] },
 #         ],
-#         'format': { 'sequence': ['$n'] }
+#         'output': { 'sequence': ['$n'] }
 #     },
 #     {
 #         'type': 'undirected_graph',
@@ -85,7 +85,7 @@ print(process([
 #             'node_count': '$n',
 #             'is_cycle': False
 #         },
-#         'format': { 'sequence': ['$_s', '$_e'] }
+#         'output': { 'sequence': ['$_s', '$_e'] }
 #     }
 # ]))
 #
@@ -97,7 +97,7 @@ print(process([], [
             { 'name': 'n', 'type': 'int', 'range': [[2, 3], [8, 10]] },
             { 'name': 'm', 'type': 'int', 'range': [['$n-1', '$n*($n-1)//2']] }
         ],
-        'format': { 'sequence': ['$n', '$m'] }
+        'output': { 'sequence': ['$n', '$m'] }
     },
     {
         'type': 'undirected_graph',
@@ -105,6 +105,6 @@ print(process([], [
             'node_count': '$n',
             'edge_count': '$m'
         },
-        'format': { 'sequence': ['$_s', '$_e'] }
+        'output': { 'sequence': ['$_s', '$_e'] }
     }
 ]))
