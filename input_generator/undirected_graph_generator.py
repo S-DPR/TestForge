@@ -40,6 +40,10 @@ class UndirectedGraphConfig(BaseConfig):
     def validate(self) -> None:
         n = self.node_count
         e = self.edge_count
+        if n >= 1_000_000:
+            raise ConfigValueError("node_count가 너무 큽니다. 1 이상 100만 이하의 수만 사용할 수 있습니다.")
+        if e >= 1_000_000:
+            raise ConfigValueError("edge_count가 너무 큽니다. 1 이상 100만 이하의 수만 사용할 수 있습니다.")
 
         if self.is_perfect:
             if not self.is_connect:
