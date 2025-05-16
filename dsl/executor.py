@@ -91,24 +91,24 @@ def process(variable_format, lines):
 #
 # print()
 #
-print(process([], [
-    {
-        'variable': [
-            { 'name': 'n', 'type': 'int', 'range': [[2, 3], [8, 10]] },
-            { 'name': 'm', 'type': 'int', 'range': [['$n-1', '$n*($n-1)//2']] }
-        ],
-        'output': { 'sequence': ['$n', '$m'] }
-    },
-    {
-        'type': 'undirected_graph',
-        'config': {
-            'node_count': '$n',
-            'edge_count': '$m',
-            'weight_range': [1, 1000]
-        },
-        'output': { 'sequence': ['$_s', '$_e', '$_w'] }
-    }
-]))
+# print(process([], [
+#     {
+#         'variable': [
+#             { 'name': 'n', 'type': 'int', 'range': [[2, 3], [8, 10]] },
+#             { 'name': 'm', 'type': 'int', 'range': [['$n-1', '$n*($n-1)//2']] }
+#         ],
+#         'output': { 'sequence': ['$n', '$m'] }
+#     },
+#     {
+#         'type': 'undirected_graph',
+#         'config': {
+#             'node_count': '$n',
+#             'edge_count': '$m',
+#             'weight_range': [1, 1000]
+#         },
+#         'output': { 'sequence': ['$_s', '$_e', '$_w'] }
+#     }
+# ]))
 # print(process([], [
 #     {
 #         'variable': [
@@ -163,3 +163,15 @@ print(process([], [
 #         'repeat': '$q'
 #     }
 # ]))
+
+print(process([], [
+    {
+        'variable': [
+            { 'name': 'n', 'type': 'enum', 'range': [['a', 'b', 'c']] }
+        ],
+        'type': 'line',
+        'output': {
+            'sequence': ['$n']
+        }
+    }
+]))
