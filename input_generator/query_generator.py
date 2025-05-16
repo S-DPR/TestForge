@@ -1,7 +1,8 @@
 import random
 
-from dsl.expression import safe_eval_helper
-from dsl.parsing import Output, create_outputs
+from request.config_structs import Output
+from request.expression import safe_eval_helper
+from request.parsing import create_outputs
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator

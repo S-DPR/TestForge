@@ -1,4 +1,4 @@
-from dsl.parsing import Output
+from request.config_structs import Output
 from input_generator.base_generator import BaseGenerator, BaseConfig, TYPE_FUNCTION
 
 

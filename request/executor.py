@@ -1,11 +1,13 @@
+from request.config_structs import TestcaseConfig, Variable, TestcaseBlockConfig
+from request.parsing import Output
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
 from input_generator.query_generator import query_generator, QueryConfig
 from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
 
-from parsing import create_variables, Output, create_outputs
-from expression import safe_eval_helper
+from parsing import create_variables
+from expression import safe_eval_helper_by_key
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
@@ -37,17 +39,19 @@ def resolve_generator_config(type_name: str, variables: dict, config: dict) -> t
 # var: { name: (str), type: (str), range: [int, int] }
 # format: 뭐 이런저런 옵션들... 뭐 separator나 sequence..
 
-def process(variable_format, lines):
+def process(testcaseConfig: TestcaseConfig):
+    variable_format, lines = testcaseConfig.variable_format, testcaseConfig.lines
     result = []
     variables = create_variables({}, variable_format)
-    for i in lines:
-        config = i.get('config', {})
-        line_type = i.get('type', 'line')
+    for line in lines:
+        config = line.config
+        line_type = line.type
 
-        output = create_outputs(i.get('output', {}))
-        variable_format = i.get('variable', {})
+        # output = create_outputs(i.get('output', {}))
+        output = line.output
+        variable_format = line.variable
 
-        repeat_count = safe_eval_helper(variables, i, 'repeat', '1')
+        repeat_count = safe_eval_helper_by_key(variables, line.repeat, '1')
         variables['_repeat'] = repeat_count
         current_line_data = []
         generator, gen_config = resolve_generator_config(line_type, variables, config)
@@ -164,14 +168,37 @@ def process(variable_format, lines):
 #     }
 # ]))
 
-print(process([], [
-    {
-        'variable': [
-            { 'name': 'n', 'type': 'enum', 'range': [['a', 'b', 'c']] }
+# print(process([], [
+#     {
+#         'variable': [
+#             { 'name': 'n', 'type': 'enum', 'range': [['a', 'b', 'c']] }
+#         ],
+#         'type': 'line',
+#         'output': {
+#             'sequence': ['$n']
+#         }
+#     }
+# ]))
+
+
+print(process(TestcaseConfig([], [
+    TestcaseBlockConfig(
+        output=Output(['$n', '$m']),
+        repeat='1',
+        type='line',
+        variable=[
+            Variable('n', [[1, 5]]),
+            Variable('m', [[5, 10]]),
         ],
-        'type': 'line',
-        'output': {
-            'sequence': ['$n']
+        config={}
+    ),
+    TestcaseBlockConfig(
+        output=Output(['$_s', '$_e']),
+        repeat='1',
+        type='undirected_graph',
+        variable=[],
+        config={
+            'node_count': '$n'
         }
-    }
-]))
+    )
+])))

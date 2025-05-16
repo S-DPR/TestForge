@@ -2,8 +2,8 @@ import random
 from collections import defaultdict
 from types import NoneType
 
-from dsl.parsing import Output
-from dsl.expression import safe_eval_helper
+from request.config_structs import Output
+from request.expression import safe_eval_helper
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseConfig, BaseGenerator, TYPE_FUNCTION
 

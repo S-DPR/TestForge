@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from dsl.parsing import Output
+from request.parsing import Output
 
 TYPE_FUNCTION = {
     'int': lambda val: val,
