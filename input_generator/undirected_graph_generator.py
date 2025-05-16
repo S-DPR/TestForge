@@ -43,7 +43,7 @@ class UndirectedGraphConfig(BaseConfig):
         e = self.edge_count
         if not 1 <= n <= 1_000_000:
             raise ConfigValueError(f"node_count가 너무 크거나 작습니다. 1 이상 100만 이하의 수만 사용할 수 있습니다. node_count : {n}")
-        if not e <= 1_000_000:
+        if not 1 <= e <= 1_000_000:
             raise ConfigValueError(f"edge_count가 너무 크거나 작습니다. 1 이상 100만 이하의 수만 사용할 수 있습니다. edge_count : {e}")
 
         if self.is_perfect:
