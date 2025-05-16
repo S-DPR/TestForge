@@ -1,3 +1,4 @@
+from dsl.executor import Output
 from input_generator.base_generator import BaseGenerator, BaseConfig
 
 TYPE_FUNCTION = {
@@ -11,9 +12,9 @@ class LineConfig(BaseConfig):
 
 
 class LineGenerator(BaseGenerator):
-    def generate(self, variables, sequence, config: LineConfig) -> list[list[str]]:
+    def generate(self, variables, output: Output, config: LineConfig) -> list[list[str]]:
         line_data = []
-        for seq in sequence:
+        for seq in output.sequence:
             if seq[0] == '$':
                 value, types = variables[seq[1:]]
                 line_data.append(str(TYPE_FUNCTION[types](value)))

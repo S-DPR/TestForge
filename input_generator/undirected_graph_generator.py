@@ -1,6 +1,7 @@
 import random
 from collections import deque
 
+from dsl.executor import Output
 from dsl.expression import safe_eval_helper
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig
@@ -40,10 +41,10 @@ class UndirectedGraphConfig(BaseConfig):
     def validate(self) -> None:
         n = self.node_count
         e = self.edge_count
-        if n >= 1_000_000:
-            raise ConfigValueError("node_count가 너무 큽니다. 1 이상 100만 이하의 수만 사용할 수 있습니다.")
-        if e >= 1_000_000:
-            raise ConfigValueError("edge_count가 너무 큽니다. 1 이상 100만 이하의 수만 사용할 수 있습니다.")
+        if not 1 <= n <= 1_000_000:
+            raise ConfigValueError(f"node_count가 너무 크거나 작습니다. 1 이상 100만 이하의 수만 사용할 수 있습니다. node_count : {n}")
+        if not e <= 1_000_000:
+            raise ConfigValueError(f"edge_count가 너무 크거나 작습니다. 1 이상 100만 이하의 수만 사용할 수 있습니다. edge_count : {e}")
 
         if self.is_perfect:
             if not self.is_connect:
@@ -62,7 +63,7 @@ class UndirectedGraphConfig(BaseConfig):
             raise ConfigValueError("edge_count", f"트리의 간선 개수는 {min_edge}여야 합니다. 현재 {e}개입니다.")
 
 class UndirectedGraphGenerator(BaseGenerator):
-    def generate(self, variables, sequence, config: UndirectedGraphConfig):
+    def generate(self, variables, output: Output, config: UndirectedGraphConfig):
         def create_perfect_graph():
             graph = []
             start, end = config.start, config.end
@@ -70,7 +71,7 @@ class UndirectedGraphGenerator(BaseGenerator):
                 for _e in range(_s+1, end+1):
                     variables['_s'] = (_s, 'int')
                     variables['_e'] = (_e, 'int')
-                    graph.extend(line_generator.generate(variables, sequence, config))
+                    graph.extend(line_generator.generate(variables, output, config))
             return graph
 
         # 초기 vis는 cur을 제외한 모든 노드가 한 번씩 들어간 데이터
@@ -83,7 +84,7 @@ class UndirectedGraphGenerator(BaseGenerator):
                 nxt = vis.pop()
                 variables['_s'] = (cur, 'int')
                 variables['_e'] = (nxt, 'int')
-                graph.extend(line_generator.generate(variables, sequence, config))
+                graph.extend(line_generator.generate(variables, output, config))
                 graph.extend(create_tree(nxt, vis))
             return graph
 
@@ -127,7 +128,7 @@ class UndirectedGraphGenerator(BaseGenerator):
                 for _e in single_conn_graph[_s]:
                     variables['_s'] = (_s, 'int')
                     variables['_e'] = (_e, 'int')
-                    graph.extend(line_generator.generate(variables, sequence, config))
+                    graph.extend(line_generator.generate(variables, output, config))
             return graph
 
         if config.is_perfect:
