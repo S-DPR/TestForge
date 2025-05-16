@@ -37,4 +37,4 @@ def safe_eval(expr, variables=None):
 def safe_eval_helper(variables, find_dict, key, default_value):
     if default_value is None and key not in find_dict:
         raise ValueError(f"default_value가 None임에도 찾는 dictionary에 {key}가 없습니다.")
-    return safe_eval(find_dict.get(key, default_value).replace("$", ""), variables)
+    return safe_eval(str(find_dict.get(key, default_value)).replace("$", ""), variables)
