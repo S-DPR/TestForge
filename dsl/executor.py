@@ -1,21 +1,24 @@
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
+from input_generator.query_generator import query_generator, QueryConfig
 from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
 
-from parsing import create_variables, Output
+from parsing import create_variables, Output, create_outputs
 from expression import safe_eval_helper
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
     "undirected_graph": UndirectedGraphConfig,
     "matrix": MatrixConfig,
+    "query": QueryConfig,
 }
 
 GENERATOR_INSTANCE_REGISTRY = {
     "line": line_generator,
     "undirected_graph": undirected_graph_generator,
     'matrix': matrix_generator,
+    "query": query_generator,
 }
 
 def resolve_generator_config(type_name: str, variables: dict, config: dict) -> tuple[BaseGenerator, BaseConfig]:
@@ -29,36 +32,30 @@ def resolve_generator_config(type_name: str, variables: dict, config: dict) -> t
 # $v는 이전에 지정한 변수
 # 입력포맷 : [ variable, line ]
 # 입력포맷의 variable은 초기init
-# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str), block_repeat: $v }
+# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str) }
 # line.type은 graph나 line..
 # var: { name: (str), type: (str), range: [int, int] }
 # format: 뭐 이런저런 옵션들... 뭐 separator나 sequence..
 
 def process(variable_format, lines):
     result = []
-    variables = create_variables(variable_format)
+    variables = create_variables({}, variable_format)
     for i in lines:
-        block_repeat = safe_eval_helper(variables, i, 'block_repeat', '1')
         config = i.get('config', {})
         line_type = i.get('type', 'line')
-        for _ in range(block_repeat):
-            formats = i.get('output', {})
-            sequence = formats.get('sequence', [])  # formats에서 sequence는 variable에 지정한 변수를 사용 가능하다 하자
-            separator = formats.get('separator', ' ')  # 그리고 세퍼레이터. 기본값은 스페이스
-            end_line = formats.get('end_line', '\n')
-            output = Output(sequence, separator, end_line)
-            variable_format = i.get('variable', {})
 
-            repeat_count = safe_eval_helper(variables, i, 'repeat', '1')
-            current_line_data = []
-            for _ in range(repeat_count):
-                variables |= create_variables(variable_format)
-                generator, config = resolve_generator_config(line_type, variables, config)
-                print('gen', generator.generate(variables, output, config))
-                current_line_data.extend(generator.generate(variables, output, config))
-            for line_data in current_line_data:
-                result.append(separator.join(map(str, line_data)))
-            # print(result)
+        output = create_outputs(i.get('output', {}))
+        variable_format = i.get('variable', {})
+
+        repeat_count = safe_eval_helper(variables, i, 'repeat', '1')
+        variables['_repeat'] = repeat_count
+        current_line_data = []
+        generator, gen_config = resolve_generator_config(line_type, variables, config)
+        for _ in range(repeat_count):
+            variables |= create_variables(variables, variable_format)
+            current_line_data.extend(generator.generate(variables, output, gen_config))
+        for line_data in current_line_data:
+            result.append(output.separator.join(map(str, line_data)))
     return '\n'.join(result)
 
 # print(process([
@@ -131,3 +128,37 @@ def process(variable_format, lines):
 #         }
 #     }
 # ]))
+
+print(process([], [
+    {
+        'variable': [
+            {'name': 'n', 'type': 'int', 'range': [[1, 100000]]},
+            {'name': 'q', 'type': 'int', 'range': [[1, 100000]]},
+        ],
+        'output': {
+            'sequence': ['$n', '$q']
+        }
+    },
+    {
+        'type': 'query',
+        'variable': [
+            { 'name': 'x', 'type': 'int', 'range': [[1, '$n']] },
+            { 'name': 'l', 'type': 'int', 'range': [[1, '$n']] },
+            { 'name': 'r', 'type': 'int', 'range': [['$l', '$n']] }
+        ],
+        'config': {
+            'outputs': [
+                {
+                    'sequence': ['1', '$x']
+                },
+                {
+                    'sequence': ['2', '$l', '$r']
+                }
+            ],
+            'distribution': [10, 10],
+            'min_count': [1, 1],
+            'max_count': [1000000, 1000000],
+        },
+        'repeat': '$q'
+    }
+]))
