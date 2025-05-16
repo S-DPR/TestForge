@@ -17,6 +17,13 @@ class UndirectedGraphConfig(BaseConfig):
         self.is_zero_start = config.get('is_zero_start', False) # 노드 번호가 0부터인지 여부
         self.start, self.end = [0, self.node_count-1] if self.is_zero_start else [1, self.node_count]
 
+        self.weight_range = None
+        if 'weight_range' in config:
+            weight_start, weight_end = config.get('weight_range')
+            weight_start = safe_eval_helper(weight_start, config, 'weight_start', '1')
+            weight_end = safe_eval_helper(weight_end, config, 'weight_end', '100000')
+            self.weight_range = [weight_start, weight_end]
+
         self.is_perfect = config.get('is_perfect', False) # 완전그래프 여부
         # is_connect = config.get('is_connect', True) # 연결그래프 여부
         self.is_connect = True # 일단 이거 켜두자 너무 복잡해진다
@@ -72,8 +79,12 @@ class UndirectedGraphGenerator(BaseGenerator):
             start, end = config.start, config.end
             for _s in range(start, end+1):
                 for _e in range(_s+1, end+1):
-                    variables['_s'] = (_s, 'int')
-                    variables['_e'] = (_e, 'int')
+                    self.set_variable(variables, _s, _e, config.weight_range)
+                    # variables['_s'] = (_s, 'int')
+                    # variables['_e'] = (_e, 'int')
+                    # if config.weight_range is not None:
+                    #     w = random.randint(*config.weight_range)
+                    #     variables['_w'] = (w, 'int')
                     graph.extend(line_generator.generate(variables, output, config))
             return graph
 
@@ -85,8 +96,12 @@ class UndirectedGraphGenerator(BaseGenerator):
                 if is_leaf or not vis: return graph
             while vis:
                 nxt = vis.pop()
-                variables['_s'] = (cur, 'int')
-                variables['_e'] = (nxt, 'int')
+                self.set_variable(variables, _s, _e, config.weight_range)
+                # variables['_s'] = (cur, 'int')
+                # variables['_e'] = (nxt, 'int')
+                # if config.weight_range is not None:
+                #     w = random.randint(*config.weight_range)
+                #     variables['_w'] = (w, 'int')
                 graph.extend(line_generator.generate(variables, output, config))
                 graph.extend(create_tree(nxt, vis))
             return graph
@@ -129,8 +144,12 @@ class UndirectedGraphGenerator(BaseGenerator):
             graph = []
             for _s in range(start, end+1):
                 for _e in single_conn_graph[_s]:
-                    variables['_s'] = (_s, 'int')
-                    variables['_e'] = (_e, 'int')
+                    self.set_variable(variables, _s, _e, config.weight_range)
+                    # variables['_s'] = (_s, 'int')
+                    # variables['_e'] = (_e, 'int')
+                    # if config.weight_range is not None:
+                    #     w = random.randint(*config.weight_range)
+                    #     variables['_w'] = (w, 'int')
                     graph.extend(line_generator.generate(variables, output, config))
             return graph
 
@@ -143,5 +162,12 @@ class UndirectedGraphGenerator(BaseGenerator):
         else:
             graph = create_general_graph(config.edge_count)
         return graph
+
+    def set_variable(self, variables, _s, _e, weight_range):
+        variables['_s'] = (_s, 'int')
+        variables['_e'] = (_e, 'int')
+        if weight_range is not None:
+            w = random.randint(*weight_range)
+            variables['_w'] = (w, 'int')
 
 undirected_graph_generator = UndirectedGraphGenerator()

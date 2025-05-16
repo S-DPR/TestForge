@@ -91,23 +91,24 @@ def process(variable_format, lines):
 #
 # print()
 #
-# print(process([], [
-#     {
-#         'variable': [
-#             { 'name': 'n', 'type': 'int', 'range': [[2, 3], [8, 10]] },
-#             { 'name': 'm', 'type': 'int', 'range': [['$n-1', '$n*($n-1)//2']] }
-#         ],
-#         'output': { 'sequence': ['$n', '$m'] }
-#     },
-#     {
-#         'type': 'undirected_graph',
-#         'config': {
-#             'node_count': '$n',
-#             'edge_count': '$m'
-#         },
-#         'output': { 'sequence': ['$_s', '$_e'] }
-#     }
-# ]))
+print(process([], [
+    {
+        'variable': [
+            { 'name': 'n', 'type': 'int', 'range': [[2, 3], [8, 10]] },
+            { 'name': 'm', 'type': 'int', 'range': [['$n-1', '$n*($n-1)//2']] }
+        ],
+        'output': { 'sequence': ['$n', '$m'] }
+    },
+    {
+        'type': 'undirected_graph',
+        'config': {
+            'node_count': '$n',
+            'edge_count': '$m',
+            'weight_range': [1, 1000]
+        },
+        'output': { 'sequence': ['$_s', '$_e', '$_w'] }
+    }
+]))
 # print(process([], [
 #     {
 #         'variable': [
@@ -129,36 +130,36 @@ def process(variable_format, lines):
 #     }
 # ]))
 
-print(process([], [
-    {
-        'variable': [
-            {'name': 'n', 'type': 'int', 'range': [[1, 100000]]},
-            {'name': 'q', 'type': 'int', 'range': [[1, 100000]]},
-        ],
-        'output': {
-            'sequence': ['$n', '$q']
-        }
-    },
-    {
-        'type': 'query',
-        'variable': [
-            { 'name': 'x', 'type': 'int', 'range': [[1, '$n']] },
-            { 'name': 'l', 'type': 'int', 'range': [[1, '$n']] },
-            { 'name': 'r', 'type': 'int', 'range': [['$l', '$n']] }
-        ],
-        'config': {
-            'outputs': [
-                {
-                    'sequence': ['1', '$x']
-                },
-                {
-                    'sequence': ['2', '$l', '$r']
-                }
-            ],
-            'distribution': [10, 10],
-            'min_count': [1, 1],
-            'max_count': [1000000, 1000000],
-        },
-        'repeat': '$q'
-    }
-]))
+# print(process([], [
+#     {
+#         'variable': [
+#             {'name': 'n', 'type': 'int', 'range': [[1, 10]]},
+#             {'name': 'q', 'type': 'int', 'range': [[1, 10]]},
+#         ],
+#         'output': {
+#             'sequence': ['$n', '$q']
+#         }
+#     },
+#     {
+#         'type': 'query',
+#         'variable': [
+#             { 'name': 'x', 'type': 'int', 'range': [[1, '$n']] },
+#             { 'name': 'l', 'type': 'int', 'range': [[1, '$n']] },
+#             { 'name': 'r', 'type': 'int', 'range': [['$l', '$n']] }
+#         ],
+#         'config': {
+#             'outputs': [
+#                 {
+#                     'sequence': ['1', '$x']
+#                 },
+#                 {
+#                     'sequence': ['2', '$l', '$r']
+#                 }
+#             ],
+#             'distribution': [10, 10],
+#             'min_count': [1, 1],
+#             'max_count': [1000000, 1000000],
+#         },
+#         'repeat': '$q'
+#     }
+# ]))
