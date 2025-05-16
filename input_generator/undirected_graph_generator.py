@@ -21,10 +21,13 @@ class UndirectedGraphConfig(BaseConfig):
         # is_connect = config.get('is_connect', True) # 연결그래프 여부
         self.is_connect = True # 일단 이거 켜두자 너무 복잡해진다
         self.is_cycle = config.get('is_cycle', True) # 사이클 여부
-        self.is_tree = self.is_connect and not self.is_cycle
         # is_self_cycle = config.get('is_self_cycle', False) 이건 일반적으로 문제에 없으니까 나중에 생각하자
         self.edge_count = self.get_edge_count(variables, config) # 간선 개수
         self.validate()
+
+    @property
+    def is_tree(self) -> bool:
+        return self.is_connect and not self.is_cycle
 
     def get_edge_count(self, variables, config) -> int:
         node_count = self.node_count
