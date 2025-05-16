@@ -6,8 +6,8 @@ from input_generator.matrix_generator import matrix_generator, MatrixConfig
 from input_generator.query_generator import query_generator, QueryConfig
 from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
 
-from parsing import create_variables
-from expression import safe_eval_helper_by_key
+from request.parsing import create_variables
+from request.expression import safe_eval_helper_by_key
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,

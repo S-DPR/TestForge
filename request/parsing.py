@@ -2,7 +2,7 @@ import random
 from dataclasses import dataclass
 
 from request.config_structs import Variable, Output
-from expression import safe_eval_helper, safe_eval
+from request.expression import safe_eval
 
 
 def create_variables(variables: dict[str, tuple[int, str]], variable_format: list[Variable]):
