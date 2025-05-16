@@ -1,5 +1,13 @@
 import random
+from dataclasses import dataclass
+
 from expression import safe_eval_helper
+
+@dataclass
+class Output:
+    sequence: list[str]
+    separator: str = ' '
+    end_line: str = '\n'
 
 def create_variables(variable_format):
     variables = {}

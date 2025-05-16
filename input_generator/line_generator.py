@@ -1,10 +1,6 @@
-from dsl.executor import Output
-from input_generator.base_generator import BaseGenerator, BaseConfig
+from dsl.parsing import Output
+from input_generator.base_generator import BaseGenerator, BaseConfig, TYPE_FUNCTION
 
-TYPE_FUNCTION = {
-    'int': lambda val: val,
-    'char': lambda val: chr(val)
-}
 
 class LineConfig(BaseConfig):
     def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):

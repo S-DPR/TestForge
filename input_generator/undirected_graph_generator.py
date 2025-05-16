@@ -1,7 +1,7 @@
 import random
 from collections import deque
 
-from dsl.executor import Output
+from dsl.parsing import Output
 from dsl.expression import safe_eval_helper
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig

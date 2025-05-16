@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
 
-from dsl.executor import Output
+from dsl.parsing import Output
 
+TYPE_FUNCTION = {
+    'int': lambda val: val,
+    'char': lambda val: chr(val),
+    'str': lambda val: str(val),
+}
 
 class BaseConfig(ABC):
     @abstractmethod
