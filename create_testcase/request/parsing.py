@@ -1,8 +1,7 @@
 import random
-from dataclasses import dataclass
 
-from request.config_structs import Variable, Output
-from request.expression import safe_eval
+from create_testcase.request.config_structs import Variable, Output
+from create_testcase.request.expression import safe_eval
 
 
 def create_variables(variables: dict[str, tuple[int, str]], variable_format: list[Variable]):

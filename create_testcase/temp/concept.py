@@ -1,7 +1,7 @@
 # $v는 이전에 지정한 변수
 # 입력포맷 : [ variable, line ]
 # 입력포맷의 variable은 초기init
-# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str), line_repeat: $v }
+# line : { variable: [ var.. ], repeat: $v, format: { ... }, type: (str), block_repeat: $v }
 # line.type은 graph나 line..
 # var: { name: (str), type: (str), range: [int, int] }
 # format: 뭐 이런저런 옵션들... 뭐 separator나 sequence..
