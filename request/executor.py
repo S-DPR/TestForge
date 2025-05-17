@@ -1,5 +1,4 @@
 from request.config_structs import TestcaseConfig, Variable, TestcaseBlockConfig
-from request.parsing import Output
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
@@ -7,7 +6,7 @@ from input_generator.query_generator import query_generator, QueryConfig
 from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
 
 from request.parsing import create_variables
-from request.expression import safe_eval_helper_by_key
+from request.expression import safe_eval
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
@@ -51,7 +50,7 @@ def process(testcaseConfig: TestcaseConfig):
         output = line.output
         variable_format = line.variable
 
-        repeat_count = safe_eval_helper_by_key(variables, line.repeat, '1')
+        repeat_count = safe_eval(line.repeat, variables)
         variables['_repeat'] = repeat_count
         current_line_data = []
         generator, gen_config = resolve_generator_config(line_type, variables, config)
@@ -181,24 +180,24 @@ def process(testcaseConfig: TestcaseConfig):
 # ]))
 
 
-print(process(TestcaseConfig([], [
-    TestcaseBlockConfig(
-        output=Output(['$n', '$m']),
-        repeat='1',
-        type='line',
-        variable=[
-            Variable('n', [[1, 5]]),
-            Variable('m', [[5, 10]]),
-        ],
-        config={}
-    ),
-    TestcaseBlockConfig(
-        output=Output(['$_s', '$_e']),
-        repeat='1',
-        type='undirected_graph',
-        variable=[],
-        config={
-            'node_count': '$n'
-        }
-    )
-])))
+# print(process(TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='100000',
+#         type='line',
+#         variable=[
+#             Variable('n', [[1, 5]]),
+#             Variable('m', [[5, 10]]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output(['$_s', '$_e']),
+#         repeat='1',
+#         type='undirected_graph',
+#         variable=[],
+#         config={
+#             'node_count': '$n'
+#         }
+#     )
+# ])))
