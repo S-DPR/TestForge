@@ -1,10 +1,21 @@
+import logging
+import uvicorn
+from io import BytesIO
+
 from fastapi import FastAPI
+from starlette.responses import StreamingResponse
 
 from request.config_structs import TestcaseConfig
 from request.executor import process
 
-app = FastAPI()
+logger = logging.getLogger("myapp")
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
+app = FastAPI()
 
 @app.get("/")
 async def root():
@@ -15,7 +26,16 @@ async def root():
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-
 @app.post("/create/testcase")
 async def create_testcase(testcase: TestcaseConfig):
-    return process(testcase)
+    logger.info("요청 들어옴")
+    result = process(testcase)
+    file_like = BytesIO(result.encode("utf-8"))
+    return StreamingResponse(
+        file_like,
+        media_type="text/plain",
+        headers={"Content-Disposition": "attachment; filename=generated.txt"}
+    )
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
