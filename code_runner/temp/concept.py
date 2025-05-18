@@ -21,8 +21,8 @@ container = client.containers.create(
             "bind": "/security",
             "mode": "ro"
         },
-        "script": {
-            "bind": "/home/sdpr/scripts",
+        "/home/sdpr/scripts": {
+            "bind": "script",
             "mode": "rw"
         }
     },
