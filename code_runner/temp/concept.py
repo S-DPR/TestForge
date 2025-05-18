@@ -45,6 +45,8 @@ exit_code, output = container.exec_run(
     cmd=["python3", "-c", f"with open('/home/sdpr/script/run.py', 'w') as f: f.write({escaped})"],
     demux=False
 )
+print(exit_code)
+print(output)
 
 command = f"timeout 5s python3 /home/sdpr/script/test.py"
 exit_code, output = container.exec_run(
@@ -59,6 +61,7 @@ elif exit_code == 0:
     print("✅ 정상 종료됨")
 else:
     print(f"❌ 비정상 종료됨, 코드: {exit_code}")
+print(output)
 
 # 깔끔하게 치우기
 container.kill()
