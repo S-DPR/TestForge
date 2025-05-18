@@ -42,13 +42,13 @@ for _ in range(10):
 code = "print(\"hihidsfsdfsdhi\")"
 escaped = repr(code)
 exit_code, output = container.exec_run(
-    cmd=["python3", "-c", f"with open('/script/run.py', 'w') as f: f.write({escaped})"],
+    cmd=["python3", "-c", f"with open('/home/sdpr/script/run.py', 'w') as f: f.write({escaped})"],
     demux=False
 )
 
-command = f"timeout 5s python3 /script/test.py"
+command = f"timeout 5s python3 /home/sdpr/script/test.py"
 exit_code, output = container.exec_run(
-    cmd=["sh", "-c", "timeout 5s python3 /script/run.py > /script/output.txt"],
+    cmd=["sh", "-c", "timeout 5s python3 /home/sdpr/script/run.py > /home/sdpr/script/output.txt"],
     demux=False
 )
 
