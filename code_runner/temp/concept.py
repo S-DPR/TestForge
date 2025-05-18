@@ -7,6 +7,8 @@ if platform.system() == "Linux":
     security_opt.append("seccomp=/home/sdpr/projects/code_runner/temp/seccomp-profile.json")
     security_opt.append("apparmor=docker-execute-profile")
 
+print(security_opt)
+
 client = docker.from_env()
 container = client.containers.create(
     image="python:3.11-slim",
