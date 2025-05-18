@@ -11,7 +11,7 @@ print(security_opt)
 
 client = docker.from_env()
 container = client.containers.create(
-    image="python:3.11-slim",
+    image="python:3.13",
     command="sleep infinity",
     detach=True,
     mem_limit='1024m',
@@ -38,6 +38,7 @@ for _ in range(10):
     if c.status == "running":
         break
     time.sleep(0.5)
+print(container)
 
 code = "print(\"hihidsfsdfsdhi\")"
 escaped = repr(code)
