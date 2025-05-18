@@ -1,29 +1,56 @@
 import docker
-import os
+import platform
+import time
 
-path = r"C:\Users\dev\PycharmProjects\FastAPIProject\code_runner\temp\seccomp-profile.json"
+security_opt = ["no-new-privileges"]
+if platform.system() == "Linux":
+    security_opt.append("seccomp=/security/seccomp-profile.json")
+    security_opt.append("apparmor=docker-execute-profile")
+
 client = docker.from_env()
-
-container = client.containers.run(
+container = client.containers.create(
     image="python:3.11-slim",
-    command="timeout 5s python3 -c 'import time; time.sleep(99999); print(111)'",
+    command="sleep infinity",
     detach=True,
-    mem_limit='256m',
+    mem_limit='1024m',
     network_disabled=True,
-    tmpfs={"/tmp": ""},
-    security_opt=["no-new-privileges", f"seccomp={path}"],
-    pids_limit=4,
-    stdout=True,
-    stderr=True,
+    volumes={
+        "security": {
+            "bind": "/security",
+            "mode": "r"
+        },
+        "script": {
+            "bind": "/script",
+            "mode": "rw"
+        }
+    },
+    security_opt=security_opt,
+    pids_limit=16,
     cap_drop=["ALL"],
+    # read_only=True, # 이거 나중에 실행전용 컨테이너에선 추가해야함
     # user="runner1",
-    read_only=True,
-    remove=False  # 끝나면 자동 삭제
+)
+container.start()
+
+for _ in range(10):
+    c = client.containers.get(container.id)
+    if c.status == "running":
+        break
+    time.sleep(0.5)
+
+code = "print(\"hihidsfsdfsdhi\")"
+escaped = repr(code)
+exit_code, output = container.exec_run(
+    cmd=["python3", "-c", f"with open('/script/run.py', 'w') as f: f.write({escaped})"],
+    demux=False
 )
 
-result = container.wait()
-logs = container.logs(stdout=True, stderr=True)
-exit_code = result.get("StatusCode", -1)
+command = f"timeout 5s python3 /script/test.py"
+exit_code, output = container.exec_run(
+    cmd=["sh", "-c", "timeout 5s python3 /script/run.py > /script/output.txt"],
+    demux=False
+)
+
 
 if exit_code == 124:
     print("⏱ timeout에 의해 종료됨 (exit code 124)")
@@ -33,4 +60,5 @@ else:
     print(f"❌ 비정상 종료됨, 코드: {exit_code}")
 
 # 깔끔하게 치우기
+container.kill()
 container.remove()
