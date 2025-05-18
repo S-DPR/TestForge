@@ -27,7 +27,6 @@ container = client.containers.create(
     security_opt=security_opt,
     pids_limit=16,
     cap_drop=["ALL"],
-    # read_only=True, # 이거 나중에 실행전용 컨테이너에선 추가해야함
     # user="runner1",
 )
 container.start()
