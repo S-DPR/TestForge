@@ -17,7 +17,7 @@ container = client.containers.create(
     volumes={
         "security": {
             "bind": "/security",
-            "mode": "r"
+            "mode": "ro"
         },
         "script": {
             "bind": "/script",
