@@ -22,7 +22,7 @@ container = client.containers.create(
             "mode": "ro"
         },
         "script": {
-            "bind": "/scripts",
+            "bind": "/home/sdpr/scripts",
             "mode": "rw"
         }
     },
@@ -43,15 +43,15 @@ print(container)
 code = "print(\"hihidsfsdfsdhi\")"
 escaped = repr(code)
 exit_code, output = container.exec_run(
-    cmd=["python3", "-c", f"with open('/home/sdpr/scripts/run.py', 'w') as f: f.write({escaped})"],
+    cmd=["python3", "-c", f"with open('/script/run.py', 'w') as f: f.write({escaped})"],
     demux=False
 )
 print(exit_code)
 print(output)
 
-command = f"timeout 5s python3 /home/sdpr/script/test.py"
+command = f"timeout 5s python3 /script/test.py"
 exit_code, output = container.exec_run(
-    cmd=["sh", "-c", "timeout 5s python3 /home/sdpr/scripts/run.py > /home/sdpr/scripts/output.txt"],
+    cmd=["sh", "-c", "timeout 5s python3 /script/run.py > /script/output.txt"],
     demux=False
 )
 
