@@ -16,4 +16,4 @@ def runner(code: Code, time_limit: int):
         print(f"❌ 비정상 종료됨, 코드: {exit_code}")
     print(output.decode())
 
-    container.release()
+    container.release() #
