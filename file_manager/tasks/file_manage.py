@@ -1,10 +1,6 @@
 import uuid
 
-from file_manager.celery_app import celery_app
-
-@celery_app.task(name='file_manager.save')
-def save_file_from_cfg_dict(cfg: dict):
-    return save_file(**cfg)
+from confluent_kafka import Producer
 
 def save_file(folder: str, content: str, ext: str = ".txt") -> dict[str, str]:
     filename = str(uuid.uuid4())
