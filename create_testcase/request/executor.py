@@ -5,8 +5,8 @@ from create_testcase.input_generator.matrix_generator import matrix_generator, M
 from create_testcase.input_generator.query_generator import query_generator, QueryConfig
 from create_testcase.input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
 
-from request.parsing import create_variables
-from request.expression import safe_eval
+from create_testcase.request.parsing import create_variables
+from create_testcase.request.expression import safe_eval
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
