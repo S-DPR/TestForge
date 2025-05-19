@@ -1,9 +1,9 @@
-from request.config_structs import TestcaseConfig
-from input_generator.base_generator import BaseGenerator, BaseConfig
-from input_generator.line_generator import line_generator, LineConfig
-from input_generator.matrix_generator import matrix_generator, MatrixConfig
-from input_generator.query_generator import query_generator, QueryConfig
-from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
+from create_testcase.request.config_structs import TestcaseConfig
+from create_testcase.input_generator.base_generator import BaseGenerator, BaseConfig
+from create_testcase.input_generator.line_generator import line_generator, LineConfig
+from create_testcase.input_generator.matrix_generator import matrix_generator, MatrixConfig
+from create_testcase.input_generator.query_generator import query_generator, QueryConfig
+from create_testcase.input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
 
 from request.parsing import create_variables
 from request.expression import safe_eval

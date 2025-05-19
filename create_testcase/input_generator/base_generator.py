@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from request.parsing import Output
+from create_testcase.request.parsing import Output
 
 TYPE_FUNCTION = {
     'int': lambda val: val,
