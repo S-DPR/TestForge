@@ -1,7 +1,7 @@
 from create_testcase.celery_app import celery_app
-from request.config_structs import TestcaseConfig
+from create_testcase.request.config_structs import TestcaseConfig
 from dacite import from_dict
-from request.executor import process
+from create_testcase.request.executor import process
 
 
 @celery_app.task(name='tc_gen.tc_raw')
