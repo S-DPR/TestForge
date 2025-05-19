@@ -10,13 +10,23 @@ services:
   file_manager:
     build: ./file_manager
     container_name: file-manager
-    command: celery -A celery_app worker --loglevel=info
+    working_dir: /app
+    volumes:
+      - ./file_manager:/app/file_manager
+    environment:
+      - PYTHONPATH=/app
+    command: celery -A file_manager.celery_app worker --loglevel=info
     depends_on:
       - redis
 
   create_testcase:
     build: ./create_testcase
     container_name: create-testcase
-    command: celery -A celery_app worker --loglevel=info
+    working_dir: /app
+    volumes:
+      - ./create_testcase:/app/create_testcase
+    environment:
+      - PYTHONPATH=/app
+    command: celery -A create_testcase.celery_app worker --loglevel=info
     depends_on:
       - redis
