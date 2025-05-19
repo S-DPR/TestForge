@@ -1,6 +1,6 @@
 FROM python:3.13
 
-WORKDIR /app
+WORKDIR /app/create_testcase
 
 COPY requirements.txt .
 
