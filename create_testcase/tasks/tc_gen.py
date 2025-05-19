@@ -15,9 +15,9 @@ def tc_gen_raw(testcaseConfig: dict):
 def tc_gen_upload_from_cfg_dict(cfg: dict):
     return tc_gen_upload(**cfg)
 
-def tc_gen_upload(filepath: str, testcaseConfig: dict, ext: str):
+def tc_gen_upload(folder: str, testcaseConfig: dict, ext: str):
     return {
-        "filepath": filepath,
+        "folder": folder,
         "content": process(from_dict(data_class=TestcaseConfig, data=testcaseConfig)),
         "ext": ext
     }
