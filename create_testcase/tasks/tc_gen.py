@@ -20,4 +20,4 @@ def tc_gen_upload(folder: str, testcaseConfig: dict, ext: str):
         "folder": folder,
         "content": process(from_dict(data_class=TestcaseConfig, data=testcaseConfig)),
         "ext": ext
-    } #
+    }
