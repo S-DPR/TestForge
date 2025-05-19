@@ -10,13 +10,13 @@ services:
   file_manager:
     build: ./file_manager
     container_name: file-manager
-    command: celery -A file_manager.celery_app worker --loglevel=info
+    command: celery -A celery_app worker --loglevel=info
     depends_on:
       - redis
 
   create_testcase:
     build: ./create_testcase
     container_name: create-testcase
-    command: celery -A create_testcase.celery_app worker --loglevel=info
+    command: celery -A celery_app worker --loglevel=info
     depends_on:
       - redis
