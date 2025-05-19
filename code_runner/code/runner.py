@@ -4,7 +4,7 @@ from docker_container import docker_container
 def runner(code: Code, time_limit: int):
     container = docker_container.get_idle_container()
     exit_code, output = container.container.exec_run(
-        cmd=['timeout', f'{time_limit}s', 'python3', f'{code.filename}'],
+        cmd=['timeout', f'{time_limit}s', 'python3', f'{code.filepath}'],
         demux=False
     )
 

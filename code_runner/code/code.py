@@ -8,4 +8,4 @@ class Language:
 @dataclass
 class Code:
     language: Language
-    filename: str
+    filepath: str
