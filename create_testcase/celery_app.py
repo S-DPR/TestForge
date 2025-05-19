@@ -6,4 +6,4 @@ celery_app = Celery(
     backend='redis://redis:6379/0',
 )
 
-celery_app.autodiscover_tasks(['tasks'])
+celery_app.autodiscover_tasks(['create_testcase.tasks'])
