@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  file_manager:
+    build: ./file_manager
+    container_name: file-manager
+    command: celery -A file_manager.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+
+  create_testcase:
+    build: ./create_testcase
+    container_name: create-testcase
+    command: celery -A create_testcase.celery_app worker --loglevel=info
+    depends_on:
+      - redis
