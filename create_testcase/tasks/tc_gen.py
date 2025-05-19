@@ -1,4 +1,4 @@
-from celery_app import celery_app
+from create_testcase.celery_app import celery_app
 from request.config_structs import TestcaseConfig
 from dacite import from_dict
 from request.executor import process
