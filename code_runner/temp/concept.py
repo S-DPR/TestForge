@@ -30,6 +30,10 @@ container = client.containers.create(
     pids_limit=16,
     cap_drop=["ALL"],
     # user="runner1",
+    restart_policy={
+        "Name": "unless-stopped"
+    },
+    cpu_count=1
 )
 container.start()
 
