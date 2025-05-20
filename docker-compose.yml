@@ -26,6 +26,7 @@ services:
     working_dir: /app
     volumes:
       - ./create_testcase:/app/create_testcase
+      - ./kafka_common:/app/kafka_common
     environment:
       - PYTHONPATH=/app
 #    command: celery -A create_testcase.celery_app worker --loglevel=info
