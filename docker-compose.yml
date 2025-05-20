@@ -20,8 +20,9 @@ services:
       - PYTHONPATH=/app
     ports:
       - "8001:8000"
-#    depends_on:
-#      - redis
+    depends_on:
+      kafka:
+        condition: service_healthy
 
   create_testcase:
     build:
@@ -36,8 +37,9 @@ services:
       - PYTHONPATH=/app
     ports:
       - "8000:8000"
-#    depends_on:
-#      - redis
+    depends_on:
+      kafka:
+        condition: service_healthy
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -54,3 +56,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: [ "CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
