@@ -1,1 +1,1 @@
-KAFKA_BROKER_URL = "localhost:9092"
+KAFKA_BROKER_URL = "kafka:9092"
