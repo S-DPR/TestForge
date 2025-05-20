@@ -13,6 +13,7 @@ services:
     working_dir: /app
     volumes:
       - ./file_manager:/app/file_manager
+      - ./kafka_common:/app/kafka_common
     environment:
       - PYTHONPATH=/app
 #    command: celery -A file_manager.celery_app worker --loglevel=info
