@@ -21,8 +21,7 @@ services:
     ports:
       - "8001:8000"
     depends_on:
-      kafka:
-        condition: service_healthy
+      - kafka
 
   create_testcase:
     build:
@@ -38,8 +37,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      kafka:
-        condition: service_healthy
+      - kafka
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
