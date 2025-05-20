@@ -8,7 +8,9 @@ services:
       - "6379:6379"
 
   file_manager:
-    build: ./file_manager
+    build:
+      context: .
+      dockerfile: file_manager/Dockerfile
     container_name: file-manager
     working_dir: /app
     volumes:
@@ -21,7 +23,9 @@ services:
 #      - redis
 
   create_testcase:
-    build: ./create_testcase
+    build:
+      context: .
+      dockerfile: create_testcase/Dockerfile
     container_name: create-testcase
     working_dir: /app
     volumes:

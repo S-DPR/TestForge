@@ -1,11 +1,13 @@
 FROM python:3.13
 
-WORKDIR /app/create_testcase
+WORKDIR /app
 
-COPY requirements.txt .
+COPY ./create_testcase /app/create_testcase
 
-RUN pip install --no-cache-dir -r requirements.txt && pip install -e /app/kafka_common
+COPY ./kafka_common /app/kafka_common
 
-COPY . .
+RUN pip install --no-cache-dir -r /app/create_testcase/requirements.txt
+
+RUN pip install -e /app/kafka_common
 
 CMD ["uvicorn", "create_testcase.main:app", "--host", "0.0.0.0", "--port", "8000"]
