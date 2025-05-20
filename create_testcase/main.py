@@ -5,8 +5,8 @@ from io import BytesIO
 from fastapi import FastAPI
 from starlette.responses import StreamingResponse
 
-from request.config_structs import TestcaseConfig
-from request.executor import process
+from create_testcase.request.config_structs import TestcaseConfig
+from create_testcase.request.executor import process
 
 logger = logging.getLogger("myapp")
 handler = logging.StreamHandler()
