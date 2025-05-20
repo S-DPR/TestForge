@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -r /app/file_manager/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
-CMD ["uvicorn", "file_manager.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "file_manager.main:app", "--host", "0.0.0.0"]

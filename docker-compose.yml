@@ -43,9 +43,10 @@ services:
     environment:
       - PYTHONPATH=/app
     ports:
-      - "8001:8000"
+      - "8001:8001"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_completed_successfully
 
   create_testcase:
     build:
@@ -61,4 +62,5 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_completed_successfully
