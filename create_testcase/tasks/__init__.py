@@ -1,2 +1,0 @@
-from .tc_gen import tc_gen_raw_from_cfg_dict
-from .tc_gen import tc_gen_upload_from_cfg_dict
