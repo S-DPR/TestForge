@@ -33,6 +33,3 @@ def consume_and_respond():
             result = save_file(**value)
             send_message("file_create_tc_res", key=key, value=json.dumps(result))
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8001) #
-

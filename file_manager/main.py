@@ -1,6 +1,7 @@
 import uuid
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 import threading
 
@@ -33,3 +34,5 @@ async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
 
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="localhost", port=8000) #

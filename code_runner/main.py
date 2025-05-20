@@ -20,5 +20,5 @@ async def run_code(input_name: list[str], code: Code, time_limit: int):
     return 1
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8002) #
+    uvicorn.run("main:app", host="localhost", port=8000) #
 
