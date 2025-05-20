@@ -1,8 +1,26 @@
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+import threading
 
-app = FastAPI()
+from file_manager.kafka.kafka_io import consume_and_respond
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 🔥 여기가 startup
+    print("FastAPI startup - 워커 실행")
+
+    # 워커 스레드 실행
+    thread = threading.Thread(target=consume_and_respond, daemon=True)
+    thread.start()
+
+    yield  # ← 여기까지가 "앱 살아있는 동안"
+
+    # 🔥 여기가 shutdown
+    print("FastAPI shutdown - 워커 정리 필요하면 여기서")
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
@@ -14,11 +32,4 @@ async def root():
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-def save_file(folder: str, content: str, ext: str = ".txt") -> dict[str, str]:
-    filename = str(uuid.uuid4())
-    p = f"{folder}/{filename}.{ext}"
-    with open(p, "w") as f:
-        f.write(content)
-    return {
-        "filepath": p
-    }
+
