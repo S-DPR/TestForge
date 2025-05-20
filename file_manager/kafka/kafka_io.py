@@ -30,6 +30,6 @@ def consume_and_respond():
         if msg and not msg.error():
             key = msg.key().decode()
             value = json.loads(msg.value().decode())
-            result = save_file(**value)
+            result = handle_request(save_file, value)
             send_message("file_create_tc_res", key=key, value=json.dumps(result))
 
