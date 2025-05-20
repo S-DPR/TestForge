@@ -9,8 +9,8 @@ import uuid
 async def save_file(folder: str, content: str, ext: str = ".txt") -> dict[str, str]:
     filename = str(uuid.uuid4())
     p = f"{folder}/{filename}.{ext}"
-    with aiofiles.open(p, "w") as f:
-        f.write(content)
+    async with aiofiles.open(p, "w") as f:
+        await f.write(content)
     return {
         "filepath": p
     }
@@ -23,13 +23,13 @@ async def handle_request(fn, kwargs):
     result = await loop.run_in_executor(None, wrap_kwargs(fn, kwargs))
     return result
 
-def consume_and_respond():
+async def consume_and_respond():
     consumer = get_consumer("request-listener", "file_create_tc_req")
     while True:
         msg = consumer.poll(1.0)
         if msg and not msg.error():
             key = msg.key().decode()
             value = json.loads(msg.value().decode())
-            result = handle_request(save_file, value)
+            result = await handle_request(save_file, value)
             send_message("file_create_tc_res", key=key, value=json.dumps(result))
 
