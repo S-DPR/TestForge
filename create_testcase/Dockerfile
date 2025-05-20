@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -r /app/create_testcase/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
-CMD ["uvicorn", "create_testcase.main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "create_testcase.main:app", "--host", "0.0.0.0", "--port", "8000"]

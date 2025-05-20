@@ -48,8 +48,10 @@ class FileCreateRequest:
 
 @app.post("/create-tc")
 async def create_testcase(req: FileCreateRequest):
-    cid = send_request(req.folder, req.content, req.ext)
-    res = await async_listen_for_response(cid)
+    print("hihii")
+    cid, consumer = send_request(req.folder, req.content, req.ext)
+    print("yyyyyyy")
+    res = await async_listen_for_response(consumer, cid)
     return res
 
 if __name__ == "__main__":

@@ -24,12 +24,25 @@ async def handle_request(fn, kwargs):
     return result
 
 async def consume_and_respond():
-    consumer = get_consumer("request-listener", "file_create_tc_req")
-    while True:
-        msg = consumer.poll(1.0)
-        if msg and not msg.error():
-            key = msg.key().decode()
-            value = json.loads(msg.value().decode())
-            result = await handle_request(save_file, value)
-            send_message("file_create_tc_res", key=key, value=json.dumps(result))
+    try:
+        consumer = get_consumer("request-listener", "file_create_tc_req")
+        loop = asyncio.get_running_loop()
 
+        while True:
+            try:
+                msg = await loop.run_in_executor(None, lambda: consumer.poll(1.0))
+                print("msg", msg, flush=True)
+                if msg is None or msg.error():
+                    continue
+
+                key = msg.key().decode()
+                value = json.loads(msg.value().decode())
+                result = await save_file(**value)
+                print("res", result, flush=True)
+                send_message("file_create_tc_res", key=key, value=json.dumps(result))
+
+            except Exception as inner_e:
+                print(f"[consume loop 에러] {inner_e}", flush=True)
+
+    except Exception as e:
+        print(f"[consume_and_respond 전체 실패] {e}", flush=True)

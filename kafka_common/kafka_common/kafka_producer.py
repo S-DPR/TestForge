@@ -24,5 +24,7 @@ def get_kafka_producer():
 
 def send_message(topic: str, key: str, value: str):
     p = get_kafka_producer()
-    p.produce(topic, key=key, value=value)
+    print("GET PRODUCER", flush=True)
+    p.produce(topic, key=key.encode("utf-8"), value=value.encode("utf-8"))
+    print("PRODUCED", topic, key, value, flush=True)
     p.flush()
