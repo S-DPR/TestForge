@@ -10,10 +10,10 @@ if not version:
 
 args = [
     "",
-    f"-I=/grpc/{folder}",
-    f"--python_out=/{folder}",
-    f"--grpc_python_out=/{folder}",
-    f"/grpc/{folder}/{version}.proto",
+    f"-I=/app/grpc/{folder}",
+    f"--python_out=/app/{folder}/grpc",
+    f"--grpc_python_out=/app/{folder}/grpc",
+    f"/app/grpc/{folder}/{version}.proto",
 ]
 if platform.system() == "Windows":
     args = [
