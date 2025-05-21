@@ -10,8 +10,8 @@ RUN pip install --no-cache-dir -r /app/create_testcase/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
-CMD ["python3", "/app/grpc/create_testcase/compile_grpc", "create_testcase", "v1"]
+RUN chmod +x /app/entrypoint.sh
 
-CMD ["python3", "/app/create_testcase/grec/server_v1.py"]
+COPY ./entrypoint.sh /app/entrypoint.sh
 
-CMD ["python3", "/app/create_testcase/main.py"]
+CMD ["/app/create_testcase/entrypoint.sh"]
