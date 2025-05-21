@@ -7,7 +7,6 @@ from io import BytesIO
 from fastapi import FastAPI
 from starlette.responses import StreamingResponse
 
-from create_testcase.kafka.kafka_io import send_request, listen_for_response
 from create_testcase.request.config_structs import TestcaseConfig
 from create_testcase.request.executor import process
 
@@ -40,19 +39,10 @@ async def create_testcase(testcase: TestcaseConfig):
         headers={"Content-Disposition": "attachment; filename=generated.txt"}
     )
 
-@dataclass
-class FileCreateRequest:
-    folder: str
-    content: str
-    ext: str = "txt"
-
-# @app.post("/create-tc")
-# async def create_testcase(req: FileCreateRequest):
-#     cid = send_request(req.folder, req.content, req.ext)
-#     res = listen_for_response(cid)
-#     return res
-
-
+from create_testcase.grpc import cl
+@app.post("/save-tc/")
+def save_tc():
+    return cl.run()
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000) #
