@@ -57,6 +57,7 @@ services:
     volumes:
       - ./create_testcase:/app/create_testcase
       - ./kafka_common:/app/kafka_common
+      - ./grpc:/app/grpc
     environment:
       - PYTHONPATH=/app
     ports:
