@@ -4,11 +4,12 @@ import sys
 import glob
 
 prefix = "/app/grpc"
-_, folder = sys.argv
+_, folder = "", "file_manager"
 if platform.system() == "Windows":
     prefix = r"C:\Users\Glory\PycharmProjects\FastAPIProject\grpc"
 
 proto_files = glob.glob(f'{prefix}/**/*.proto', recursive=True)
+proto_files = [i.replace(prefix + "/", '') for i in proto_files]
 
 args = [
     "",
