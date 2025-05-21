@@ -12,11 +12,8 @@ def send_request(folder: str, content: str, ext: str = ".txt"):
     send_message("file_create_tc_req", key=correlation_id, value=json.dumps(args))
     return correlation_id, consumer
 
-async def async_listen_for_response(consumer, correlation_id: str) -> dict:
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(None, listen_for_response, consumer, correlation_id)
-
-def listen_for_response(consumer, correlation_id: str):
+def listen_for_response(topic: list[str], correlation_id: str):
+    consumer = get_consumer("response-listener", topic)
     while True:
         msg = consumer.poll(1.0)
         print(msg, flush=True)
@@ -26,7 +23,6 @@ def listen_for_response(consumer, correlation_id: str):
             print("key", msg.key().decode(), flush=True)
             print("corr", correlation_id, flush=True)
             if msg.key().decode() == correlation_id:
-                consumer.close()
                 return msg.value().decode()
 
 # def consume_and_respond():
