@@ -1,19 +1,21 @@
 from grpc_tools import protoc
 import platform
 import sys
+import glob
 
-_, folder, version, *_ = (*sys.argv, 0, 0)
-if not folder:
-    folder = "create_testcase"
-if not version:
-    version = "v1"
+prefix = "/app/grpc"
+_, folder = sys.argv
+if platform.system() == "Windows":
+    prefix = r"C:\Users\Glory\PycharmProjects\FastAPIProject\grpc"
+
+proto_files = glob.glob(f'{prefix}/*.proto', recursive=True)
 
 args = [
     "",
     f"-I=/app/grpc/{folder}",
     f"--python_out=/app/{folder}/grpc",
     f"--grpc_python_out=/app/{folder}/grpc",
-    f"/app/grpc/{folder}/{version}.proto",
+    *proto_files,
 ]
 if platform.system() == "Windows":
     args = [
@@ -21,7 +23,7 @@ if platform.system() == "Windows":
         f"-I=C:/Users/Glory/PycharmProjects/FastAPIProject/grpc/{folder}",
         f"--python_out=C:/Users/Glory/PycharmProjects/FastAPIProject/{folder}/grpc",
         f"--grpc_python_out=C:/Users/Glory/PycharmProjects/FastAPIProject/{folder}/grpc",
-        rf"C:\Users\Glory\PycharmProjects\FastAPIProject\grpc\{folder}\{version}.proto"
+        *proto_files
     ]
 
 protoc.main(args)
