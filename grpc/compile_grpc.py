@@ -8,7 +8,7 @@ _, folder = sys.argv
 if platform.system() == "Windows":
     prefix = r"C:\Users\Glory\PycharmProjects\FastAPIProject\grpc"
 
-proto_files = glob.glob(f'{prefix}/*.proto', recursive=True)
+proto_files = glob.glob(f'{prefix}/**/*.proto', recursive=True)
 
 args = [
     "",
