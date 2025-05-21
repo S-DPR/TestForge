@@ -10,4 +10,8 @@ RUN pip install --no-cache-dir -r /app/create_testcase/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
-CMD ["uvicorn", "create_testcase.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python3", "/grpc/create_testcase/compile_grpc", "create_testcase", "v1"]
+
+CMD ["python3", "/create_testcase/grec/server_v1.py"]
+
+CMD ["python3", "/create_testcase/main.py"]

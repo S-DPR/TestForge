@@ -1,0 +1,28 @@
+syntax = "proto3";
+package create_testcase.v1;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+service TCGen {
+  rpc TCGenSave (TcGenSaveReq) returns (TcGenSaveRes);
+}
+
+message TcGenSaveReq {
+  string folder = 1;
+  string content = 2;
+  string ext = 3;
+}
+
+message TcGenSaveRes {
+  string filepath = 1;
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
