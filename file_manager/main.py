@@ -1,7 +1,7 @@
 import asyncio
 import uuid
 from contextlib import asynccontextmanager
-from kafka_common.kafka_test import create_topic
+from kafka_common.kafka_topic import create_topic
 
 import uvicorn
 from fastapi import FastAPI
