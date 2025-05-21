@@ -10,4 +10,6 @@ RUN pip install --no-cache-dir -r /app/file_manager/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
-CMD ["python", "/app/file_manager/main.py"]
+RUN chmod +x /app/file_manager/entrypoint.sh
+
+CMD ["/app/file_manager/entrypoint.sh"]
