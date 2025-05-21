@@ -1,6 +1,6 @@
 from kafka_common.kafka_producer import send_message
 from kafka_common.kafka_consumer import get_consumer
-from kafka_common.kafka_test import create_topic
+from kafka_common.kafka_topic import create_topic
 import asyncio
 import json
 import uuid
