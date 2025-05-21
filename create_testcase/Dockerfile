@@ -10,8 +10,6 @@ RUN pip install --no-cache-dir -r /app/create_testcase/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
-RUN chmod +x /app/entrypoint.sh
-
-COPY ./entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/create_testcase/entrypoint.sh
 
 CMD ["/app/create_testcase/entrypoint.sh"]
