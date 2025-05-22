@@ -39,5 +39,10 @@ async def create_testcase(testcase: TestcaseConfig):
         headers={"Content-Disposition": "attachment; filename=generated.txt"}
     )
 
+from grpc_internal.file_manager import cl
+@app.post("/ccc")
+async def ccc():
+    return cl.run()
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000) #

@@ -42,10 +42,10 @@ services:
     volumes:
       - ./file_manager:/app/file_manager
       - ./kafka_common:/app/kafka_common
-      - ./grpc:/app/grpc
+      - ./grpc_internal:/app/grpc_internal
       - ../../scripts:/app/scripts
     environment:
-      - PYTHONPATH=/app/file_manager:/app/file_manager/grpc
+      - PYTHONPATH=/app/file_manager:/app/file_manager/grpc_internal
     ports:
       - "8001:8001"
     depends_on:
@@ -60,9 +60,9 @@ services:
     volumes:
       - ./create_testcase:/app/create_testcase
       - ./kafka_common:/app/kafka_common
-      - ./grpc:/app/grpc
+      - ./grpc_internal:/app/grpc_internal
     environment:
-      - PYTHONPATH=/app/create_testcase:/app/create_testcase/grpc
+      - PYTHONPATH=/app/create_testcase:/app/create_testcase/grpc_internal
     ports:
       - "8000:8000"
     depends_on:

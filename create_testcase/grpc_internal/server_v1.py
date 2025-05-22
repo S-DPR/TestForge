@@ -1,4 +1,4 @@
-# import grpc
+# import grpc_internal
 # from concurrent import futures
 # import v1_pb2, v1_pb2_grpc
 #
@@ -12,7 +12,7 @@
 #         return self.TcGenSaveRes(filepath="hihi")
 #
 # def serve():
-#     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+#     server = grpc_internal.server(futures.ThreadPoolExecutor(max_workers=10))
 #     v1_pb2_grpc.add_TCGenServicer_to_server(TCGenServicer(), server)
 #     server.add_insecure_port('[::]:50051')
 #     server.start()
