@@ -42,7 +42,7 @@ services:
     volumes:
       - ./file_manager:/app/file_manager
       - ./kafka_common:/app/kafka_common
-      - ./grpc_internal:/app/grpc_internal
+      - ./grpc:/app/grpc
       - ../../scripts:/app/scripts
     environment:
       - PYTHONPATH=/app/file_manager:/app/file_manager/grpc_internal
@@ -60,7 +60,7 @@ services:
     volumes:
       - ./create_testcase:/app/create_testcase
       - ./kafka_common:/app/kafka_common
-      - ./grpc_internal:/app/grpc_internal
+      - ./grpc:/app/grpc
     environment:
       - PYTHONPATH=/app/create_testcase:/app/create_testcase/grpc_internal
     ports:
