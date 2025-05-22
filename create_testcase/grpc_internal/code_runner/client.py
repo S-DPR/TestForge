@@ -6,7 +6,7 @@ def run(content, ext = "txt"):
     stub = v1_pb2_grpc.CodeRunnerStub(channel)
 
     request = v1_pb2.ExecuteCodeReq(
-        code_path="/app/scripts/test.py",
+        code_path="/script/test.py",
         language="python",
         input_filepath=[],
         timelimit=3

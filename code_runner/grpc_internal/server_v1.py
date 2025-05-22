@@ -9,19 +9,19 @@ class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
     def __init__(self):
         self.ExecuteCodeRes = getattr(v1_pb2, 'ExecuteCodeRes', None)
 
-    def TCGenSave(self, request, context):
+    def ExecuteCode(self, request, context):
         language = request.language
         code_path = request.code_path
         input_filepath = request.input_filepath
         timelimit = request.timelimit
 
-        result = runner(Code("", code_path), timelimit)
+        result = runner(Code(language="python", filepath=code_path), timelimit)
 
         return self.ExecuteCodeRes(filepath=result)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    v1_pb2_grpc.add_TCGenServicer_to_server(CodeRunnerServicer(), server)
+    v1_pb2_grpc.add_CodeRunnerServicer_to_server(CodeRunnerServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("CodeRunner 서버 실행")

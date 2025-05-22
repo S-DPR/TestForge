@@ -38,7 +38,7 @@ class DockerContainer:
         self.condition = threading.Condition()
 
     def create_container(self):
-        return client.containers.create(
+        container = client.containers.create(
             image="python:3.13",
             command="sleep infinity",
             detach=True,
@@ -63,6 +63,8 @@ class DockerContainer:
             },
             cpu_count=1
         )
+        container.start()
+        return container
 
     def get_idle_container(self):
         with self.condition:

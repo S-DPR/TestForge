@@ -8,6 +8,8 @@ def runner(code: Code, time_limit: int):
         cmd=['timeout', f'{time_limit}s', 'python3', f'{code.filepath}'],
         demux=False
     )
+    print("exit code:", exit_code, flush=True)
+    print("output:", output, flush=True)
 
     container.release() #
     if exit_code == 124:
