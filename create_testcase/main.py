@@ -1,11 +1,6 @@
 import logging
-from dataclasses import dataclass
-
 import uvicorn
-from io import BytesIO
-
 from fastapi import FastAPI
-from starlette.responses import StreamingResponse
 
 from request.config_structs import TestcaseConfig
 from request.executor import process
@@ -28,21 +23,22 @@ async def root():
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-@app.post("/create/testcase")
-async def create_testcase(testcase: TestcaseConfig):
-    logger.info("요청 들어옴")
-    result = process(testcase)
-    file_like = BytesIO(result.encode("utf-8"))
-    return StreamingResponse(
-        file_like,
-        media_type="text/plain",
-        headers={"Content-Disposition": "attachment; filename=generated.txt"}
-    )
+# @app.post("/create/testcase")
+# async def create_testcase(testcase: TestcaseConfig):
+#     logger.info("요청 들어옴")
+#     result = process(testcase)
+#     file_like = BytesIO(result.encode("utf-8"))
+#     return StreamingResponse(
+#         file_like,
+#         media_type="text/plain",
+#         headers={"Content-Disposition": "attachment; filename=generated.txt"}
+#     )
 
-from grpc_internal.file_manager import cl
-@app.post("/ccc")
-async def ccc():
-    return cl.run()
+from grpc_internal.file_manager import client as file_client
+@app.post("/create/testcase")
+async def create_tc(testcase: TestcaseConfig):
+    print("요청 들어옴", flush=True)
+    return file_client.run(process(testcase), "txt")
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8000) #
+    uvicorn.run("main:app", host="localhost", port=8000)
