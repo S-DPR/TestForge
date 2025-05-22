@@ -7,7 +7,7 @@ import uvicorn
 from fastapi import FastAPI
 import threading
 
-from file_manager.kafka.kafka_io import consume_and_respond
+from kafka.kafka_io import consume_and_respond
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

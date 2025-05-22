@@ -1,7 +1,7 @@
 import grpc
 from concurrent import futures
-from file_manager.grpc.file_manager import v1_pb2, v1_pb2_grpc
-from file_manager.service import file_service
+from grpc.file_manager import v1_pb2, v1_pb2_grpc
+from service import file_service
 
 
 class TCGenServicer(v1_pb2_grpc.TCGenServicer):

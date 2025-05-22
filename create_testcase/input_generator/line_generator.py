@@ -1,5 +1,5 @@
-from create_testcase.request.config_structs import Output
-from create_testcase.input_generator.base_generator import BaseGenerator, BaseConfig, TYPE_FUNCTION
+from request.config_structs import Output
+from input_generator.base_generator import BaseGenerator, BaseConfig, TYPE_FUNCTION
 
 
 class LineConfig(BaseConfig):

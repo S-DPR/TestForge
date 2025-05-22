@@ -1,5 +1,5 @@
 import grpc
-from create_testcase.grpc.file_manager import v1_pb2_grpc, v1_pb2
+from grpc.file_manager import v1_pb2_grpc, v1_pb2
 
 def run():
     channel = grpc.insecure_channel("file-manager:50051")  # gRPC 서버 주소

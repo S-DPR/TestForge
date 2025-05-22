@@ -1,11 +1,11 @@
 import random
 
-from create_testcase.request.config_structs import Output
-from create_testcase.request.expression import safe_eval_helper
-from create_testcase.request.parsing import create_outputs
-from create_testcase.error.exception import ConfigValueError
-from create_testcase.input_generator.base_generator import BaseGenerator, BaseConfig
-from create_testcase.input_generator.line_generator import line_generator
+from request.config_structs import Output
+from request.expression import safe_eval_helper
+from request.parsing import create_outputs
+from error.exception import ConfigValueError
+from input_generator.base_generator import BaseGenerator, BaseConfig
+from input_generator.line_generator import line_generator
 
 
 class QueryConfig(BaseConfig):
