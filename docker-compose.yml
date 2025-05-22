@@ -77,6 +77,7 @@ services:
     volumes:
       - ./code_runner:/app/code_runner
       - ./kafka_common:/app/kafka_common
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./grpc:/app/grpc
     environment:
       - PYTHONPATH=/app/code_runner:/app/code_runner/grpc_internal
