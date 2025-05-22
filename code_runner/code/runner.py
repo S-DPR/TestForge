@@ -1,5 +1,5 @@
 import sys
-from code import Code
+from code.code import Code
 from docker_container import docker_container
 
 def runner(code: Code, time_limit: int):
