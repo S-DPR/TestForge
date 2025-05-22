@@ -1,11 +1,10 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 class Language:
     cpp = 'cpp'
     java = 'java'
     python = 'python'
 
-@dataclass
-class Code:
+class Code(BaseModel):
     language: Language
     filepath: str
