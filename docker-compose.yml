@@ -68,7 +68,7 @@ services:
     depends_on:
       - kafka
 
-  code_runner:
+  code-runner:
     build:
       context: .
       dockerfile: code_runner/Dockerfile
