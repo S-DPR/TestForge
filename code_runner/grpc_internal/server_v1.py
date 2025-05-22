@@ -2,6 +2,7 @@ from concurrent import futures
 from code_runner import v1_pb2, v1_pb2_grpc
 from code.code import Code
 from code.runner import runner
+import grpc
 
 
 class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
@@ -19,7 +20,7 @@ class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
         return self.ExecuteCodeRes(filepath=result)
 
 def serve():
-    server = grpc_internal.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     v1_pb2_grpc.add_TCGenServicer_to_server(CodeRunnerServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
