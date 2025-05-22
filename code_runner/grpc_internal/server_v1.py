@@ -1,6 +1,7 @@
 from concurrent import futures
 from code_runner import v1_pb2, v1_pb2_grpc
-from code import runner, code
+from code.code import code
+from code.runner import runner
 
 
 class TCGenServicer(v1_pb2_grpc.CodeRunnerServicer):
@@ -13,7 +14,7 @@ class TCGenServicer(v1_pb2_grpc.CodeRunnerServicer):
         input_filepath = request.input_filepath
         timelimit = request.timelimit
 
-        result = runner.runner(code.Code("", code_path), timelimit)
+        result = runner(code.Code("", code_path), timelimit)
 
         return self.ExecuteCodeRes(filepath=result)
 

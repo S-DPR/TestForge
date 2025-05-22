@@ -21,7 +21,7 @@ class TCGenServicer(v1_pb2_grpc.FileServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    v1_pb2_grpc.add_TCGenServicer_to_server(TCGenServicer(), server)
+    v1_pb2_grpc.add_FileServicer_to_server(TCGenServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("FileManager 서버 실행")
