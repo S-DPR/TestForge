@@ -3,7 +3,7 @@ import platform
 import sys
 import glob
 
-prefix = "/app/grpc_internal"
+prefix = "/app/grpc"
 _, folder = sys.argv
 if platform.system() == "Windows":
     prefix = r"C:\Users\Glory\PycharmProjects\FastAPIProject\grpc"
@@ -14,7 +14,7 @@ print(proto_files)
 
 args = [
     "",
-    f"-I=/app/grpc_internal",
+    f"-I=/app/grpc",
     f"--python_out=/app/{folder}/grpc_internal",
     f"--grpc_python_out=/app/{folder}/grpc_internal",
     *proto_files
