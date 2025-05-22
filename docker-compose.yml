@@ -67,3 +67,20 @@ services:
       - "8000:8000"
     depends_on:
       - kafka
+
+  code_runner:
+    build:
+      context: .
+      dockerfile: code_runner/Dockerfile
+    container_name: code_runner
+    working_dir: /app
+    volumes:
+      - ./code_runner:/app/code_runner
+      - ./kafka_common:/app/kafka_common
+      - ./grpc:/app/grpc
+    environment:
+      - PYTHONPATH=/app/code_runner:/app/code_runner/grpc_internal
+    ports:
+      - "8002:8002"
+    depends_on:
+      - kafka
