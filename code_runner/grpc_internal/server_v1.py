@@ -4,7 +4,7 @@ from code.code import Code
 from code.runner import runner
 
 
-class TCGenServicer(v1_pb2_grpc.CodeRunnerServicer):
+class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
     def __init__(self):
         self.ExecuteCodeRes = getattr(v1_pb2, 'ExecuteCodeRes', None)
 
@@ -14,13 +14,13 @@ class TCGenServicer(v1_pb2_grpc.CodeRunnerServicer):
         input_filepath = request.input_filepath
         timelimit = request.timelimit
 
-        result = runner(code.Code("", code_path), timelimit)
+        result = runner(Code("", code_path), timelimit)
 
         return self.ExecuteCodeRes(filepath=result)
 
 def serve():
     server = grpc_internal.server(futures.ThreadPoolExecutor(max_workers=10))
-    v1_pb2_grpc.add_TCGenServicer_to_server(TCGenServicer(), server)
+    v1_pb2_grpc.add_TCGenServicer_to_server(CodeRunnerServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("CodeRunner 서버 실행")
