@@ -1,14 +1,15 @@
 import grpc
+import json
 from create_testcase import v1_pb2_grpc, v1_pb2
 
 def run(format_):
     channel = grpc.insecure_channel("create-testcase:50051")  # gRPC 서버 주소
-    stub = v1_pb2_grpc.CodeRunnerStub(channel)
+    stub = v1_pb2_grpc.TestcaseStub(channel)
 
-    request = v1_pb2.ExecuteCodeReq(
-        format=format_
+    request = v1_pb2.CreateTestcaseReq(
+        format=json.dumps(format_)
     )
 
-    response = stub.ExecuteCode(request)
+    response = stub.CreateTestcase(request)
 
     return {"output": response.output}

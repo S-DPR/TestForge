@@ -13,6 +13,21 @@ async def root():
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-@app.post("runnn")
-async def runnn(format_, code1, code2, time_limit, repeat_count):
-    return code_service.run(format_, code1, code2, time_limit, repeat_count)
+from pydantic import BaseModel
+
+class RunRequest(BaseModel):
+    format_: dict
+    code1: str
+    code2: str
+    time_limit: int
+    repeat_count: int
+
+@app.post("/runnn")
+async def runnn(request: RunRequest):
+    return code_service.run(
+        request.format_,
+        request.code1,
+        request.code2,
+        request.time_limit,
+        request.repeat_count
+    )

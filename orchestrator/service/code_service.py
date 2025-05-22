@@ -4,7 +4,8 @@ from grpc_internal.file_manager import client as file_client
 
 def run(format_, code1, code2, time_limit, repeat_count):
     tc = tc_client.run(format_)
-    tc_path = file_client.run(tc)
+    print(tc)
+    tc_path = file_client.run(tc.output)
     *_, code1_name = file_client.run(code1).split("/")
     *_, code2_name = file_client.run(code2).split("/")
     code1_output_path = code_client.run(code1_name, "python", tc_path, time_limit)

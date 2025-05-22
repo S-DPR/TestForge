@@ -17,7 +17,7 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
         format_dict = json.loads(format_)
         testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
 
-        return self.CreateTestcaseeRes(output=process(testcase_config))
+        return self.CreateTestcaseRes(output=process(testcase_config))
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
