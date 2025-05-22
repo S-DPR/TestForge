@@ -1,16 +1,16 @@
 syntax = "proto3";
-package create_testcase.v1;
+package file_manager.v1;
 
-service TCGen {
-  rpc TCGenSave (TcGenSaveReq) returns (TcGenSaveRes);
+service File {
+  rpc FileSave (FileSaveReq) returns (FileSaveRes);
 }
 
-message TcGenSaveReq {
+message FileSaveReq {
   string folder = 1;
   string content = 2;
   string ext = 3;
 }
 
-message TcGenSaveRes {
+message FileSaveRes {
   string filepath = 1;
 }

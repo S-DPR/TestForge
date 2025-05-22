@@ -4,11 +4,11 @@ from file_manager import v1_pb2, v1_pb2_grpc
 from service import file_service
 
 
-class TCGenServicer(v1_pb2_grpc.TCGenServicer):
+class TCGenServicer(v1_pb2_grpc.FileServicer):
     def __init__(self):
-        self.TcGenSaveRes = getattr(v1_pb2, 'TcGenSaveRes', None)
+        self.FileSaveRes = getattr(v1_pb2, 'FileSaveRes', None)
 
-    def TCGenSave(self, request, context):
+    def FileSave(self, request, context):
         folder = request.folder
         content = request.content
         ext = request.ext
@@ -17,7 +17,7 @@ class TCGenServicer(v1_pb2_grpc.TCGenServicer):
         print("content:", content)
         print("ext:", ext)
         ret = file_service.save(folder=folder, content=content, ext=ext)
-        return self.TcGenSaveRes(filepath=ret)
+        return self.FileSaveRes(filepath=ret)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

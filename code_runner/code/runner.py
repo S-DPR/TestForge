@@ -1,3 +1,4 @@
+import sys
 from code import Code
 from docker_container import docker_container
 
@@ -8,12 +9,10 @@ def runner(code: Code, time_limit: int):
         demux=False
     )
 
-    if exit_code == 124:
-        print("⏱ timeout에 의해 종료됨 (exit code 124)")
-    elif exit_code == 0:
-        print("✅ 정상 종료됨")
-    else:
-        print(f"❌ 비정상 종료됨, 코드: {exit_code}")
-    print(output.decode())
-
     container.release() #
+    if exit_code == 124:
+        return "⏱ timeout에 의해 종료됨 (exit code 124)"
+    elif exit_code == 0:
+        return output.decode()
+    else:
+        return f"❌ 비정상 종료됨, 코드: {exit_code}"

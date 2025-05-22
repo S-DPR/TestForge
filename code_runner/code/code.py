@@ -1,6 +1,7 @@
 from pydantic import BaseModel
+from enum import Enum
 
-class Language:
+class Language(str, Enum):
     cpp = 'cpp'
     java = 'java'
     python = 'python'
