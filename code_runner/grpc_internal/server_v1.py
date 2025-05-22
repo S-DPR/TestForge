@@ -1,6 +1,6 @@
 from concurrent import futures
 from code_runner import v1_pb2, v1_pb2_grpc
-from code.code import code
+from code.code import Code
 from code.runner import runner
 
 
