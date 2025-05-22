@@ -85,3 +85,17 @@ services:
       - "8002:8002"
     depends_on:
       - kafka
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: orchestrator/Dockerfile
+    container_name: orchestrator
+    working_dir: /app
+    volumes:
+      - ./orchestrator:/app/orchestrator
+      - ./grpc:/app/grpc
+    environment:
+      - PYTHONPATH=/app/orchestrator:/app/orchestrator/grpc_internal
+    ports:
+      - "8003:8003"
