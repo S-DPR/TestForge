@@ -1,0 +1,14 @@
+syntax = "proto3";
+package create_testcase.v1;
+
+service Testcase {
+  rpc CreateTestcase (CreateTestcaseReq) returns (CreateTestcaseRes);
+}
+
+message CreateTestcaseReq {
+  string format = 1;
+}
+
+message CreateTestcaseRes {
+  string output = 1;
+}
