@@ -11,7 +11,7 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
     def __init__(self):
         self.CreateTestcaseRes = getattr(v1_pb2, 'CreateTestcaseRes', None)
 
-    def TCGenSave(self, request, context):
+    def CreateTestcase(self, request, context):
         format_ = request.format
 
         format_dict = json.loads(format_)
