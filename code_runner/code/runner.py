@@ -1,6 +1,6 @@
 import sys
 from code.code import Code
-from docker_container import docker_container
+from code.docker_container import docker_container
 
 def runner(code: Code, time_limit: int):
     container = docker_container.get_idle_container()
