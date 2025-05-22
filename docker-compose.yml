@@ -45,7 +45,7 @@ services:
       - ./grpc:/app/grpc
       - ../../scripts:/app/scripts
     environment:
-      - PYTHONPATH=/app/file_manager
+      - PYTHONPATH=/app/file_manager:/app/file_manager/grpc
     ports:
       - "8001:8001"
     depends_on:
@@ -62,7 +62,7 @@ services:
       - ./kafka_common:/app/kafka_common
       - ./grpc:/app/grpc
     environment:
-      - PYTHONPATH=/app/create_testcase
+      - PYTHONPATH=/app/create_testcase:/app/create_testcase/grpc
     ports:
       - "8000:8000"
     depends_on:
