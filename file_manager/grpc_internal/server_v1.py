@@ -27,7 +27,7 @@ class TCGenServicer(v1_pb2_grpc.FileServicer):
         filename2 = request.filename2
 
         ret = file_service.diff(folder=folder, filename1=filename1, filename2=filename2)
-        return self.FileDiffRes(filepath=ret)
+        return self.FileDiffRes(result=ret)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

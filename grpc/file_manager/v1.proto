@@ -3,7 +3,7 @@ package file_manager.v1;
 
 service File {
   rpc FileSave (FileSaveReq) returns (FileSaveRes);
-  rpc Diff (FileDiffReq) returns (FileDiffRes);
+  rpc FileDiff (FileDiffReq) returns (FileDiffRes);
 }
 
 message FileSaveReq {

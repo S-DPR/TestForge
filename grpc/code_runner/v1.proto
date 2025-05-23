@@ -8,8 +8,8 @@ service CodeRunner {
 message ExecuteCodeReq {
   string language = 1;
   string code_path = 2;
-  repeated string input_filepath = 3;
-  repeated string output_filepath = 4;
+  string input_filepath = 3;
+  string output_filepath = 4;
   int32 timelimit = 5;
 }
 

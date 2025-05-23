@@ -13,4 +13,4 @@ def execute_code(code_filename, language, input_filepath, output_filepath, timel
         timelimit=timelimit
     )
 
-    return { "exitcode": stub.ExecuteCode(request) }
+    return { "exitcode": stub.ExecuteCode(request).exitcode }
