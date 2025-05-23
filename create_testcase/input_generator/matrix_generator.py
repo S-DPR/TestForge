@@ -23,6 +23,7 @@ class MatrixConfig(BaseConfig):
         self.random_empty = config.get('random_empty', False) # empty_value가 있어도 빈 공간을 최대한 제거할지 아니면 최대한 채울지
 
         self.is_graph = safe_eval_helper(variables, config, 'is_graph', False) # 이거 True면 col/row인덱스 같은곳이 0
+        self.is_symmetric = config.get('is_symmetric', False) # 이거 True면 대칭
         self.validate()
 
     def _range_simplify(self, ranges):
@@ -80,6 +81,8 @@ class MatrixConfig(BaseConfig):
 
         if self.is_graph and self.row_size != self.col_size:
             raise ConfigValueError('col_size and row_size', f"행렬 그래프로 설정되었지만 행렬이 정사각형이 아닙니다. {self.row_size}*{self.col_size}")
+        if self.is_symmetric and self.row_size != self.col_size:
+            raise ConfigValueError('col_size and row_size', f"대칭 그래프로 설정되었지만 행렬이 정사각형이 아닙니다. {self.row_size}*{self.col_size}")
 
 class RangeManager:
     def __init__(self, num_ranges: list[list[int, int]], value_limit: dict, is_distinct: bool):
@@ -135,6 +138,10 @@ class MatrixGenerator(BaseGenerator):
             if range_manager.is_empty(): continue
             matrix[row][col] = range_manager.get()
             count += 1
+        if config.is_symmetric:
+            for i in range(config.row_size):
+                for j in range(config.col_size):
+                    matrix[i][j] = matrix[j][i]
         ret = []
         for row in matrix:
             convert = [TYPE_FUNCTION[config.num_type](item) for item in row]
