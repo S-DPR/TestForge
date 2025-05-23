@@ -21,9 +21,10 @@ def run(format_, code1, code2, time_limit, repeat_count):
         code1_exitcode = code_client.execute_code(code1_name, "python", os.path.join("/script", input_filename + ".in"), os.path.join("/script", first_output_filename), time_limit)['exitcode']
         code2_exitcode = code_client.execute_code(code2_name, "python", os.path.join("/script", input_filename + ".in"), os.path.join("/script", second_output_filename), time_limit)['exitcode']
         if code1_exitcode != code2_exitcode:
-            result.append("ERROR FAILED")
+            ret = "ERROR FAILED"
         elif code1_exitcode != 0:
-            result.append("ERROR BUT EQUAL")
+            ret = "ERROR BUT EQUAL"
         else:
-            result.append(file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result'])
+            ret = file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result']
+        result.append({ input_filename: ret })
     return result
