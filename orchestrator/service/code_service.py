@@ -11,7 +11,7 @@ def run(format_, code1, code2, time_limit, repeat_count):
     result = []
     for kth in range(repeat_count):
         input_filename = f"{code_uuid}_{kth+1}"
-        output_filename = f"{code_uuid}_{kth+1}.out"
+        output_filename = f"{code_uuid}_{kth+1}"
 
         first_output_filename = output_filename + "_1.out"
         second_output_filename = output_filename + "_2.out"
