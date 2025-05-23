@@ -7,11 +7,12 @@ from service import file_service
 class TCGenServicer(v1_pb2_grpc.FileServicer):
     def __init__(self):
         self.FileSaveRes = getattr(v1_pb2, 'FileSaveRes', None)
+        self.FileDiffRes = getattr(v1_pb2, 'FileDiffRes', None)
 
     def FileSave(self, request, context):
         folder = request.folder
         content = request.content
-        filename = content.filename
+        filename = request.filename
         ext = request.ext
 
         print("folder:", folder)
@@ -19,6 +20,14 @@ class TCGenServicer(v1_pb2_grpc.FileServicer):
         print("ext:", ext)
         ret = file_service.save(folder=folder, content=content, filename=filename, ext=ext)
         return self.FileSaveRes(filepath=ret)
+
+    def FileDiff(self, request, context):
+        folder = request.folder
+        filename1 = request.filename1
+        filename2 = request.filename2
+
+        ret = file_service.diff(folder=folder, filename1=filename1, filename2=filename2)
+        return self.FileDiffRes(filepath=ret)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

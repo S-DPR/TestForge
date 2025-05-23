@@ -3,6 +3,7 @@ package file_manager.v1;
 
 service File {
   rpc FileSave (FileSaveReq) returns (FileSaveRes);
+  rpc Diff (FileDiffReq) returns (FileDiffRes);
 }
 
 message FileSaveReq {
@@ -14,4 +15,14 @@ message FileSaveReq {
 
 message FileSaveRes {
   string filepath = 1;
+}
+
+message FileDiffReq {
+    string folder = 1;
+    string filename1 = 2;
+    string filename2 = 3;
+}
+
+message FileDiffRes {
+    string result = 1;
 }

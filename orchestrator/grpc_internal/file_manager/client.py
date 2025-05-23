@@ -15,3 +15,15 @@ def file_save(content, filename, ext = "txt"):
     response = stub.FileSave(request)
 
     return {"filepath": response.filepath}
+
+def file_diff(folder, filename1, filename2):
+    channel = grpc.insecure_channel("file-manager:50051")
+    stub = v1_pb2_grpc.FileStub(channel)
+
+    request = v1_pb2.FileDiffReq(
+        folder=folder,
+        filename1=filename1,
+        filename2=filename2
+    )
+    response = stub.FileDiff(request)
+    return {"result": response.result}
