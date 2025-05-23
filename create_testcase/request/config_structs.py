@@ -19,7 +19,7 @@ class TestcaseBlockConfig:
     repeat: str = '1'
     type: str = 'line'
     variable: list[Variable] = field(default_factory=list)
-    config: dict[str, str] = field(default_factory=dict)
+    config: dict[str, object] = field(default_factory=dict)
 
 @dataclass
 class TestcaseConfig:
