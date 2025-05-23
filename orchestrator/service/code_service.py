@@ -2,16 +2,29 @@ from grpc_internal.create_testcase import client as tc_client
 from grpc_internal.code_runner import client as code_client
 from grpc_internal.file_manager import client as file_client
 import os
+import uuid
 
 def run(format_, code1, code2, time_limit, repeat_count):
-    tc = tc_client.testcase_generate(format_)
-    print(tc, flush=True)
-    tc_path = file_client.file_save(tc['output'])
-    code1_name = os.path.basename(file_client.file_save(code1)['filepath'])
-    code2_name = os.path.basename(file_client.file_save(code2)['filepath'])
-    code1_output_path = code_client.execute_code(code1_name, "python", tc_path, time_limit)
-    code2_output_path = code_client.execute_code(code2_name, "python", tc_path, time_limit)
-    return {
-        "code1": code1_output_path,
-        "code2": code2_output_path,
-    }
+    code_uuid = str(uuid.uuid4())
+    code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
+    code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
+    result = []
+    for kth in range(repeat_count):
+        input_filename = f"{code_uuid}_{kth+1}.in"
+        output_filepath = os.path.join("/script", f"{code_uuid}_{kth+1}.out")
+        tc = tc_client.testcase_generate(format_)
+        tc_path = file_client.file_save(tc['output'], input_filename)
+        code1_exitcode = code_client.execute_code(code1_name, "python", tc_path, output_filepath + "_1", time_limit)
+        code2_exitcode = code_client.execute_code(code2_name, "python", tc_path, output_filepath + "_2", time_limit)
+        if code1_exitcode != code2_exitcode:
+            result.append("ERROR FAILED")
+        elif code1_exitcode != 0:
+            result.append("ERROR BUT EQUAL")
+        with open(output_filepath + "_1", 'r') as f1, open(output_filepath + "_2", 'r') as f2:
+            lines1 = [line.rstrip() for line in f1.read().rstrip().splitlines() if line.strip()]
+            lines2 = [line.rstrip() for line in f2.read().rstrip().splitlines() if line.strip()]
+            if lines1 == lines2:
+                result.append("SUCCESS")
+            else:
+                result.append("FAILURE")
+    return result

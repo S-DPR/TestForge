@@ -9,11 +9,12 @@ message ExecuteCodeReq {
   string language = 1;
   string code_path = 2;
   repeated string input_filepath = 3;
-  int32 timelimit = 4;
+  repeated string output_filepath = 4;
+  int32 timelimit = 5;
 }
 
 message ExecuteCodeRes {
-  string filepath = 1;
+  int32 exitcode = 1;
 //  string input_filepath = 2;
 //  bool error = 3;
 }

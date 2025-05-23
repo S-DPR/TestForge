@@ -13,11 +13,10 @@ class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
         language = request.language
         code_path = request.code_path
         input_filepath = request.input_filepath
+        output_filepath = request.output_filepath
         timelimit = request.timelimit
 
-        result = runner(Code(language="python", filepath=code_path), timelimit)
-
-        return self.ExecuteCodeRes(filepath=result)
+        return self.ExecuteCodeRes(exitcode=runner(Code(language=language, filepath=code_path), input_filepath, output_filepath, timelimit))
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

@@ -8,7 +8,8 @@ service File {
 message FileSaveReq {
   string folder = 1;
   string content = 2;
-  string ext = 3;
+  string filename = 3;
+  string ext = 4;
 }
 
 message FileSaveRes {

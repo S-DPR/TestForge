@@ -11,12 +11,13 @@ class TCGenServicer(v1_pb2_grpc.FileServicer):
     def FileSave(self, request, context):
         folder = request.folder
         content = request.content
+        filename = content.filename
         ext = request.ext
 
         print("folder:", folder)
         print("content:", content)
         print("ext:", ext)
-        ret = file_service.save(folder=folder, content=content, ext=ext)
+        ret = file_service.save(folder=folder, content=content, filename=filename, ext=ext)
         return self.FileSaveRes(filepath=ret)
 
 def serve():
