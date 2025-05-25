@@ -24,7 +24,7 @@ class RunRequest(BaseModel):
 
 @app.post("/runnn")
 async def runnn(request: RunRequest):
-    return code_service.run(
+    return await code_service.run(
         request.format_,
         request.code1,
         request.code2,

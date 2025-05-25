@@ -2,11 +2,12 @@ syntax = "proto3";
 package create_testcase.v1;
 
 service Testcase {
-  rpc CreateTestcase (CreateTestcaseReq) returns (CreateTestcaseRes);
+  rpc CreateTestcase (CreateTestcaseReq) returns (stream CreateTestcaseRes);
 }
 
 message CreateTestcaseReq {
   string format = 1;
+  int32 repeat_count = 2;
 }
 
 message CreateTestcaseRes {

@@ -2,6 +2,7 @@ import grpc
 import json
 from dacite import from_dict
 from concurrent import futures
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from create_testcase import v1_pb2, v1_pb2_grpc
 from request.config_structs import TestcaseConfig
 from request.executor import process
@@ -13,11 +14,19 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
 
     def CreateTestcase(self, request, context):
         format_ = request.format
+        repeat_count = request.repeat_count
 
         format_dict = json.loads(format_)
-        testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
 
-        return self.CreateTestcaseRes(output=process(testcase_config))
+        with ProcessPoolExecutor(max_workers=4) as executor:
+            testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
+            futures = [executor.submit(process, testcase_config) for _ in range(repeat_count)]
+            for f in as_completed(futures):
+                yield v1_pb2.CreateTestcaseRes(output=f.result())
+
+        # for _ in range(repeat_count):
+        #     testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
+        #     yield self.CreateTestcaseRes(output=process(testcase_config))
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
