@@ -21,13 +21,16 @@ async def run(format_, code1, code2, time_limit, repeat_count):
             first_output_filename = output_filename + "_1.out"
             second_output_filename = output_filename + "_2.out"
 
+            first_output_filepath = os.path.join("/script", first_output_filename)
+            second_output_filepath = os.path.join("/script", second_output_filename)
+            input_filepath = os.path.join("/script", input_filename + ".in")
+
             tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
+
             task1 = asyncio.to_thread(code_client.execute_code, code1_name, "python",
-                                      os.path.join("/script", input_filename + ".in"),
-                                      os.path.join("/script", first_output_filename), time_limit)
+                                      input_filepath, first_output_filepath, time_limit)
             task2 = asyncio.to_thread(code_client.execute_code, code2_name, "python",
-                                      os.path.join("/script", input_filename + ".in"),
-                                      os.path.join("/script", second_output_filename), time_limit)
+                                      input_filepath, second_output_filepath, time_limit)
 
             code1_result, code2_result = await asyncio.gather(task1, task2)
             code1_exitcode = code1_result['exitcode']
