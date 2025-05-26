@@ -22,8 +22,8 @@ class RunRequest(BaseModel):
     time_limit: int
     repeat_count: int
 
-@app.post("/runnn")
-async def runnn(request: RunRequest):
+@app.post("/testforge")
+async def testforge(request: RunRequest):
     return await code_service.run(
         request.format_,
         request.code1,
