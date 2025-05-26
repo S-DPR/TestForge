@@ -1,7 +1,7 @@
 import grpc
 from code_runner import v1_pb2_grpc, v1_pb2
 
-async def execute_code(code_filename, language, input_filepath, output_filepath, timelimit):
+def execute_code(code_filename, language, input_filepath, output_filepath, timelimit):
     channel = grpc.insecure_channel("code-runner:50051")  # gRPC 서버 주소
     stub = v1_pb2_grpc.CodeRunnerStub(channel)
 
