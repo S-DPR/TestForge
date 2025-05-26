@@ -6,7 +6,7 @@ COPY ./orchestrator /app/orchestrator
 
 COPY ./kafka_common /app/kafka_common
 
-RUN pip install --no-cache-dir -r /app/orchestrator/requirements.txt
+RUN pip install -r /app/orchestrator/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
