@@ -6,7 +6,7 @@ COPY ./file_manager /app/file_manager
 
 COPY ./kafka_common /app/kafka_common
 
-RUN pip install --no-cache-dir -r /app/file_manager/requirements.txt
+RUN pip install /app/file_manager/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
