@@ -6,7 +6,7 @@ COPY ./create_testcase /app/create_testcase
 
 COPY ./kafka_common /app/kafka_common
 
-RUN pip install /app/create_testcase/requirements.txt
+RUN pip install -r /app/create_testcase/requirements.txt
 
 RUN pip install -e /app/kafka_common
 

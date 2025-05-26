@@ -6,7 +6,7 @@ COPY ./code_runner /app/code_runner
 
 COPY ./kafka_common /app/kafka_common
 
-RUN pip install /app/code_runner/requirements.txt
+RUN pip install -r /app/code_runner/requirements.txt
 
 RUN pip install -e /app/kafka_common
 
