@@ -2,7 +2,7 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ./create_testcase /app/create_testcase
+COPY ./auth /app/auth
 
 COPY ./kafka_common /app/kafka_common
 
