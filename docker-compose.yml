@@ -93,22 +93,24 @@ services:
     container_name: auth
     restart: always
     env_file:
-      - .auth-env
+      - ./auth/.env
     ports:
       - "8004:8004"
     depends_on:
       - auth-db
 
   auth-db:
+    build:
+      context: .
     image: postgres:15
     container_name: auth-db
     restart: always
     env_file:
-      - .auth-env
+      - ./auth/.env
     environment:
       POSTGRES_USER: "auth_user"
       POSTGRES_PASSWORD: "auth_pass"
-      POSTGRES_DB: "authdb"
+      POSTGRES_DB: "auth-db"
     ports:
       - "5432:5432"
     volumes:
