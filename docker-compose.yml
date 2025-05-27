@@ -94,6 +94,9 @@ services:
     restart: always
     env_file:
       - ./auth/.env
+    volumes:
+      - ./auth:/app/auth
+      - ./grpc:/app/grpc
     ports:
       - "8004:8004"
     depends_on:
