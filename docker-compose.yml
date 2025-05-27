@@ -100,8 +100,6 @@ services:
       - auth-db
 
   auth-db:
-    build:
-      context: .
     image: postgres:15
     container_name: auth-db
     restart: always
