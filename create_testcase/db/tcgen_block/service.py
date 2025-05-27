@@ -2,8 +2,8 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from db.tcgen_block.model import TcGenBlock
-from db.tcgen_block import schema
+from create_testcase.db.tcgen_block.model import TcGenBlock
+from create_testcase.db.tcgen_block import schema
 
 def create_tcgen_block(db: Session, data: schema.TcGenBlockCreate):
     tcgen_block = TcGenBlock(

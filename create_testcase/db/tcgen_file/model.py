@@ -5,7 +5,7 @@ import uuid
 
 from sqlalchemy.orm import relationship
 
-from db.db import Base
+from create_testcase.db.db import Base
 
 class TcGenFile(Base):
     __tablename__ = "tcgen_file"
