@@ -1,4 +1,4 @@
 #!/bin/bash
-#python3 /app/grpc/compile_grpc.py create_testcase
-#python3 /app/create_testcase/grpc_internal/server_v1.py &
-python manage.py runserver 0.0.0.0:9000
+#python3 /app/grpc/compile_grpc.py auth
+#python3 /app/auth/grpc_internal/server_v1.py &
+python /app/auth/manage.py runserver 0.0.0.0:9000
