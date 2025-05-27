@@ -21,6 +21,8 @@ services:
       - PYTHONPATH=/app/file_manager:/app/file_manager/grpc_internal
     ports:
       - "8001:8001"
+    networks:
+      - default
 
   create_testcase:
     build:
@@ -36,6 +38,8 @@ services:
       - PYTHONPATH=/app/create_testcase:/app/create_testcase/grpc_internal
     ports:
       - "8000:8000"
+    networks:
+      - default
 
   code-runner:
     build:
@@ -52,6 +56,8 @@ services:
       - PYTHONPATH=/app/code_runner:/app/code_runner/grpc_internal
     ports:
       - "8002:8002"
+    networks:
+      - default
 
   auth:
     build:
@@ -66,6 +72,8 @@ services:
       - ./grpc:/app/grpc
     ports:
       - "9000:9000"
+    networks:
+      - default
 
   orchestrator:
     build:
@@ -80,3 +88,5 @@ services:
       - PYTHONPATH=/app/orchestrator:/app/orchestrator/grpc_internal
     ports:
       - "8003:8003"
+    networks:
+      - default

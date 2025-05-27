@@ -11,12 +11,16 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    networks:
+      - default
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - default
 
   kafka:
     image: bitnami/kafka:3.7
@@ -29,6 +33,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LISTENERS: PLAINTEXT://:9092
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+    networks:
+      - default
 
   auth-db:
     image: postgres:15
@@ -40,3 +46,5 @@ services:
       - "5432:5432"
     volumes:
       - ./auth-db-volume:/var/lib/postgresql/data
+    networks:
+      - default
