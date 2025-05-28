@@ -9,7 +9,7 @@ class TcGenBlockCreate(BaseModel):
     tcgen_id: UUID
     type: str
     config: dict
-    variable: dict
+    variable: list
     output: dict
     repeat: str
     sequence: int
