@@ -6,7 +6,8 @@ from create_testcase.db.code_file import schema
 
 def create_code_file(db: Session, data: schema.CodeFileCreate):
     code_file = CodeFile(
-        code_run_id=data.code_run_id,
+        account_id = data.account_id,
+        language = data.language,
         filepath=data.filepath,
         extension=data.extension,
     )

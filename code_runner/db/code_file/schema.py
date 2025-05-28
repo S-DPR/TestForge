@@ -6,13 +6,14 @@ from pydantic import BaseModel
 
 class CodeFileCreate(BaseModel):
     code_run_id: UUID
+    account_id: UUID
+    language: str
     filepath: str
     extension: str
 
 
 class CodeFileOut(BaseModel):
     code_file_id: UUID
-    code_run_id: UUID
     filepath: str
     extension: str
 

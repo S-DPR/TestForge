@@ -10,7 +10,6 @@ class CodeFile(Base):
     __tablename__ = "code_file"
 
     code_file_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    code_run_id = Column(UUID(as_uuid=True), ForeignKey("code_run.code_run_id"), nullable=False)
     account_id = Column(UUID(as_uuid=True), nullable=False)
     language = Column(Text, nullable=False)
     filepath = Column(Text, nullable=False)
