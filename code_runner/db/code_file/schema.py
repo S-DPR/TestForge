@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 
 class CodeFileCreate(BaseModel):
-    code_run_id: UUID
     account_id: UUID
     language: str
     filepath: str
