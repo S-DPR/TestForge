@@ -6,10 +6,11 @@ from db.code_res import schema
 
 def create_code_res(db: Session, data: schema.CodeResCreate):
     code_res = CodeRes(
+        code_file_id=data.code_file_id,
         input_filepath=data.input_filepath,
         exitcode=data.exitcode,
-        execute_time=data.execute_time,
-        memory=data.memory,
+        # execute_time=data.execute_time,
+        # memory=data.memory,
         output_filepath=data.output_filepath,
     )
     db.add(code_res)

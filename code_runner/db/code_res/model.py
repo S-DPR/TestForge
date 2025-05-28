@@ -10,7 +10,7 @@ class CodeRes(Base):
     __tablename__ = "code_res"
 
     code_res_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    tcgen_file_id = Column(UUID(as_uuid=True), ForeignKey("code_file.code_file_id"), nullable=False)
+    code_file_id = Column(UUID(as_uuid=True), ForeignKey("code_file.code_file_id"), nullable=False)
     input_filepath = Column(Text, nullable=False)
     exitcode = Column(Integer, nullable=False)
     # execute_time = Column(Integer, nullable=False)  # ms
@@ -18,4 +18,4 @@ class CodeRes(Base):
     output_filepath = Column(Text, nullable=False)
     create_dt = Column(TIMESTAMP, nullable=False, default=datetime.now)
 
-    file = relationship("CodeFile", back_populates="results")
+    code_file = relationship("CodeFile", back_populates="code_results")

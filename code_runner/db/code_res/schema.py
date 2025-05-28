@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 
 class CodeResCreate(BaseModel):
+    code_file_id: UUID
     input_filepath: str
     exitcode: int
     # execute_time: int

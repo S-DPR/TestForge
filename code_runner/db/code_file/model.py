@@ -16,6 +16,6 @@ class CodeFile(Base):
     account_id = Column(UUID(as_uuid=True), nullable=False)
     language = Column(Text, nullable=False)
     filepath = Column(Text, nullable=False, unique=True, index=True)
-    code = Column(Text, nullable=False, unique=True)
+    code = Column(Text, nullable=False)
 
-    result = relationship("CodeRes", back_populates="result", cascade="all, delete-orphan")
+    code_results = relationship("CodeRes", back_populates="code_file", cascade="all, delete-orphan")
