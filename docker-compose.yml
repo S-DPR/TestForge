@@ -45,7 +45,7 @@ services:
     build:
       context: .
       dockerfile: code_runner/Dockerfile
-    container_name: code_runner
+    container_name: code-runner
     working_dir: /app
     volumes:
       - ./code_runner:/app/code_runner
