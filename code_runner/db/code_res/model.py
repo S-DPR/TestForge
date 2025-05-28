@@ -18,4 +18,4 @@ class CodeRes(Base):
     output_filepath = Column(Text, nullable=False)
     create_dt = Column(TIMESTAMP, nullable=False, default=datetime.now)
 
-    file = relationship("CodeFile", backref="results")
+    file = relationship("CodeFile", back_populates="results")

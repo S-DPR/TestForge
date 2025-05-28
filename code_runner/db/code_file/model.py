@@ -18,4 +18,4 @@ class CodeFile(Base):
     filepath = Column(Text, nullable=False, unique=True, index=True)
     code = Column(Text, nullable=False, unique=True)
 
-    result = relationship("CodeRes", backref="result", cascade="all, delete-orphan")
+    result = relationship("CodeRes", back_populates="result", cascade="all, delete-orphan")
