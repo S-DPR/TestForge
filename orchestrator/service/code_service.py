@@ -7,7 +7,7 @@ import uuid
 import uuid
 
 async def run(format_, code1, code2, time_limit, repeat_count):
-    account_id = uuid.uuid4()
+    account_id = str(uuid.uuid4())
 
     code_uuid = str(uuid.uuid4())
     code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
