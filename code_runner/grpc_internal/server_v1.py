@@ -1,6 +1,6 @@
 from concurrent import futures
 from code_runner import v1_pb2, v1_pb2_grpc
-from code_runner.service import execute_code
+from service import execute_code
 import grpc
 
 
