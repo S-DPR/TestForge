@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from psycopg2.extensions import JSONB
 from sqlalchemy.orm import relationship
 
 from db.db import Base
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 import uuid
 from sqlalchemy import Column, TIMESTAMP, Integer, Text, ForeignKey
 

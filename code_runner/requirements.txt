@@ -5,3 +5,5 @@ confluent_kafka
 aiofiles
 grpcio
 grpcio-tools
+sqlalchemy
+psycopg2

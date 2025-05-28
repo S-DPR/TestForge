@@ -11,11 +11,5 @@ def runner(code: Code, input_filepath, output_filepath, time_limit: int):
         demux=False
     )
 
-    container.release() #
+    container.release()
     return exit_code
-    # if exit_code == 124:
-    #     return "⏱ timeout에 의해 종료됨 (exit code 124)"
-    # elif exit_code == 0:
-        # return exit
-    # else:
-    #     return f"❌ 비정상 종료됨, 코드: {exit_code}"
