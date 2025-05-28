@@ -19,6 +19,7 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
 
         format_dict = json.loads(format_)
 
+        print("[RES]", account_id, repeat_count, flush=True)
         with ProcessPoolExecutor(max_workers=4) as executor:
             testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
             futures = [executor.submit(process, account_id, testcase_config) for _ in range(repeat_count)]
