@@ -24,7 +24,7 @@ class RunRequest(BaseModel):
 
 @app.post("/testforge")
 async def testforge(request: RunRequest):
-    return await code_service.run(
+    return await code_service.code_service.queue_push(
         request.format_,
         request.code1,
         request.code2,
