@@ -17,7 +17,7 @@ class TcGenBlockCreate(BaseModel):
 class TcGenBlockOut(BaseModel):
     type: str
     config: dict
-    variable: dict
+    variable: list
     output: dict
     repeat: str
     sequence: int
