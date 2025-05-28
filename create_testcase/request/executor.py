@@ -8,6 +8,8 @@ from input_generator.undirected_graph_generator import undirected_graph_generato
 from request.parsing import create_variables
 from request.expression import safe_eval
 
+from create_testcase.db.sessions import get_db
+
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
     "undirected_graph": UndirectedGraphConfig,
@@ -77,7 +79,8 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
     tcgen_create = TcGenCreate(
         account_id=account_id,
     )
-    tcgen = tcgen_service.create_tcgen(SessionLocal(), tcgen_create)
+    with get_db() as db:
+        tcgen = tcgen_service.create_tcgen(db, tcgen_create)
 
     variable_format, lines = testcaseConfig.variable_format, testcaseConfig.lines
     tcgen_prv_variable_block_create = TcGenBlockCreate(
@@ -89,7 +92,8 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
         repeat = "",
         sequence = 0
     )
-    block_service.create_tcgen_block(SessionLocal(), tcgen_prv_variable_block_create)
+    with get_db() as db:
+        block_service.create_tcgen_block(db, tcgen_prv_variable_block_create)
     for idx, block in enumerate(lines, 1):
         variable_as_json = [asdict(var) for var in block.variable]
         tcgen_prv_variable_block_create = TcGenBlockCreate(
@@ -101,13 +105,15 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
             repeat=block.repeat,
             sequence=idx
         )
-        block_service.create_tcgen_block(SessionLocal(), tcgen_prv_variable_block_create)
+        with get_db() as db:
+            block_service.create_tcgen_block(db, tcgen_prv_variable_block_create)
 
     tcgen_file_create = TcGenFileCreate(
         tcgen_id = tcgen.tcgen_id,
         filepath = testcase_file_path,
     )
-    file_service.create_tcgen_file(SessionLocal(), tcgen_file_create)
+    with get_db() as db:
+        file_service.create_tcgen_file(db, tcgen_file_create)
 
 
 # print(process([

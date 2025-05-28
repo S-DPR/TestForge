@@ -7,6 +7,8 @@ from db.code_res import service as res_service
 from db import sessions
 from db.sessions import SessionLocal
 
+from db.sessions import get_db
+
 
 def execute(account_id, language, code_path, input_filepath, output_filepath, timelimit):
     exitcode = runner(Code(language=language, filepath=code_path), input_filepath, output_filepath, timelimit)
@@ -16,7 +18,8 @@ def execute(account_id, language, code_path, input_filepath, output_filepath, ti
         filepath = code_path,
         code = "" # 코드중복 넣는건 일단 생략해두자
     )
-    file = file_service.create_code_file(SessionLocal(), code_file_create)
+    with get_db() as db:
+        file = file_service.create_code_file(db, code_file_create)
     code_res_create = CodeResCreate(
         code_file_id=file.code_file_id,
         input_filepath = input_filepath,
@@ -25,5 +28,6 @@ def execute(account_id, language, code_path, input_filepath, output_filepath, ti
         # memory = ,
         output_filepath = output_filepath,
     )
-    res = res_service.create_code_res(SessionLocal(), code_res_create)
+    with get_db() as db:
+        res = res_service.create_code_res(db, code_res_create)
     return exitcode
