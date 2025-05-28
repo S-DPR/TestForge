@@ -4,8 +4,11 @@ from grpc_internal.file_manager import client as file_client
 import asyncio
 import os
 import uuid
+import uuid
 
 async def run(format_, code1, code2, time_limit, repeat_count):
+    account_id = uuid.uuid4()
+
     code_uuid = str(uuid.uuid4())
     code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
     code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
@@ -27,9 +30,9 @@ async def run(format_, code1, code2, time_limit, repeat_count):
 
             tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
 
-            task1 = asyncio.to_thread(code_client.execute_code, code1_name, "python",
+            task1 = asyncio.to_thread(code_client.execute_code, account_id, code1_name, "python",
                                       input_filepath, first_output_filepath, time_limit)
-            task2 = asyncio.to_thread(code_client.execute_code, code2_name, "python",
+            task2 = asyncio.to_thread(code_client.execute_code, account_id, code2_name, "python",
                                       input_filepath, second_output_filepath, time_limit)
 
             code1_result, code2_result = await asyncio.gather(task1, task2)
