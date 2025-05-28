@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import relationship
 
-from create_testcase.db.db import Base
+from db.db import Base
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from sqlalchemy import Column, TIMESTAMP

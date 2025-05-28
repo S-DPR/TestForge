@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
 
-from create_testcase.db.db import Base
+from db.db import Base
 
 class CodeFile(Base):
     __tablename__ = "code_file"
