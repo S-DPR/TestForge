@@ -59,7 +59,7 @@ def process(account_id, testcaseConfig: TestcaseConfig):
             current_line_data.extend(generator.generate(variables, output, gen_config))
         for line_data in current_line_data:
             result.append(output.separator.join(map(str, line_data)))
-    save_database(account_id, testcaseConfig, testcaseConfig)
+    save_database(account_id, "", testcaseConfig)
     return '\n'.join(result)
 
 
@@ -91,11 +91,12 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
     )
     block_service.create_tcgen_block(SessionLocal(), tcgen_prv_variable_block_create)
     for idx, block in enumerate(lines, 1):
+        variable_as_json = [asdict(var) for var in block.variable]
         tcgen_prv_variable_block_create = TcGenBlockCreate(
             tcgen_id=tcgen.tcgen_id,
             type=block.type,
             config=block.config,
-            variable=block.variable,
+            variable=variable_as_json,
             output=asdict(block.output),
             repeat=block.repeat,
             sequence=idx
