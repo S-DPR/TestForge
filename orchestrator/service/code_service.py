@@ -57,7 +57,14 @@ class CodeService:
             return
 
         try:
-            result = await self.run(**args)
+            result = await self.run(
+                account_id=args["account_id"],
+                format_=args["format_"],
+                code1=args["code1"],
+                code2=args["code2"],
+                time_limit=args["time_limit"],
+                repeat_count=args["repeat_count"]
+            )
             args["tracker"].add_result(result)
         except Exception as e:
             if not args["tracker"].future.done():
@@ -79,6 +86,7 @@ class CodeService:
                 "code2": code2,
                 "time_limit": time_limit,
                 "repeat_count": pushed,
+                "tracker": tracker,
             }
             self.queue.put(args)
             repeat_count -= pushed
