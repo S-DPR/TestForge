@@ -5,7 +5,7 @@ from db.code_res.schema import CodeResCreate
 from db.code_file import service as file_service
 from db.code_res import service as res_service
 from db import sessions
-from db.sessions import get_db
+from db.sessions import SessionLocal
 
 
 def execute(account_id, language, code_path, input_filepath, output_filepath, timelimit):
@@ -23,6 +23,6 @@ def execute(account_id, language, code_path, input_filepath, output_filepath, ti
         # memory = ,
         output_filepath = output_filepath,
     )
-    file = file_service.create_code_file(get_db(), code_file_create)
-    res = res_service.create_code_res(get_db(), code_res_create)
+    file = file_service.create_code_file(SessionLocal(), code_file_create)
+    res = res_service.create_code_res(SessionLocal(), code_res_create)
     return exitcode
