@@ -43,6 +43,8 @@ class DockerContainer:
             command="sleep infinity",
             detach=True,
             mem_limit='1024m',
+            memswap_limit='1024m',
+            oom_kill_disable=False,
             network_disabled=True,
             volumes={
                 "security": {
