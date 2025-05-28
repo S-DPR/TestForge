@@ -1,7 +1,6 @@
 from concurrent import futures
 from code_runner import v1_pb2, v1_pb2_grpc
-from code.code import Code
-from code.runner import runner
+from code_runner.service import execute_code
 import grpc
 
 
@@ -10,13 +9,14 @@ class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
         self.ExecuteCodeRes = getattr(v1_pb2, 'ExecuteCodeRes', None)
 
     def ExecuteCode(self, request, context):
+        account_id = request.account_id
         language = request.language
         code_path = request.code_path
         input_filepath = request.input_filepath
         output_filepath = request.output_filepath
         timelimit = request.timelimit
 
-        return self.ExecuteCodeRes(exitcode=runner(Code(language=language, filepath=code_path), input_filepath, output_filepath, timelimit))
+        return self.ExecuteCodeRes(exitcode=execute_code.execute(account_id, language, code_path, input_filepath, output_filepath, timelimit))
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
