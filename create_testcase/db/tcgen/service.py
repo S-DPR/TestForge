@@ -2,8 +2,8 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from create_testcase.db.tcgen.model import TcGen
-from create_testcase.db.tcgen import schema
+from db.tcgen.model import TcGen
+from db.tcgen import schema
 
 def create_tcgen(db: Session, data: schema.TcGenCreate):
     tcgen = TcGen(

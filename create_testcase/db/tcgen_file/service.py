@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
-from create_testcase.db.tcgen_file.model import TcGenFile
-from create_testcase.db.tcgen_file.schema import TcGenFileCreate
+from db.tcgen_file.model import TcGenFile
+from db.tcgen_file.schema import TcGenFileCreate
 from datetime import datetime
 
 def create_tcgen_file(db: Session, data: TcGenFileCreate):

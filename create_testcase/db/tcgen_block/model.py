@@ -22,6 +22,6 @@ class TcGenBlock(Base):
     repeat = Column(Text, nullable=True)
     sequence = Column(Integer, nullable=False)
 
-    create_dt = Column(TIMESTAMP, nullable=True)
+    create_dt = Column(TIMESTAMP, nullable=True, default=datetime.now)
 
     tcgen = relationship("TcGen", back_populates="blocks")
