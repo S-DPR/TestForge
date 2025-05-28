@@ -1,7 +1,7 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
-from create_testcase.db.code_res.model import CodeRes
-from create_testcase.db.code_res import schema
+from db.code_res.model import CodeRes
+from db.code_res import schema
 
 
 def create_code_res(db: Session, data: schema.CodeResCreate):

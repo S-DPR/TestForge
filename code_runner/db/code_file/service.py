@@ -1,7 +1,7 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
-from create_testcase.db.code_file.model import CodeFile
-from create_testcase.db.code_file import schema
+from db.code_file.model import CodeFile
+from db.code_file import schema
 
 
 def create_code_file(db: Session, data: schema.CodeFileCreate):
