@@ -16,7 +16,7 @@ async def run(format_, code1, code2, time_limit, repeat_count):
     result = []
     for repeat in range((repeat_count+99)//100): # 100번으로 나눠서 분할실행 (중간에 diff 나오면 끊기용도)
         inner_repeat_count = min(100, repeat_count-repeat*100)
-        async for tc in tc_client.testcase_generate(format_, inner_repeat_count):
+        async for tc in tc_client.testcase_generate(account_id, format_, inner_repeat_count):
             kth += 1
             input_filename = f"{code_uuid}_{kth}"
             output_filename = f"{code_uuid}_{kth}"

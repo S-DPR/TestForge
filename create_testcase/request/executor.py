@@ -38,7 +38,7 @@ def resolve_generator_config(type_name: str, variables: dict, config: dict) -> t
 # var: { name: (str), type: (str), range: [int, int] }
 # format: 뭐 이런저런 옵션들... 뭐 separator나 sequence..
 
-def process(testcaseConfig: TestcaseConfig):
+def process(account_id, testcaseConfig: TestcaseConfig):
     variable_format, lines = testcaseConfig.variable_format, testcaseConfig.lines
     result = []
     variables = create_variables({}, variable_format)
@@ -59,7 +59,55 @@ def process(testcaseConfig: TestcaseConfig):
             current_line_data.extend(generator.generate(variables, output, gen_config))
         for line_data in current_line_data:
             result.append(output.separator.join(map(str, line_data)))
+    save_database(account_id, testcaseConfig, testcaseConfig)
     return '\n'.join(result)
+
+
+from db.tcgen.schema import TcGenCreate
+from db.tcgen_block.schema import TcGenBlockCreate
+from db.tcgen_file.schema import TcGenFileCreate
+from db.tcgen import service as tcgen_service
+from db.tcgen_file import service as file_service
+from db.tcgen_block import service as block_service
+from db.sessions import SessionLocal
+from dataclasses import asdict
+
+
+def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig):
+    tcgen_create = TcGenCreate(
+        account_id=account_id,
+    )
+    tcgen = tcgen_service.create_tcgen(SessionLocal(), tcgen_create)
+
+    variable_format, lines = testcaseConfig.variable_format, testcaseConfig.lines
+    tcgen_prv_variable_block_create = TcGenBlockCreate(
+        tcgen_id = tcgen.tcgen_id,
+        type = "prv_variable_block",
+        config = {},
+        variable = variable_format,
+        output = {},
+        repeat = "",
+        sequence = 0
+    )
+    block_service.create_tcgen_block(SessionLocal(), tcgen_prv_variable_block_create)
+    for idx, block in enumerate(lines, 1):
+        tcgen_prv_variable_block_create = TcGenBlockCreate(
+            tcgen_id=tcgen.tcgen_id,
+            type=block.type,
+            config=block.config,
+            variable=block.variable,
+            output=asdict(block.output),
+            repeat=block.repeat,
+            sequence=idx
+        )
+        block_service.create_tcgen_block(SessionLocal(), tcgen_prv_variable_block_create)
+
+    tcgen_file_create = TcGenFileCreate(
+        tcgen_id = tcgen.tcgen_id,
+        filepath = testcase_file_path,
+    )
+    file_service.create_tcgen_file(SessionLocal(), tcgen_file_create)
+
 
 # print(process([
 #         {'name': 'N', 'type': 'int', 'range': [[3, 3]]}

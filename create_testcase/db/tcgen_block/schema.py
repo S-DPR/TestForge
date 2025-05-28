@@ -7,20 +7,20 @@ from sqlalchemy import Integer, Text
 
 class TcGenBlockCreate(BaseModel):
     tcgen_id: UUID
-    type: Text
+    type: str
     config: dict
     variable: dict
     output: dict
-    repeat: Text
-    sequence: Integer
+    repeat: str
+    sequence: int
 
 class TcGenBlockOut(BaseModel):
-    type: Text
+    type: str
     config: dict
     variable: dict
     output: dict
-    repeat: Text
-    sequence: Integer
+    repeat: str
+    sequence: int
     create_dt: datetime
 
     class Config:

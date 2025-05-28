@@ -13,6 +13,7 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
         self.CreateTestcaseRes = getattr(v1_pb2, 'CreateTestcaseRes', None)
 
     def CreateTestcase(self, request, context):
+        account_id = request.account_id
         format_ = request.format
         repeat_count = request.repeat_count
 
@@ -20,7 +21,7 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
 
         with ProcessPoolExecutor(max_workers=4) as executor:
             testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
-            futures = [executor.submit(process, testcase_config) for _ in range(repeat_count)]
+            futures = [executor.submit(account_id, process, testcase_config) for _ in range(repeat_count)]
             for f in as_completed(futures):
                 yield v1_pb2.CreateTestcaseRes(output=f.result())
 

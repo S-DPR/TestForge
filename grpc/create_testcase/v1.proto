@@ -6,8 +6,9 @@ service Testcase {
 }
 
 message CreateTestcaseReq {
-  string format = 1;
-  int32 repeat_count = 2;
+  string account_id = 1;
+  string format = 2;
+  int32 repeat_count = 3;
 }
 
 message CreateTestcaseRes {
