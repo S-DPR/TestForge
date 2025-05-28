@@ -8,8 +8,8 @@ def create_code_file(db: Session, data: schema.CodeFileCreate):
     code_file = CodeFile(
         account_id = data.account_id,
         language = data.language,
-        filepath=data.filepath,
-        extension=data.extension,
+        filepath = data.filepath,
+        code = data.code,
     )
     db.add(code_file)
     db.commit()

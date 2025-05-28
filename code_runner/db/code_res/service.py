@@ -6,7 +6,6 @@ from create_testcase.db.code_res import schema
 
 def create_code_res(db: Session, data: schema.CodeResCreate):
     code_res = CodeRes(
-        tcgen_file_id=data.tcgen_file_id,
         input_filepath=data.input_filepath,
         exitcode=data.exitcode,
         execute_time=data.execute_time,

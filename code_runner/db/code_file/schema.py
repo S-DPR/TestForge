@@ -8,8 +8,7 @@ class CodeFileCreate(BaseModel):
     account_id: UUID
     language: str
     filepath: str
-    extension: str
-
+    code: str
 
 class CodeFileOut(BaseModel):
     code_file_id: UUID
