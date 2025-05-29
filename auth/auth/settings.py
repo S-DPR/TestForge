@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    'authentification',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +51,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "auth.urls"
+
+AUTH_USER_MODEL = 'authentification.User'
 
 TEMPLATES = [
     {

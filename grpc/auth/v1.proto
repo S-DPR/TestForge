@@ -1,0 +1,62 @@
+syntax = "proto3";
+package auth.v1;
+
+service Authenticate {
+  rpc Login (LoginReq) returns (LoginRes);
+  rpc Refresh (RefreshReq) returns (AccessTokenRes);
+}
+
+service AccountService {
+    rpc CreateAccount (AccountCreateRequest) returns (AccountResponse);
+    rpc GetAccount (AccountGetRequest) returns (AccountResponse);
+    rpc UpdateAccount (AccountUpdateRequest) returns (AccountResponse);
+    rpc DeleteAccount (AccountDeleteRequest) returns (AccountDeleteResponse);
+}
+
+message LoginReq {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginRes {
+  string access = 1;
+  string refresh = 2;
+}
+
+message RefreshReq {
+    string refresh = 1;
+}
+
+message RefreshRes {
+    string access = 1;
+}
+
+
+message AccountCreateReq {
+    string login_id = 1;
+    string password = 2;
+}
+
+message AccountGetReq {
+    string account_id = 1;
+}
+
+message AccountUpdateReq {
+    string account_id = 1;
+    string login_id = 2;
+    string password = 3;
+}
+
+message AccountDeleteReq {
+    string account_id = 1;
+}
+
+message AccountRes {
+    string account_id = 1;
+    string login_id = 2;
+    string password = 3;
+}
+
+message AccountDelRes {
+    bool success = 1;
+}

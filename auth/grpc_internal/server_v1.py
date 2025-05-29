@@ -1,0 +1,51 @@
+import grpc
+from django.core.exceptions import ObjectDoesNotExist
+from concurrent import futures
+from authentification import v1_pb2, v1_pb2_grpc
+from db.account import service as account_service
+
+
+class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
+    def __init__(self):
+        self.AccountCreateReq = getattr(v1_pb2, 'AccountCreateReq', None)
+        self.AccountGetReq = getattr(v1_pb2, 'AccountGetReq', None)
+        self.AccountUpdateReq = getattr(v1_pb2, 'AccountUpdateReq', None)
+        self.AccountDeleteReq = getattr(v1_pb2, 'AccountDeleteReq', None)
+        self.AccountRes = getattr(v1_pb2, 'AccountRes', None)
+        self.AccountDelRes = getattr(v1_pb2, 'AccountDelRes', None)
+
+    def CreateAccount(self, request, context):
+        account = account_service.create_account(request.login_id, request.password)
+        return self.AccountResponse(id=account.id, login_id=account.login_id, password=account.password)
+
+    def GetAccount(self, request, context):
+        try:
+            account = account_service.get_account(request.account_id)
+            return self.AccountResponse(id=account.id, login_id=account.login_id, password=account.password)
+        except ObjectDoesNotExist:
+            context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
+
+    def UpdateAccount(self, request, context):
+        try:
+            account = account_service.update_account(request.account_id, request.login_id, request.password)
+            return self.AccountResponse(id=account.id, login_id=account.login_id, password=account.password)
+        except ObjectDoesNotExist:
+            context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
+
+    def DeleteAccount(self, request, context):
+        try:
+            account_service.delete_account(request.account_id)
+            return self.AccountDeleteResponse(success=True)
+        except ObjectDoesNotExist:
+            return self.AccountDeleteResponse(success=False)
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    v1_pb2_grpc.add_AccountServiceServicer_to_server(AccountServiceServicer(), server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    print("Authentication 서버 실행")
+    server.wait_for_termination()
+
+if __name__ == '__main__':
+    serve()
