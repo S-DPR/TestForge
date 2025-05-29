@@ -3,7 +3,7 @@ package auth.v1;
 
 service Authenticate {
   rpc Login (LoginReq) returns (LoginRes);
-  rpc Refresh (RefreshReq) returns (AccessTokenRes);
+  rpc Refresh (RefreshReq) returns (RefreshRes);
 }
 
 service AccountService {
