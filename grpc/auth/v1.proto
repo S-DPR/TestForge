@@ -7,10 +7,10 @@ service Authenticate {
 }
 
 service AccountService {
-    rpc CreateAccount (AccountCreateRequest) returns (AccountResponse);
-    rpc GetAccount (AccountGetRequest) returns (AccountResponse);
-    rpc UpdateAccount (AccountUpdateRequest) returns (AccountResponse);
-    rpc DeleteAccount (AccountDeleteRequest) returns (AccountDeleteResponse);
+    rpc CreateAccount (AccountCreateReq) returns (AccountRes);
+    rpc GetAccount (AccountGetReq) returns (AccountRes);
+    rpc UpdateAccount (AccountUpdateReq) returns (AccountRes);
+    rpc DeleteAccount (AccountDelReq) returns (AccountDelRes);
 }
 
 message LoginReq {
@@ -47,7 +47,7 @@ message AccountUpdateReq {
     string password = 3;
 }
 
-message AccountDeleteReq {
+message AccountDelReq {
     string account_id = 1;
 }
 
