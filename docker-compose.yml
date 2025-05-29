@@ -67,6 +67,8 @@ services:
     restart: always
     env_file:
       - ./auth/.env
+    environment:
+      - PYTHONPATH=/app/auth:/app/auth/grpc_internal
     volumes:
       - ./auth:/app/auth
       - ./grpc:/app/grpc

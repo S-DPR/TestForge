@@ -1,7 +1,13 @@
+import django
+import os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth.settings')
+django.setup()
+
 import grpc
 from django.core.exceptions import ObjectDoesNotExist
 from concurrent import futures
-from authentification import v1_pb2, v1_pb2_grpc
+from auth import v1_pb2, v1_pb2_grpc
 from db.account import service as account_service
 
 
@@ -16,28 +22,28 @@ class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
 
     def CreateAccount(self, request, context):
         account = account_service.create_account(request.login_id, request.password)
-        return self.AccountResponse(id=account.id, login_id=account.login_id, password=account.password)
+        return self.AccountRes(id=account.id, login_id=account.login_id, password=account.password)
 
     def GetAccount(self, request, context):
         try:
             account = account_service.get_account(request.account_id)
-            return self.AccountResponse(id=account.id, login_id=account.login_id, password=account.password)
+            return self.AccountRes(id=account.id, login_id=account.login_id, password=account.password)
         except ObjectDoesNotExist:
             context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
 
     def UpdateAccount(self, request, context):
         try:
             account = account_service.update_account(request.account_id, request.login_id, request.password)
-            return self.AccountResponse(id=account.id, login_id=account.login_id, password=account.password)
+            return self.AccountRes(id=account.id, login_id=account.login_id, password=account.password)
         except ObjectDoesNotExist:
             context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
 
     def DeleteAccount(self, request, context):
         try:
             account_service.delete_account(request.account_id)
-            return self.AccountDeleteResponse(success=True)
+            return self.AccountDelRes(success=True)
         except ObjectDoesNotExist:
-            return self.AccountDeleteResponse(success=False)
+            return self.AccountDelRes(success=False)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
