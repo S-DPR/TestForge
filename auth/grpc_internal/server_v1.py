@@ -9,6 +9,31 @@ from django.core.exceptions import ObjectDoesNotExist
 from concurrent import futures
 from auth import v1_pb2, v1_pb2_grpc
 from db.account import service as account_service
+from authentication.auth_service import authenticate_user, get_tokens_for_user
+
+class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
+    def __init__(self):
+        self.LoginReq = getattr(v1_pb2, 'LoginReq', None)
+        self.LoginRes = getattr(v1_pb2, 'LoginRes', None)
+        self.RefreshReq = getattr(v1_pb2, 'RefreshReq', None)
+        self.RefreshRes = getattr(v1_pb2, 'RefreshRes', None)
+
+    def Login(self, request, context):
+        try:
+            user = authenticate_user(request.username, request.password)
+            tokens = get_tokens_for_user(user)
+            return self.LoginRes(access=tokens['access'], refresh=tokens['refresh'])
+        except Exception as e:
+            context.abort(grpc.StatusCode.UNAUTHENTICATED, str(e))
+
+    def Refresh(self, request, context):
+        try:
+            refresh_token = request.refresh
+            refresh = RefreshToken(refresh_token)
+            access = str(refresh.access_token)
+            return self.RefreshRes(access=access)
+        except Exception:
+            context.abort(grpc.StatusCode.UNAUTHENTICATED, "Invalid refresh token")
 
 
 class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
