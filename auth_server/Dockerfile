@@ -2,7 +2,7 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ../auth/auth_server /app/auth_server
+COPY ./auth_server /app/auth_server
 
 COPY ./kafka_common /app/kafka_common
 
