@@ -32,7 +32,10 @@ async def testforge(request: RunRequest):
         request.repeat_count
     )
 
-# 요청 모델
+
+from auth import client
+from fastapi import FastAPI, HTTPException
+
 class AuthRequest(BaseModel):
     login_id: str
     password: str
@@ -40,44 +43,30 @@ class AuthRequest(BaseModel):
 class RefreshRequest(BaseModel):
     refresh: str
 
-# 로그인
 @app.post("/login")
 def login(data: AuthRequest):
-    try:
-        req = v1_pb2.LoginReq(login_id=data.login_id, password=data.password)
-        res = auth_stub.Login(req)
-        return {"access": res.access, "refresh": res.refresh}
-    except grpc.RpcError as e:
-        raise HTTPException(status_code=401, detail=f"Login failed: {e.details()}")
+    result = client.login(username=data.login_id, password=data.password)
+    if not result:
+        raise HTTPException(status_code=401, detail="Login failed.")
+    return result
 
-# 회원가입
 @app.post("/register")
 def register(data: AuthRequest):
-    try:
-        req = v1_pb2.RegisterReq(login_id=data.login_id, password=data.password)
-        res = auth_stub.Register(req)
-        return {"access": res.access, "refresh": res.refresh}
-    except grpc.RpcError as e:
-        if e.code() == grpc.StatusCode.ALREADY_EXISTS:
-            raise HTTPException(status_code=409, detail="User already exists.")
-        raise HTTPException(status_code=500, detail="Registration failed.")
+    result = client.register(login_id=data.login_id, password=data.password)
+    if not result:
+        raise HTTPException(status_code=409, detail="Registration failed.")
+    return result
 
-# 탈퇴 / 비활성화
-@app.post("/inactive")
-def inactivate(data: AuthRequest):
-    try:
-        req = v1_pb2.InActiveReq(login_id=data.login_id, password=data.password)
-        res = auth_stub.InActive(req)
-        return {"message": res.message}
-    except grpc.RpcError as e:
-        raise HTTPException(status_code=401, detail=f"Inactivation failed: {e.details()}")
-
-# 토큰 리프레시
 @app.post("/refresh")
 def refresh_token(data: RefreshRequest):
-    try:
-        req = v1_pb2.RefreshReq(refresh=data.refresh)
-        res = auth_stub.Refresh(req)
-        return {"access": res.access}
-    except grpc.RpcError as e:
-        raise HTTPException(status_code=401, detail=f"Refresh failed: {e.details()}")
+    result = client.refresh(refresh_token=data.refresh)
+    if not result:
+        raise HTTPException(status_code=401, detail="Token refresh failed.")
+    return result
+
+@app.post("/inactive")
+def deactivate(data: AuthRequest):
+    result = client.deactivate(login_id=data.login_id, password=data.password)
+    if not result:
+        raise HTTPException(status_code=500, detail="Deactivation failed.")
+    return result
