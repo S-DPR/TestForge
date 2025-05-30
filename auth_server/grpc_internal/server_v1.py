@@ -72,6 +72,7 @@ class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    v1_pb2_grpc.add_AuthenticateServicer_to_server(AuthenticateServicer(), server)
     v1_pb2_grpc.add_AccountServiceServicer_to_server(AccountServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
