@@ -1,6 +1,8 @@
 import django
 import os
 
+from auth_server.account.models import Account
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth_server.settings')
 django.setup()
 
@@ -9,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from concurrent import futures
 from auth import v1_pb2, v1_pb2_grpc
 from account import service as account_service
+from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.auth_service import authenticate_user, get_tokens_for_user
 
 class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
@@ -34,6 +37,22 @@ class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
             return self.RefreshRes(access=access)
         except Exception:
             context.abort(grpc.StatusCode.UNAUTHENTICATED, "Invalid refresh token")
+
+    def Register(self, request, context):
+        try:
+            user = Account.objects.create_user(login_id=request.login_id, password=request.password)
+            tokens = get_tokens_for_user(user)
+            return v1_pb2.RegisterRes(access=tokens['access'], refresh=tokens['refresh'])
+        except Exception:
+            context.abort(grpc.StatusCode.INTERNAL, "Registration failed.")
+
+    def InActive(self, request, context):
+        try:
+            user = authenticate_user(request.login_id, request.password)
+            user.deactivate()
+            return v1_pb2.InActiveRes(message="User has been deactivated.")
+        except Exception:
+            context.abort(grpc.StatusCode.INTERNAL, "Deactivation failed.")
 
 
 class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):

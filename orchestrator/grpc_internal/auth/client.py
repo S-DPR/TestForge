@@ -8,7 +8,7 @@ account_stub = v1_pb2_grpc.AccountServiceStub(channel)
 
 # 로그인 요청
 def login(username: str, password: str):
-    req = v1_pb2.LoginReq(username=username, password=password)
+    req = v1_pb2.LoginReq(login_id=username, password=password)
     try:
         res = auth_stub.Login(req)
         return {"access": res.access, "refresh": res.refresh}
