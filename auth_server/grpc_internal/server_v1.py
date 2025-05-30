@@ -1,7 +1,7 @@
 import django
 import os
 
-from auth_server.account.models import Account
+from account.models import Account
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth_server.settings')
 django.setup()
@@ -23,7 +23,7 @@ class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
 
     def Login(self, request, context):
         try:
-            user = authenticate_user(request.username, request.password)
+            user = authenticate_user(request.login_id, request.password)
             tokens = get_tokens_for_user(user)
             return self.LoginRes(access=tokens['access'], refresh=tokens['refresh'])
         except Exception as e:
