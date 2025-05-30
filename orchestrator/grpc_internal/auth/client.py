@@ -8,7 +8,7 @@ account_stub = v1_pb2_grpc.AccountServiceStub(channel)
 
 # 로그인 요청
 def login(username: str, password: str):
-    req = v1_pb2.Login(username=username, password=password)
+    req = v1_pb2.LoginReq(username=username, password=password)
     try:
         res = auth_stub.Login(req)
         return {"access": res.access, "refresh": res.refresh}
@@ -18,7 +18,7 @@ def login(username: str, password: str):
 
 # 토큰 리프레시
 def refresh(refresh_token: str):
-    req = v1_pb2.Refresh(refresh=refresh_token)
+    req = v1_pb2.RefreshReq(refresh=refresh_token)
     try:
         res = auth_stub.Refresh(req)
         return {"access": res.access}
