@@ -68,7 +68,7 @@ services:
     env_file:
       - ./auth_server/.env
     environment:
-      - PYTHONPATH=/app/auth_server/auth:/app/auth_server/grpc_internal
+      - PYTHONPATH=/app/auth_server:/app/auth_server/grpc_internal
     volumes:
       - ./auth_server:/app/auth_server
       - ./grpc:/app/grpc
