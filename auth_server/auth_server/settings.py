@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    'authentication',
     'account'
 ]
 
@@ -53,7 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "auth_server.urls"
 
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'account.Account'
 
 TEMPLATES = [
     {
