@@ -1,14 +1,14 @@
 import django
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth_service.settings')
 django.setup()
 
 import grpc
 from django.core.exceptions import ObjectDoesNotExist
 from concurrent import futures
 from auth import v1_pb2, v1_pb2_grpc
-from db.account import service as account_service
+from account import service as account_service
 from authentication.auth_service import authenticate_user, get_tokens_for_user
 
 class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):

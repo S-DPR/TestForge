@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    'authentication',
+    'db.account'
 ]
 
 MIDDLEWARE = [
@@ -49,6 +52,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "auth_server.urls"
+
+AUTH_USER_MODEL = 'authentication.User'
 
 TEMPLATES = [
     {
@@ -73,11 +78,16 @@ WSGI_APPLICATION = "auth_server.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'authentication',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'auth-db',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
