@@ -47,19 +47,19 @@ class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
 
     def CreateAccount(self, request, context):
         account = account_service.create_account(request.login_id, request.password)
-        return self.AccountRes(account_id=account.id, login_id=account.login_id, password=account.password)
+        return self.AccountRes(account_id=str(account.id), login_id=account.login_id, password=account.password)
 
     def GetAccount(self, request, context):
         try:
             account = account_service.get_account(request.account_id)
-            return self.AccountRes(account_id=account.id, login_id=account.login_id, password=account.password)
+            return self.AccountRes(account_id=str(account.id), login_id=account.login_id, password=account.password)
         except ObjectDoesNotExist:
             context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
 
     def UpdateAccount(self, request, context):
         try:
             account = account_service.update_account(request.account_id, request.login_id, request.password)
-            return self.AccountRes(account_id=account.id, login_id=account.login_id, password=account.password)
+            return self.AccountRes(account_id=str(account.id), login_id=account.login_id, password=account.password)
         except ObjectDoesNotExist:
             context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
 
