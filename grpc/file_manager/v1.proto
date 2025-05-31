@@ -1,6 +1,8 @@
 syntax = "proto3";
 package file_manager.v1;
 
+option go_package = "github.com/thankyouformuch0/bff/grpc_internal/file_manager/v1;filemanagerv1";
+
 service File {
   rpc FileSave (FileSaveReq) returns (FileSaveRes);
   rpc FileDiff (FileDiffReq) returns (FileDiffRes);

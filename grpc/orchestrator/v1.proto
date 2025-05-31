@@ -1,0 +1,21 @@
+syntax = "proto3";
+package orchestrator.v1;
+
+option go_package = "github.com/thankyouformuch0/bff/grpc_internal/orchestrator/v1;orchestratorv1";
+
+service TestForgeService {
+  rpc TestExecutor (TestExecutorReq) returns (stream TestExecutorRes);
+}
+
+message TestExecutorReq {
+    string testcaseFormat = 1;
+    string code1 = 2;
+    string code2 = 3;
+    int32 timelimit = 4;
+    int32 repeatCount = 5;
+}
+
+message TestExecutorRes {
+    string filename = 1;
+    string diffStatus = 2;
+}

@@ -1,6 +1,8 @@
 syntax = "proto3";
 package create_testcase.v1;
 
+option go_package = "github.com/thankyouformuch0/bff/grpc_internal/create_testcase/v1;createtcv1";
+
 service Testcase {
   rpc CreateTestcase (CreateTestcaseReq) returns (stream CreateTestcaseRes);
 }
