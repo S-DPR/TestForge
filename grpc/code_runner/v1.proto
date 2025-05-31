@@ -1,7 +1,7 @@
 syntax = "proto3";
 package code_runner.v1;
 
-option go_package = "github.com/thankyouformuch0/bff/grpc_internal/code_runner/v1;coderunnerv1";
+option go_package = "github.com/S-DPR/TestForge/grpc/code_runner/v1;code_runnerv1";
 
 service CodeRunner {
   rpc ExecuteCode (ExecuteCodeReq) returns (ExecuteCodeRes);

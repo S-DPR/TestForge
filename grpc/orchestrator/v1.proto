@@ -1,7 +1,7 @@
 syntax = "proto3";
 package orchestrator.v1;
 
-option go_package = "github.com/thankyouformuch0/bff/grpc_internal/orchestrator/v1;orchestratorv1";
+option go_package = "github.com/S-DPR/TestForge/grpc/orchestrator/v1;orchestratorv1";
 
 service TestForgeService {
   rpc TestExecutor (TestExecutorReq) returns (stream TestExecutorRes);
