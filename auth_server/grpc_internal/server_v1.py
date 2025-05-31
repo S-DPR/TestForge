@@ -1,14 +1,17 @@
 import django
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth.settings')
+from account.models import Account
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth_server.settings')
 django.setup()
 
 import grpc
 from django.core.exceptions import ObjectDoesNotExist
 from concurrent import futures
 from auth import v1_pb2, v1_pb2_grpc
-from db.account import service as account_service
+from account import service as account_service
+from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.auth_service import authenticate_user, get_tokens_for_user
 
 class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
@@ -20,7 +23,7 @@ class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
 
     def Login(self, request, context):
         try:
-            user = authenticate_user(request.username, request.password)
+            user = authenticate_user(request.login_id, request.password)
             tokens = get_tokens_for_user(user)
             return self.LoginRes(access=tokens['access'], refresh=tokens['refresh'])
         except Exception as e:
@@ -35,6 +38,22 @@ class AuthenticateServicer(v1_pb2_grpc.AuthenticateServicer):
         except Exception:
             context.abort(grpc.StatusCode.UNAUTHENTICATED, "Invalid refresh token")
 
+    def Register(self, request, context):
+        try:
+            user = Account.objects.create_user(login_id=request.login_id, password=request.password)
+            tokens = get_tokens_for_user(user)
+            return v1_pb2.RegisterRes(access=tokens['access'], refresh=tokens['refresh'])
+        except Exception:
+            context.abort(grpc.StatusCode.INTERNAL, "Registration failed.")
+
+    def InActive(self, request, context):
+        try:
+            user = authenticate_user(request.login_id, request.password)
+            user.deactivate()
+            return v1_pb2.InActiveRes(message="User has been deactivated.")
+        except Exception:
+            context.abort(grpc.StatusCode.INTERNAL, "Deactivation failed.")
+
 
 class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
     def __init__(self):
@@ -47,19 +66,19 @@ class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
 
     def CreateAccount(self, request, context):
         account = account_service.create_account(request.login_id, request.password)
-        return self.AccountRes(id=account.id, login_id=account.login_id, password=account.password)
+        return self.AccountRes(account_id=str(account.id), login_id=account.login_id, password=account.password)
 
     def GetAccount(self, request, context):
         try:
             account = account_service.get_account(request.account_id)
-            return self.AccountRes(id=account.id, login_id=account.login_id, password=account.password)
+            return self.AccountRes(account_id=str(account.id), login_id=account.login_id, password=account.password)
         except ObjectDoesNotExist:
             context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
 
     def UpdateAccount(self, request, context):
         try:
             account = account_service.update_account(request.account_id, request.login_id, request.password)
-            return self.AccountRes(id=account.id, login_id=account.login_id, password=account.password)
+            return self.AccountRes(account_id=str(account.id), login_id=account.login_id, password=account.password)
         except ObjectDoesNotExist:
             context.abort(grpc.StatusCode.NOT_FOUND, "Account not found")
 
@@ -72,11 +91,11 @@ class AccountServiceServicer(v1_pb2_grpc.AccountServiceServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    v1_pb2_grpc.add_AuthenticateServicer_to_server(AuthenticateServicer(), server)
     v1_pb2_grpc.add_AccountServiceServicer_to_server(AccountServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("Authentication 서버 실행")
     server.wait_for_termination()
 
-if __name__ == '__main__':
-    serve()
+serve()

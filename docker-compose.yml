@@ -62,15 +62,15 @@ services:
   auth:
     build:
       context: .
-      dockerfile: auth/Dockerfile
+      dockerfile: auth_server/Dockerfile
     container_name: auth
     restart: always
     env_file:
-      - ./auth/.env
+      - ./auth_server/.env
     environment:
-      - PYTHONPATH=/app/auth:/app/auth/grpc_internal
+      - PYTHONPATH=/app/auth_server:/app/auth_server/grpc_internal
     volumes:
-      - ./auth:/app/auth
+      - ./auth_server:/app/auth_server
       - ./grpc:/app/grpc
     ports:
       - "9000:9000"

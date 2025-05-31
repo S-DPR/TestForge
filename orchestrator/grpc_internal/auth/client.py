@@ -8,7 +8,7 @@ account_stub = v1_pb2_grpc.AccountServiceStub(channel)
 
 # 로그인 요청
 def login(username: str, password: str):
-    req = v1_pb2.LoginReq(username=username, password=password)
+    req = v1_pb2.LoginReq(login_id=username, password=password)
     try:
         res = auth_stub.Login(req)
         return {"access": res.access, "refresh": res.refresh}
@@ -24,6 +24,26 @@ def refresh(refresh_token: str):
         return {"access": res.access}
     except grpc.RpcError as e:
         print(f"Refresh failed: {e.code()} {e.details()}")
+        return None
+
+# 회원가입
+def register(login_id: str, password: str):
+    req = v1_pb2.RegisterReq(login_id=login_id, password=password)
+    try:
+        res = auth_stub.Register(req)
+        return {"access": res.access, "refresh": res.refresh}
+    except grpc.RpcError as e:
+        print(f"Register failed: {e.code()} {e.details()}")
+        return None
+
+# 비활성화 (탈퇴)
+def deactivate(login_id: str, password: str):
+    req = v1_pb2.InActiveReq(login_id=login_id, password=password)
+    try:
+        res = auth_stub.InActive(req)
+        return {"message": res.message}
+    except grpc.RpcError as e:
+        print(f"Inactive failed: {e.code()} {e.details()}")
         return None
 
 # 계정 생성

@@ -1,4 +1,4 @@
-from db.account.models import Account
+from account.models import Account
 from django.contrib.auth.hashers import make_password
 
 def create_account(login_id, password):
