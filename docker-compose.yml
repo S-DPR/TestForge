@@ -92,3 +92,19 @@ services:
       - "8003:8003"
     networks:
       - default
+
+  bff:
+    build:
+      context: .
+      dockerfile: bff/Dockerfile
+    container_name: bff
+    restart: always
+    env_file:
+      - ./bff/.env
+    volumes:
+      - ./bff:/app/bff
+      - ./grpc:/app/grpc
+    ports:
+      - "9001:9001"
+    networks:
+      - default
