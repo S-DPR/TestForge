@@ -99,8 +99,6 @@ services:
       dockerfile: bff/Dockerfile
     container_name: bff
     restart: always
-    env_file:
-      - ./bff/.env
     volumes:
       - ./bff:/app/bff
       - ./grpc:/app/grpc
