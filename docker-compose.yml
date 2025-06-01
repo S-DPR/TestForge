@@ -27,15 +27,15 @@ services:
   create_testcase:
     build:
       context: .
-      dockerfile: create_testcase/Dockerfile
+      dockerfile: input-generator-service/Dockerfile
     container_name: create-testcase
     working_dir: /app
     volumes:
-      - ./create_testcase:/app/create_testcase
+      - ./input-generator-service:/app/input-generator-service
       - ./kafka_common:/app/kafka_common
       - ./grpc:/app/grpc
     environment:
-      - PYTHONPATH=/app/create_testcase:/app/create_testcase/grpc_internal
+      - PYTHONPATH=/app/input-generator-service:/app/input-generator-service/grpc_internal
     ports:
       - "8000:8000"
     networks:

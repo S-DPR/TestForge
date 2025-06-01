@@ -125,7 +125,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # from request.parsing import create_variables
 # from request.expression import safe_eval
 #
-# from create_testcase.db.sessions import get_db
+# from input-generator-service.db.sessions import get_db
 #
 # CONFIG_CLASS_REGISTRY = {
 #     "line": LineConfig,

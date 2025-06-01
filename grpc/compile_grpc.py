@@ -7,7 +7,7 @@ prefix = "/app/grpc"
 _, folder, *_ = *sys.argv, 0
 if platform.system() == "Windows":
     prefix = r"C:\Users\dev\PycharmProjects\TestForge\grpc"
-    folder = "auth"
+    folder = "orchestrator"
 
 proto_files = glob.glob(f'{prefix}/**/*.proto', recursive=True)
 

@@ -24,7 +24,7 @@ async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
 # @app.post("/create/testcase")
-# async def create_testcase(testcase: TestcaseConfig):
+# async def input-generator-service(testcase: TestcaseConfig):
 #     logger.info("요청 들어옴")
 #     result = process(testcase)
 #     file_like = BytesIO(result.encode("utf-8"))
