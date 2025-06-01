@@ -9,16 +9,16 @@ services:
   file_manager:
     build:
       context: .
-      dockerfile: file_manager/Dockerfile
+      dockerfile: storage-service/Dockerfile
     container_name: file-manager
     working_dir: /app
     volumes:
-      - ./file_manager:/app/file_manager
+      - ./storage-service:/app/storage-service
       - ./kafka_common:/app/kafka_common
       - ./grpc:/app/grpc
       - ../../scripts:/app/scripts
     environment:
-      - PYTHONPATH=/app/file_manager:/app/file_manager/grpc_internal
+      - PYTHONPATH=/app/storage-service:/app/storage-service/grpc_internal
     ports:
       - "8001:8001"
     networks:
