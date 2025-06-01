@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"log"
 	"time"
 )
 
@@ -19,7 +20,7 @@ type OrchestratorInterface interface {
 }
 
 func NewOrchestratorGRPCClient(addr string, creds credentials.TransportCredentials) (*OrchestratorClient, error) {
-	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(creds))
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(creds))
 	if err != nil {
 		return nil, err
 	}
@@ -70,6 +71,7 @@ func (o *OrchestratorClient) RunTestClient(reqDto *model.TestExecutorReqDTO) (Te
 		// 에러 처리 제대로 안 하면 진짜 바보다
 		return nil, fmt.Errorf("testcaseFormat JSON marshal 실패: %v", err)
 	}
+	log.Println("sending testcaseFormat json:", string(formatJson))
 
 	req := &TestExecutorReq{
 		TestcaseFormat: string(formatJson),
@@ -79,8 +81,9 @@ func (o *OrchestratorClient) RunTestClient(reqDto *model.TestExecutorReqDTO) (Te
 		RepeatCount:    reqDto.RepeatCount,
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*300)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*300)
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*300)
+	//defer cancel()
 
 	return o.client.TestExecutor(ctx, req)
 	//if err != nil {
