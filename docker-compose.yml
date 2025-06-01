@@ -44,16 +44,16 @@ services:
   code-runner:
     build:
       context: .
-      dockerfile: code_runner/Dockerfile
+      dockerfile: execution-service/Dockerfile
     container_name: code-runner
     working_dir: /app
     volumes:
-      - ./code_runner:/app/code_runner
+      - ./execution-service:/app/execution-service
       - ./kafka_common:/app/kafka_common
       - /var/run/docker.sock:/var/run/docker.sock
       - ./grpc:/app/grpc
     environment:
-      - PYTHONPATH=/app/code_runner:/app/code_runner/grpc_internal
+      - PYTHONPATH=/app/execution-service:/app/execution-service/grpc_internal
     ports:
       - "8002:8002"
     networks:

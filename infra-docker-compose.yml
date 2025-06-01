@@ -67,7 +67,7 @@ services:
     container_name: code-db
     restart: always
     env_file:
-      - ./code_runner/.env
+      - execution-service/.env
     ports:
       - "5434:5434"
     volumes:

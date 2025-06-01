@@ -4,7 +4,7 @@ import time
 
 security_opt = ["no-new-privileges"]
 if platform.system() == "Linux":
-    # security_opt.append("seccomp=/home/sdpr/projects/code_runner/temp/seccomp-profile.json")
+    # security_opt.append("seccomp=/home/sdpr/projects/execution-service/temp/seccomp-profile.json")
     security_opt.append("apparmor=docker-execute-profile")
 
 print(security_opt)

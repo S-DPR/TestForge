@@ -21,7 +21,7 @@ async def execute_code_async(account_id, code_filename, language, input_filepath
         return { "exitcode": response.exitcode }
 
 # import grpc
-# from code_runner import v1_pb2_grpc, v1_pb2
+# from execution-service import v1_pb2_grpc, v1_pb2
 #
 # def execute_code(account_id, code_filename, language, input_filepath, output_filepath, timelimit):
 #     with grpc.insecure_channel("code-runner:50051") as channel:
