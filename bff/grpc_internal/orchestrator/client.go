@@ -3,6 +3,8 @@ package orchestratorv1
 import (
 	"bff/internal/model"
 	"context"
+	"encoding/json"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"time"
@@ -63,8 +65,14 @@ func NewOrchestratorGRPCClient(addr string, creds credentials.TransportCredentia
 //}
 
 func (o *OrchestratorClient) RunTestClient(reqDto *model.TestExecutorReqDTO) (TestForgeService_TestExecutorClient, error) {
+	formatJson, err := json.Marshal(reqDto.TestcaseFormat)
+	if err != nil {
+		// 에러 처리 제대로 안 하면 진짜 바보다
+		return nil, fmt.Errorf("testcaseFormat JSON marshal 실패: %v", err)
+	}
+
 	req := &TestExecutorReq{
-		TestcaseFormat: reqDto.TestcaseFormat,
+		TestcaseFormat: string(formatJson),
 		Code1:          reqDto.Code1,
 		Code2:          reqDto.Code2,
 		Timelimit:      reqDto.TimeLimit,
