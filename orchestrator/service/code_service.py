@@ -43,6 +43,8 @@ class CodeServiceAsync:
     def __init__(self):
         self.queue = asyncio.Queue()
         self.account_semaphores = defaultdict(lambda: asyncio.Semaphore(3))
+
+    async def start(self):
         for _ in range(self.MAX_CONCURRENCY):
             asyncio.create_task(self.worker_loop())
 
