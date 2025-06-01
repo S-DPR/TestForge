@@ -22,6 +22,21 @@ class GroupTracker:
             if self.completed == self.total and not self.future.done():
                 self.future.set_result(self.results)
 
+class StreamingTracker:
+    def __init__(self, total_chunks):
+        self.queue = asyncio.Queue()
+        self.remaining = total_chunks
+
+    async def add_result(self, result):
+        await self.queue.put(result)
+
+    async def results(self):
+        while self.remaining:
+            result = await self.queue.get()
+            self.remaining -= 1
+            yield result
+
+
 class CodeServiceAsync:
     MAX_CONCURRENCY = 10
 
@@ -52,16 +67,19 @@ class CodeServiceAsync:
                 account_id=args["account_id"],
                 format_=args["format_"],
                 code1=args["code1"],
+                code1_language="python",
                 code2=args["code2"],
+                code2_language="python",
                 time_limit=args["time_limit"],
-                repeat_count=args["repeat_count"]
+                repeat_count=args["repeat_count"],
+                tracker=None,
             )
             #print("[RUN FUNCTION END]", flush=True)
             #print("[ADD RESULT BEFORE]", flush=True)
             await args["tracker"].add_result(result)
             #print("[ADD RESULT END]", flush=True)
 
-    async def queue_push(self, format_, code1, code2, time_limit, repeat_count):
+    async def queue_push(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count):
         account_id = str(uuid.uuid4())
         chunks = (repeat_count + 99) // 100
         tracker = GroupTracker(chunks)
@@ -86,7 +104,29 @@ class CodeServiceAsync:
         #print("[RETURN]", flush=True)
         return res
 
-    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count):
+    async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count):
+        account_id = str(uuid.uuid4())
+        chunks = (repeat_count + 99) // 100
+        tracker = StreamingTracker(chunks)
+
+        while repeat_count:
+            pushed = min(repeat_count, 100)
+            args = {
+                "account_id": account_id,
+                "format_": format_,
+                "code1": code1,
+                "code2": code2,
+                "time_limit": time_limit,
+                "repeat_count": pushed,
+                "tracker": tracker,
+            }
+            await self.queue.put(args)
+            repeat_count -= pushed
+
+        async for result in tracker.results():
+            yield result
+
+    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker):
         code_uuid = str(uuid.uuid4())
         code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
         code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
@@ -132,6 +172,8 @@ class CodeServiceAsync:
             #print("[RESULT APPEND]", flush=True)
             result.append({input_filename: ret})
             #print("[FOR END]", flush=True)
+            if tracker:
+                await tracker.add_result(ret)
 
         #print("[ENDD]", flush=True)
         return result
