@@ -13,6 +13,8 @@ protoc \
   $(find "$PROTO_DIR" -name "*.proto")
 
 cd /app/bff
-go build -o main .
+cd /app/bff/cmd/server
+go build -o /app/bff/main .
 
+cd /app/bff
 ./main
