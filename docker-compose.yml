@@ -96,11 +96,11 @@ services:
   bff:
     build:
       context: .
-      dockerfile: bff/Dockerfile
-    container_name: bff
+      dockerfile: API-GateWay/Dockerfile
+    container_name: API-GateWay
     restart: always
     volumes:
-      - ./bff:/app/bff
+      - ./API-GateWay:/app/API-GateWay
       - ./grpc:/app/grpc
     ports:
       - "9001:9001"

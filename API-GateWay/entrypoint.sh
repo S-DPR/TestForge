@@ -12,9 +12,9 @@ protoc \
   --go-grpc_out="$OUT_DIR" \
   $(find "$PROTO_DIR" -name "*.proto")
 
-cd /app/bff
-cd /app/bff/cmd/server
-go build -o /app/bff/main .
+cd /app/API-GateWay
+cd /app/API-GateWay/cmd/server
+go build -o /app/API-GateWay/main .
 
-cd /app/bff
+cd /app/API-GateWay
 ./main

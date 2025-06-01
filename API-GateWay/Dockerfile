@@ -13,6 +13,6 @@ COPY ./grpc /app/grpc
 WORKDIR /app/bff
 RUN go mod download
 
-RUN chmod +x /app/bff/entrypoint.sh
+RUN chmod +x /app/API-GateWay/entrypoint.sh
 
 CMD ["/app/bff/entrypoint.sh"]
