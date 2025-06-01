@@ -1,7 +1,7 @@
 syntax = "proto3";
 package create_testcase.v1;
 
-option go_package = "./create_testcase/v1;createtcv1";
+option go_package = "./create_testcase;createtcv1";
 
 service Testcase {
   rpc CreateTestcase (CreateTestcaseReq) returns (stream CreateTestcaseRes);

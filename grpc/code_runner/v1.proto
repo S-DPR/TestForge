@@ -1,7 +1,7 @@
 syntax = "proto3";
 package code_runner.v1;
 
-option go_package = "./v1;code_runnerv1";
+option go_package = "./code_runner;code_runnerv1";
 
 service CodeRunner {
   rpc ExecuteCode (ExecuteCodeReq) returns (ExecuteCodeRes);
