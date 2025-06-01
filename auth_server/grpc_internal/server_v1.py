@@ -1,11 +1,10 @@
 import django
 import os
 
-from account.models import Account
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auth_server.settings')
 django.setup()
 
+from account.models import Account
 import grpc
 from django.core.exceptions import ObjectDoesNotExist
 from concurrent import futures
