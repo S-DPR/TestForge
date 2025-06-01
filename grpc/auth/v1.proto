@@ -1,7 +1,7 @@
 syntax = "proto3";
 package auth.v1;
 
-option go_package = "github.com/S-DPR/TestForge/grpc/auth/v1;authv1";
+option go_package = "./auth/v1;authv1";
 
 service Authenticate {
   rpc Login (LoginReq) returns (LoginRes);

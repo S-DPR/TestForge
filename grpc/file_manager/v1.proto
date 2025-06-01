@@ -1,7 +1,7 @@
 syntax = "proto3";
 package file_manager.v1;
 
-option go_package = "github.com/S-DPR/TestForge/grpc/file_manager/v1;file_managerv1";
+option go_package = "./file_manager/v1;file_managerv1";
 
 service File {
   rpc FileSave (FileSaveReq) returns (FileSaveRes);
