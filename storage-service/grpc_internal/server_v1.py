@@ -1,6 +1,6 @@
 import grpc
 from concurrent import futures
-from file_manager import v1_pb2, v1_pb2_grpc
+from storage_service import v1_pb2, v1_pb2_grpc
 from service import file_service
 
 

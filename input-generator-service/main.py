@@ -34,7 +34,7 @@ async def say_hello(name: str):
 #         headers={"Content-Disposition": "attachment; filename=generated.txt"}
 #     )
 
-from grpc_internal.file_manager import client as file_client
+from grpc_internal.storage_service import client as file_client
 @app.post("/create/testcase")
 async def create_tc(testcase: TestcaseConfig):
     print("요청 들어옴", flush=True)

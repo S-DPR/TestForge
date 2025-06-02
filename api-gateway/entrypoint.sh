@@ -2,7 +2,7 @@
 set -e
 
 PROTO_DIR="/app/grpc"
-OUT_DIR="/app/bff/grpc_internal"
+OUT_DIR="/app/api-gateway/grpc_internal"
 
 mkdir -p "$OUT_DIR"
 

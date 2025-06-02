@@ -1,5 +1,5 @@
 import grpc.aio
-from code_runner import v1_pb2_grpc, v1_pb2
+from execution_service import v1_pb2_grpc, v1_pb2
 
 # 채널 전역 재사용 (꼭 한 번만 생성해서 써야 함)
 # channel = grpc.aio.insecure_channel("code-runner:50051")

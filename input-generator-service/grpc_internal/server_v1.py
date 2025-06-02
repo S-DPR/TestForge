@@ -3,7 +3,7 @@ import json
 from dacite import from_dict
 from concurrent import futures
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from create_testcase import v1_pb2, v1_pb2_grpc
+from input_generator_service import v1_pb2, v1_pb2_grpc
 from request.config_structs import TestcaseConfig
 from request.executor import process
 

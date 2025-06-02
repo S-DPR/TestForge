@@ -1,5 +1,5 @@
 import grpc
-from code_runner import v1_pb2_grpc, v1_pb2
+from execution_service import v1_pb2_grpc, v1_pb2
 
 def run(content, ext = "txt"):
     channel = grpc.insecure_channel("execution-service:50051")  # gRPC 서버 주소

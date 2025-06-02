@@ -1,6 +1,6 @@
 import grpc.aio
 import json
-from create_testcase import v1_pb2_grpc, v1_pb2
+from input_generator_service import v1_pb2_grpc, v1_pb2
 
 async def testcase_generate(account_id, format_, repeat_count):
     async with grpc.aio.insecure_channel("input-generator-service:50051") as channel:
