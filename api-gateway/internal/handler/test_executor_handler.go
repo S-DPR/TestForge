@@ -4,7 +4,6 @@ import (
 	"bff/internal/model"
 	"bff/internal/service"
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"strings"
