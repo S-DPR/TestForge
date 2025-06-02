@@ -95,9 +95,9 @@ class CodeServiceAsync:
             repeat_count -= pushed
 
         async for result in tracker.results():
+            yield result
             if canceller.is_cancelled():
                 break
-            yield result
 
     async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, canceller):
         code_uuid = str(uuid.uuid4())
