@@ -15,4 +15,4 @@ RUN go mod download
 
 RUN chmod +x /app/api-gateway/entrypoint.sh
 
-CMD ["/app/bff/entrypoint.sh"]
+CMD ["/app/api-gateway/entrypoint.sh"]
