@@ -4,6 +4,7 @@ import (
 	"bff/internal/model"
 	"bff/internal/service"
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 )
@@ -57,6 +58,8 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 
 		// SSE 포맷으로 전송
 		c.SSEvent("message", payload)
+		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
+		c.Writer.Flush()
 
 		if (payload["diffStatus"] == "EQUAL") || (payload["diffStatus"] == "ERROR BUT EQUAL") {
 			continue
