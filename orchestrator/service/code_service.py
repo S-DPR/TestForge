@@ -141,7 +141,7 @@ class CodeServiceAsync:
                 if ret != 'EQUAL':
                     canceller.cancel()
 
-            result.append({input_filename: ret})
+            result.append({"input_filename": input_filename, "diff_status": ret})
             await tracker.add_result(ret)
 
         return result

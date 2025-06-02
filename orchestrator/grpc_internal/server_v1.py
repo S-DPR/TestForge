@@ -29,8 +29,8 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
             repeat_count = repeat_count,
             tracker = tracker
         )
-        async for r in execute():
-            yield self.TestExecutorRes(filename="test",diffStatus=r)
+        async for ret in execute():
+            yield self.TestExecutorRes(filename=ret['input_filename'],diffStatus=ret['diff_status'])
 
 
 async def serve():
