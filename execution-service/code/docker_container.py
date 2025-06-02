@@ -16,6 +16,8 @@ class DockerContainerPool:
     MAX_CONTAINER = 10
 
     def __init__(self):
+        for c in client.containers.list(all=True, filters={"label": "app=code-runner"}):
+            c.remove(force=True)
         self.pool = Queue()
         self.security_opt = ["no-new-privileges"]
 
@@ -44,6 +46,9 @@ class DockerContainerPool:
                     "bind": "/script",
                     "mode": "rw"
                 }
+            },
+            labels={
+                "purpose": "code-execution",
             },
             security_opt=self.security_opt,
             pids_limit=16,
