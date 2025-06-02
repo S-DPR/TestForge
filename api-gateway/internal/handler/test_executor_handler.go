@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
+	"strings"
 )
 
 type TestExecutorHandler struct {
@@ -22,8 +23,9 @@ func NewTestExecutorHandler(TestExecutorService service.TestExecutorServiceInter
 }
 
 func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecutorReqDTO) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	//ctx, cancel := context.WithCancel(context.Background())
+	ctx := c.Request.Context()
+	c.Request.Context()
 
 	stream, err := h.TestExecutorService.TestExecute(req, ctx)
 	if err != nil {
@@ -41,6 +43,7 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		}
 		if err != nil {
 			c.Error(err)
+			return
 		}
 
 		payload := gin.H{
@@ -61,9 +64,10 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
 		c.Writer.Flush()
 
-		if (payload["diffStatus"] == "EQUAL") || (payload["diffStatus"] == "ERROR BUT EQUAL") {
-			continue
-		}
+		//if strings.Contains(payload["diffStatus"].(string), "EQUAL") {
+		//	continue
+		//}
+		continue
 		return
 	}
 }
