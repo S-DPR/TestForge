@@ -2,9 +2,9 @@ import asyncio
 import os
 import uuid
 from collections import defaultdict
-from grpc_internal.create_testcase import client as tc_client
-from grpc_internal.code_runner import client as code_client
-from grpc_internal.file_manager import client as file_client
+from grpc_internal.input_generator_service import client as tc_client
+from grpc_internal.execution_service import client as code_client
+from grpc_internal.storage_service import client as file_client
 
 class StreamingTracker:
     def __init__(self, total_chunks):
