@@ -57,8 +57,7 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		//}
 
 		// SSE 포맷으로 전송
-		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
-		c.Writer.Flush()
+		c.SSEvent("message", payload)
 
 		if (payload["diffStatus"] == "EQUAL") || (payload["diffStatus"] == "ERROR BUT EQUAL") {
 			continue
