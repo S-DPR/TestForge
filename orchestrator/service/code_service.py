@@ -59,9 +59,10 @@ class CodeServiceAsync:
                 time_limit=args["time_limit"],
                 repeat_count=args["repeat_count"],
                 tracker=args.get("tracker", None),
+                context=args.get("context", None),
             )
 
-    async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker):
+    async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker, context):
         account_id = str(uuid.uuid4())
         # chunks = (repeat_count + 99) // 100
         # tracker = StreamingTracker(chunks)
@@ -76,6 +77,7 @@ class CodeServiceAsync:
                 "time_limit": time_limit,
                 "repeat_count": pushed,
                 "tracker": tracker,
+                "context": context,
             }
             await self.queue.put(args)
             repeat_count -= pushed
@@ -83,7 +85,7 @@ class CodeServiceAsync:
         async for result in tracker.results():
             yield result
 
-    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker):
+    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, context):
         code_uuid = str(uuid.uuid4())
 
         code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
@@ -91,7 +93,7 @@ class CodeServiceAsync:
         kth = 0
         result = []
 
-        async for tc in tc_client.testcase_generate(account_id, format_, repeat_count):
+        async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, context):
             kth += 1
             input_filename = f"{code_uuid}_{kth}"
             output_filename = f"{code_uuid}_{kth}"

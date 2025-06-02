@@ -27,7 +27,8 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
             code2_language = "python",
             time_limit = time_limit,
             repeat_count = repeat_count,
-            tracker = tracker
+            tracker = tracker,
+            context = context
         )
         async for r in execute():
             yield self.TestExecutorRes(filename="test",diffStatus=r)
