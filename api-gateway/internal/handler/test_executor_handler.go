@@ -60,7 +60,7 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
 		c.Writer.Flush()
 
-		if payload["diffStatus"] != "EQUAL" {
+		if payload["diffStatus"] != "EQUAL" && payload["diffStatus"] != "ERROR BUT EQUAL" {
 			return
 		}
 	}
