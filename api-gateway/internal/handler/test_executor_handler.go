@@ -3,7 +3,7 @@ package handler
 import (
 	"bff/internal/model"
 	"bff/internal/service"
-	"encoding/json"
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -22,7 +22,10 @@ func NewTestExecutorHandler(TestExecutorService service.TestExecutorServiceInter
 }
 
 func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecutorReqDTO) {
-	stream, err := h.TestExecutorService.TestExecute(req)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	stream, err := h.TestExecutorService.TestExecute(req, ctx)
 	if err != nil {
 		c.Error(err)
 		return
@@ -38,7 +41,6 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		}
 		if err != nil {
 			c.Error(err)
-			return
 		}
 
 		payload := gin.H{
@@ -47,14 +49,19 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		}
 
 		// JSON 직렬화
-		jsonData, err := json.Marshal(payload)
-		if err != nil {
-			c.Error(err)
-			return
-		}
+		//jsonData, err := json.Marshal(payload)
+		//if err != nil {
+		//	c.Error(err)
+		//	cancel()
+		//	return
+		//}
 
 		// SSE 포맷으로 전송
-		fmt.Fprintf(c.Writer, "data: %s\n\n", jsonData)
+		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
 		c.Writer.Flush()
+
+		if payload["diffStatus"] != "EQUAL" {
+			return
+		}
 	}
 }
