@@ -60,8 +60,6 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 
 		// SSE 포맷으로 전송
 		c.SSEvent("message", payload)
-		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
-		c.Writer.Flush()
 
 		if strings.Contains(payload["diffStatus"].(string), "EQUAL") {
 			continue
