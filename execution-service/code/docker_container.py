@@ -16,7 +16,7 @@ class DockerContainerPool:
     MAX_CONTAINER = 10
 
     def __init__(self):
-        for c in client.containers.list(all=True, filters={"label": "app=code-runner"}):
+        for c in client.containers.list(all=True, filters={"label": "purpose=code-execution"}):
             c.remove(force=True)
         self.pool = Queue()
         self.security_opt = ["no-new-privileges"]
