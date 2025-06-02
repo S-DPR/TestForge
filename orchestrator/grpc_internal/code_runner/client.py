@@ -6,7 +6,7 @@ from code_runner import v1_pb2_grpc, v1_pb2
 # stub = v1_pb2_grpc.CodeRunnerStub(channel)
 
 async def execute_code_async(account_id, code_filename, language, input_filepath, output_filepath, timelimit):
-    async with grpc.aio.insecure_channel("code-runner:50051") as channel:
+    async with grpc.aio.insecure_channel("execution-service:50051") as channel:
         stub = v1_pb2_grpc.CodeRunnerStub(channel)
         request = v1_pb2.ExecuteCodeReq(
             account_id=account_id,

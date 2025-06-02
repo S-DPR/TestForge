@@ -2,7 +2,7 @@ import grpc
 from file_manager import v1_pb2_grpc, v1_pb2
 
 def file_save(content, filename, ext = "txt"):
-    channel = grpc.insecure_channel("file-manager:50051")  # gRPC 서버 주소
+    channel = grpc.insecure_channel("storage-service:50051")  # gRPC 서버 주소
     stub = v1_pb2_grpc.FileStub(channel)
 
     request = v1_pb2.FileSaveReq(
@@ -17,7 +17,7 @@ def file_save(content, filename, ext = "txt"):
     return {"filepath": response.filepath}
 
 def file_diff(folder, filename1, filename2):
-    channel = grpc.insecure_channel("file-manager:50051")
+    channel = grpc.insecure_channel("storage-service:50051")
     stub = v1_pb2_grpc.FileStub(channel)
 
     request = v1_pb2.FileDiffReq(

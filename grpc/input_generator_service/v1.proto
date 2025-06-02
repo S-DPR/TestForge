@@ -1,7 +1,7 @@
 syntax = "proto3";
-package create_testcase.v1;
+package input_generator_service.v1;
 
-option go_package = "./create_testcase;createtcv1";
+option go_package = "./input_generator_service;input_generator_servicev1";
 
 service Testcase {
   rpc CreateTestcase (CreateTestcaseReq) returns (stream CreateTestcaseRes);

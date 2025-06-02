@@ -6,11 +6,11 @@ networks:
     name: shared_net
 
 services:
-  file_manager:
+  storage-service:
     build:
       context: .
       dockerfile: storage-service/Dockerfile
-    container_name: file-manager
+    container_name: storage-service
     working_dir: /app
     volumes:
       - ./storage-service:/app/storage-service
@@ -24,11 +24,11 @@ services:
     networks:
       - default
 
-  create_testcase:
+  input-generator-service:
     build:
       context: .
       dockerfile: input-generator-service/Dockerfile
-    container_name: create-testcase
+    container_name: input-generator-service
     working_dir: /app
     volumes:
       - ./input-generator-service:/app/input-generator-service
@@ -41,11 +41,11 @@ services:
     networks:
       - default
 
-  code-runner:
+  execution-service:
     build:
       context: .
       dockerfile: execution-service/Dockerfile
-    container_name: code-runner
+    container_name: execution-service
     working_dir: /app
     volumes:
       - ./execution-service:/app/execution-service
@@ -93,7 +93,7 @@ services:
     networks:
       - default
 
-  bff:
+  api-gateway:
     build:
       context: .
       dockerfile: api-gateway/Dockerfile
