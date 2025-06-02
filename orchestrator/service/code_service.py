@@ -105,7 +105,6 @@ class CodeServiceAsync:
         code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
         code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
         kth = 0
-        result = []
 
         async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, canceller):
             if canceller.is_cancelled():
@@ -141,7 +140,4 @@ class CodeServiceAsync:
                 if ret != 'EQUAL':
                     canceller.cancel()
 
-            result.append({"input_filename": input_filename, "diff_status": ret})
-            await tracker.add_result(ret)
-
-        return result
+            await tracker.add_result({"input_filename": input_filename, "diff_status": ret})
