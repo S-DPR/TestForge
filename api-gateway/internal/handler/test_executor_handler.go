@@ -23,9 +23,8 @@ func NewTestExecutorHandler(TestExecutorService service.TestExecutorServiceInter
 }
 
 func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecutorReqDTO) {
-	//ctx, cancel := context.WithCancel(context.Background())
-	ctx := c.Request.Context()
-	c.Request.Context()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	stream, err := h.TestExecutorService.TestExecute(req, ctx)
 	if err != nil {
@@ -64,10 +63,9 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecuto
 		fmt.Fprintf(c.Writer, "data: %s\n\n", payload)
 		c.Writer.Flush()
 
-		//if strings.Contains(payload["diffStatus"].(string), "EQUAL") {
-		//	continue
-		//}
-		continue
+		if strings.Contains(payload["diffStatus"].(string), "EQUAL") {
+			continue
+		}
 		return
 	}
 }

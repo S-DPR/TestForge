@@ -3,9 +3,6 @@ from code.docker_container import docker_container_pool
 
 def runner(code: Code, input_filepath, output_filepath, time_limit: int, ctx):
     container = docker_container_pool.get_container()
-    if not ctx.is_active():
-        container.release()
-        return -1
     try:
         exit_code, output = container.container.exec_run(
             cmd=f"bash -c 'timeout {time_limit}s python3 {code.filepath} < {input_filepath} > {output_filepath}'",
