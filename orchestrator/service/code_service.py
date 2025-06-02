@@ -131,9 +131,9 @@ class CodeServiceAsync:
 
             if code1_exitcode != code2_exitcode:
                 ret = f"ERROR FAILED : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
+                canceller.cancel()
             elif code1_exitcode != 0:
                 ret = f"ERROR BUT EQUAL : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
-                canceller.cancel()
             else:
                 ret = file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result']
                 if ret != 'EQUAL':
