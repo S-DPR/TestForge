@@ -24,7 +24,7 @@ class TCGenServicer(v1_pb2_grpc.FileServicer):
         filename = request.filename
         ext = request.ext
 
-        ret = file_service.save(folder=folder, filename=filename, ext=ext)
+        ret = file_service.read(folder=folder, filename=filename, ext=ext)
         return self.FileReadRes(content=ret)
 
     def FileDiff(self, request, context):
