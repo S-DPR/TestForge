@@ -38,7 +38,7 @@ func New() *gin.Engine {
 	storageRrpcClient, _ := storage_servicev1.NewStorageServiceGRPCClient("storage-service:50051", insecure.NewCredentials())
 	storageService := service.NewStorageService(storageRrpcClient)
 	storageHandler := handler.NewStorageHandler(storageService)
-	r.POST("/file/:filename", func(c *gin.Context) {
+	r.GET("/file/:filename", func(c *gin.Context) {
 		filename := c.Param("filename")
 		storageHandler.Read(c, filename)
 	})
