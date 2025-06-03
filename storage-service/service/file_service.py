@@ -7,6 +7,11 @@ def save(folder: str, content: str, filename: str, ext: str):
         f.write(content)
     return str(path)
 
+def read(folder: str, filename: str, ext: str):
+    path = os.path.join(folder, filename + "." + ext)
+    with open(path, "r") as f:
+        return f.read()
+
 def diff(folder, filename1, filename2):
     path1 = os.path.join(folder, filename1)
     path2 = os.path.join(folder, filename2)
