@@ -10,7 +10,7 @@ class Output:
 @dataclass
 class Variable:
     name: str
-    range: list[list[int]]
+    range: list[list[object]]
     type: str = 'int'
 
 @dataclass
