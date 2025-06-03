@@ -29,7 +29,7 @@ func NewStorageServiceGRPCClient(addr string, creds credentials.TransportCredent
 
 func (o *StorageServiceClient) Read(filename string, ctx context.Context) (*FileReadRes, error) {
 	req := &FileReadReq{
-		Folder:   "/scripts",
+		Folder:   "/app/scripts",
 		Filename: filename,
 		Ext:      "in",
 	}
