@@ -1,4 +1,5 @@
 import asyncio
+import json
 from concurrent import futures
 from orchestrator import v1_pb2, v1_pb2_grpc
 from service import code_service
@@ -11,7 +12,7 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
         self.TestExecutorRes = getattr(v1_pb2, 'TestExecutorRes', None)
 
     async def TestExecutor(self, request, context):
-        testcase_format = request.testcaseFormat
+        testcase_format = json.loads(request.testcaseFormat)
         code1 = request.code1
         code2 = request.code2
         time_limit = request.timelimit
@@ -28,8 +29,8 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
             repeat_count = repeat_count,
             tracker = tracker
         )
-        async for r in execute():
-            yield self.TestExecutorRes(filename="test",diffStatus=r)
+        async for ret in execute():
+            yield self.TestExecutorRes(filename=ret['input_filename'],diffStatus=ret['diff_status'])
 
 
 async def serve():

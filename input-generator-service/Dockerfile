@@ -2,7 +2,7 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ./create_testcase /app/create_testcase
+COPY ./input-generator-service /app/input-generator-service
 
 COPY ./kafka_common /app/kafka_common
 
@@ -12,4 +12,4 @@ RUN pip install -e /app/kafka_common
 
 RUN chmod +x /app/input-generator-service/entrypoint.sh
 
-CMD ["/app/create_testcase/entrypoint.sh"]
+CMD ["/app/input-generator-service/entrypoint.sh"]

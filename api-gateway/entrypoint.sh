@@ -2,7 +2,7 @@
 set -e
 
 PROTO_DIR="/app/grpc"
-OUT_DIR="/app/bff/grpc_internal"
+OUT_DIR="/app/api-gateway/grpc_internal"
 
 mkdir -p "$OUT_DIR"
 
@@ -12,9 +12,9 @@ protoc \
   --go-grpc_out="$OUT_DIR" \
   $(find "$PROTO_DIR" -name "*.proto")
 
-cd /app/API-GateWay
-cd /app/API-GateWay/cmd/server
-go build -o /app/API-GateWay/main .
+cd /app/api-gateway
+cd /app/api-gateway/cmd/server
+go build -o /app/api-gateway/main .
 
-cd /app/API-GateWay
+cd /app/api-gateway
 ./main

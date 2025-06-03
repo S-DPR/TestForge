@@ -5,6 +5,7 @@ import (
 	"bff/internal/handler"
 	"bff/internal/model"
 	"bff/internal/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
@@ -12,6 +13,13 @@ import (
 
 func New() *gin.Engine {
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:63342"}, // 또는 "*"
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowCredentials: true,
+	}))
 
 	grpcClient, _ := orchestratorv1.NewOrchestratorGRPCClient("orchestrator:50051", insecure.NewCredentials())
 	executorService := service.NewTestExecutorService(grpcClient)

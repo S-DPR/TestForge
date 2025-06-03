@@ -1,7 +1,7 @@
 from code.code import Code
 from code.docker_container import docker_container_pool
 
-def runner(code: Code, input_filepath, output_filepath, time_limit: int):
+def runner(code: Code, input_filepath, output_filepath, time_limit: int, ctx):
     container = docker_container_pool.get_container()
     try:
         exit_code, output = container.container.exec_run(

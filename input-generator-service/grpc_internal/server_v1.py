@@ -3,7 +3,7 @@ import json
 from dacite import from_dict
 from concurrent import futures
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from create_testcase import v1_pb2, v1_pb2_grpc
+from input_generator_service import v1_pb2, v1_pb2_grpc
 from request.config_structs import TestcaseConfig
 from request.executor import process
 
@@ -21,6 +21,8 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
         format_dict = json.loads(format_)
 
         for _ in range(request.repeat_count):
+            if not context.is_active():
+                break
             testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
             result = process(account_id, testcase_config)
             yield v1_pb2.CreateTestcaseRes(output=result)

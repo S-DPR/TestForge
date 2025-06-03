@@ -2,9 +2,9 @@ import asyncio
 import os
 import uuid
 from collections import defaultdict
-from grpc_internal.create_testcase import client as tc_client
-from grpc_internal.code_runner import client as code_client
-from grpc_internal.file_manager import client as file_client
+from grpc_internal.input_generator_service import client as tc_client
+from grpc_internal.execution_service import client as code_client
+from grpc_internal.storage_service import client as file_client
 
 class StreamingTracker:
     def __init__(self, total_chunks):
@@ -23,6 +23,17 @@ class StreamingTracker:
             result = await self.queue.get()
             self.remaining -= 1
             yield result
+
+
+class Canceller:
+    def __init__(self):
+        self.status = False
+
+    def cancel(self):
+        self.status = True
+
+    def is_cancelled(self):
+        return self.status
 
 
 class CodeServiceAsync:
@@ -59,10 +70,12 @@ class CodeServiceAsync:
                 time_limit=args["time_limit"],
                 repeat_count=args["repeat_count"],
                 tracker=args.get("tracker", None),
+                canceller=args.get("canceller", None),
             )
 
     async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker):
         account_id = str(uuid.uuid4())
+        canceller = Canceller()
         # chunks = (repeat_count + 99) // 100
         # tracker = StreamingTracker(chunks)
 
@@ -76,22 +89,26 @@ class CodeServiceAsync:
                 "time_limit": time_limit,
                 "repeat_count": pushed,
                 "tracker": tracker,
+                "canceller": canceller,
             }
             await self.queue.put(args)
             repeat_count -= pushed
 
         async for result in tracker.results():
             yield result
+            if canceller.is_cancelled():
+                break
 
-    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker):
+    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, canceller):
         code_uuid = str(uuid.uuid4())
 
         code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
         code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
         kth = 0
-        result = []
 
-        async for tc in tc_client.testcase_generate(account_id, format_, repeat_count):
+        async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, canceller):
+            if canceller.is_cancelled():
+                break
             kth += 1
             input_filename = f"{code_uuid}_{kth}"
             output_filename = f"{code_uuid}_{kth}"
@@ -115,12 +132,12 @@ class CodeServiceAsync:
 
             if code1_exitcode != code2_exitcode:
                 ret = f"ERROR FAILED : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
+                canceller.cancel()
             elif code1_exitcode != 0:
                 ret = f"ERROR BUT EQUAL : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
             else:
                 ret = file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result']
+                if ret != 'EQUAL':
+                    canceller.cancel()
 
-            result.append({input_filename: ret})
-            await tracker.add_result(ret)
-
-        return result
+            await tracker.add_result({"input_filename": input_filename, "diff_status": ret})
