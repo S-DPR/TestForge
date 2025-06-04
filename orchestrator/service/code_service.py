@@ -117,7 +117,7 @@ class CodeServiceAsync:
                 "repeat_count": pushed,
                 "tracker": tracker,
                 "canceller": canceller,
-                "metadata": metadata
+                "metadata": ProcessMetadata(str(uuid.uuid4()), code1, code2)
             }
             await self.queue.put(args)
             repeat_count -= pushed
