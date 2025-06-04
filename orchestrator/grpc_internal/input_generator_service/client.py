@@ -19,6 +19,24 @@ async def testcase_generate(account_id, format_, repeat_count, canceller):
                 break
             yield {"output": response.output}
 
+async def testcase_generate_as_file(account_id, format_, repeat_count, filename, canceller):
+    async with grpc.aio.insecure_channel("input-generator-service:50051") as channel:
+        stub = v1_pb2_grpc.TestcaseStub(channel)
+
+        request = v1_pb2.CreateTestcaseReq(
+            account_id=account_id,
+            format=json.dumps(format_),
+            repeat_count=repeat_count,
+            filename=filename
+        )
+
+        call = stub.CreateTestcaseAsFile(request)
+        async for response in call:
+            if canceller.is_cancelled():
+                call.cancel()
+                break
+            yield {"filepath": response.filepath}
+
 
 # import grpc.aio
 # import json

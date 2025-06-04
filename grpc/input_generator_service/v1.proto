@@ -5,6 +5,7 @@ option go_package = "./input_generator_service;input_generator_servicev1";
 
 service Testcase {
   rpc CreateTestcase (CreateTestcaseReq) returns (stream CreateTestcaseRes);
+  rpc CreateTestcaseAsFile (CreateTestcaseFileReq) returns (stream CreateTestcaseFileRes);
 }
 
 message CreateTestcaseReq {
@@ -15,4 +16,15 @@ message CreateTestcaseReq {
 
 message CreateTestcaseRes {
   string output = 1;
+}
+
+message CreateTestcaseFileReq {
+  string account_id = 1;
+  string format = 2;
+  int32 repeat_count = 3;
+  string filename = 4;
+}
+
+message CreateTestcaseFileRes {
+  string filepath = 1;
 }

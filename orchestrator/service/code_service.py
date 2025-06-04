@@ -36,6 +36,32 @@ class Canceller:
         return self.status
 
 
+class ProcessMetadata:
+    def __init__(self, code_uuid, code1, code2):
+        self.code_uuid = code_uuid
+        self.code1 = code1
+        self.code2 = code2
+        self.code1_name = None
+        self.code2_name = None
+        self.lock = asyncio.Lock()
+        self.kth = 0
+
+    async def get_kth(self):
+        async with self.lock:
+            self.kth += 1
+            return self.kth
+
+    def get_code1_name(self):
+        if self.code1_name is None:
+            self.code1_name = os.path.basename(file_client.file_save(self.code1, self.code_uuid + "_1")['filepath'])
+        return self.code1_name
+
+    def get_code2_name(self):
+        if self.code2_name is None:
+            self.code2_name = os.path.basename(file_client.file_save(self.code2, self.code_uuid + "_2")['filepath'])
+        return self.code2_name
+
+
 class CodeServiceAsync:
     MAX_CONCURRENCY = 10
 
@@ -63,14 +89,13 @@ class CodeServiceAsync:
             await self.run(
                 account_id=args["account_id"],
                 format_=args["format_"],
-                code1=args["code1"],
                 # code1_language="python",
-                code2=args["code2"],
                 # code2_language="python",
                 time_limit=args["time_limit"],
                 repeat_count=args["repeat_count"],
                 tracker=args.get("tracker", None),
                 canceller=args.get("canceller", None),
+                metadata=args.get("metadata", None),
             )
 
     async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker):
@@ -84,12 +109,11 @@ class CodeServiceAsync:
             args = {
                 "account_id": account_id,
                 "format_": format_,
-                "code1": code1,
-                "code2": code2,
                 "time_limit": time_limit,
                 "repeat_count": pushed,
                 "tracker": tracker,
                 "canceller": canceller,
+                "metadata": ProcessMetadata(str(uuid.uuid4()), code1, code2)
             }
             await self.queue.put(args)
             repeat_count -= pushed
@@ -99,28 +123,23 @@ class CodeServiceAsync:
             if canceller.is_cancelled():
                 break
 
-    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, canceller):
-        code_uuid = str(uuid.uuid4())
+    async def run(self, account_id, format_, time_limit, repeat_count, tracker, canceller, metadata):
+        code1_name = metadata.get_code1_name()
+        code2_name = metadata.get_code2_name()
 
-        code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
-        code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
-        kth = 0
-
-        async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, canceller):
+        async for testcase_file_res in tc_client.testcase_generate_as_file(account_id, format_, repeat_count, await metadata.get_kth(), canceller):
             if canceller.is_cancelled():
                 break
-            kth += 1
-            input_filename = f"{code_uuid}_{kth}"
-            output_filename = f"{code_uuid}_{kth}"
-
-            first_output_filename = output_filename + "_1.out"
-            second_output_filename = output_filename + "_2.out"
+            input_filepath = testcase_file_res['filepath']
+            input_filename = os.path.basename(input_filepath)
+            input_kth = input_filename.split("_")[1].split(".")[0]
+            first_output_filename = f"{metadata.code_uuid}_{input_kth}_1.out"
+            second_output_filename = f"{metadata.code_uuid}_{input_kth}_2.out"
 
             first_output_filepath = os.path.join("/script", first_output_filename)
             second_output_filepath = os.path.join("/script", second_output_filename)
-            input_filepath = os.path.join("/script", input_filename + ".in")
+            # input_filepath = os.path.join("/script", input_filename)
 
-            tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
             task1 = code_client.execute_code_async(account_id, code1_name, "python",
                                                    input_filepath, first_output_filepath, time_limit)
             task2 = code_client.execute_code_async(account_id, code2_name, "python",
