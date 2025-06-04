@@ -3,7 +3,6 @@ import os
 import uuid
 from collections import defaultdict
 
-from PyQt5.QtHelp import metaData
 from grpc_internal.input_generator_service import client as tc_client
 from grpc_internal.execution_service import client as code_client
 from grpc_internal.storage_service import client as file_client
