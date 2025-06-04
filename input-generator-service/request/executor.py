@@ -65,12 +65,6 @@ def process(account_id, testcaseConfig: TestcaseConfig):
     return '\n'.join(result)
 
 
-from grpc_internal.storage_service import client as storage_client
-def process_with_file_save(account_id, testcaseConfig: TestcaseConfig, filename):
-    process_result = process(account_id, testcaseConfig)
-    return storage_client.file_save(process_result, filename).get("filepath", None)
-
-
 from db.tcgen.schema import TcGenCreate
 from db.tcgen_block.schema import TcGenBlockCreate
 from db.tcgen_file.schema import TcGenFileCreate
