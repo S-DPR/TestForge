@@ -16,7 +16,7 @@ class MatrixConfig(BaseConfig):
         self.row_size = safe_eval_helper(variables, config, 'row_size', '1')
         self.num_type = config.get('num_type', 'int')
 
-        self.num_range = self._range_simplify(config.get('num_range', [[1, 255]]))
+        self.num_range = self._range_simplify(config.get('num_range', [[1, 255]]), variables)
         self.is_distinct = config.get('is_distinct', False) # ranges에서 각 수가 한 번 씩만 나오게 할지 여부
         self.value_limit = self._value_limit_simplify(self.num_range, config.get('value_limit', {})) # 특정 valuee가 일정 횟수 이상 나오지 못 하도록 할지 여부. {1: 3} 처럼 사용. distinct 있어도 이거 있으면 이거 우선
         self.empty_value = config.get('empty_value', None) # is_distinct가 True일 때 가능한 숫자를 모두 썼으면 사용할 숫자. None이면 비활성화
