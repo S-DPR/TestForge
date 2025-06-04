@@ -14,8 +14,8 @@ def create_variables(variables: dict[str, tuple[int, str]], variable_format: lis
             start_expression, end_expression = random.choice(range_)
             # variable_format['start'] = str(start_expression)
             # variable_format['end'] = str(end_expression)
-            start = safe_eval(str(start_expression), variables)
-            end = safe_eval(str(end_expression), variables)
+            start = safe_eval(str(start_expression).replace("$", ""), variables)
+            end = safe_eval(str(end_expression).replace("$", ""), variables)
             if start > end:
                 raise ValueError(f'start cannot be greater than end : {start_expression} : {start}, {end_expression} : {end}')
             variables[name] = (random.randint(start, end), type_)

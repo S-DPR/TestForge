@@ -5,6 +5,7 @@ option go_package = "./storage_service;storage_servicev1";
 
 service File {
   rpc FileSave (FileSaveReq) returns (FileSaveRes);
+  rpc FileRead (FileReadReq) returns (FileReadRes);
   rpc FileDiff (FileDiffReq) returns (FileDiffRes);
 }
 
@@ -17,6 +18,16 @@ message FileSaveReq {
 
 message FileSaveRes {
   string filepath = 1;
+}
+
+message FileReadReq {
+  string folder = 1;
+  string filename = 2;
+  string ext = 3;
+}
+
+message FileReadRes {
+  string content = 1;
 }
 
 message FileDiffReq {

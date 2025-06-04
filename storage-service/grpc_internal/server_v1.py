@@ -7,6 +7,7 @@ from service import file_service
 class TCGenServicer(v1_pb2_grpc.FileServicer):
     def __init__(self):
         self.FileSaveRes = getattr(v1_pb2, 'FileSaveRes', None)
+        self.FileReadRes = getattr(v1_pb2, 'FileReadRes', None)
         self.FileDiffRes = getattr(v1_pb2, 'FileDiffRes', None)
 
     def FileSave(self, request, context):
@@ -17,6 +18,14 @@ class TCGenServicer(v1_pb2_grpc.FileServicer):
 
         ret = file_service.save(folder=folder, content=content, filename=filename, ext=ext)
         return self.FileSaveRes(filepath=ret)
+
+    def FileRead(self, request, context):
+        folder = request.folder
+        filename = request.filename
+        ext = request.ext
+
+        ret = file_service.read(folder=folder, filename=filename, ext=ext)
+        return self.FileReadRes(content=ret)
 
     def FileDiff(self, request, context):
         folder = request.folder
