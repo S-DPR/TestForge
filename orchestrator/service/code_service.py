@@ -2,6 +2,8 @@ import asyncio
 import os
 import uuid
 from collections import defaultdict
+
+from PyQt5.QtHelp import metaData
 from grpc_internal.input_generator_service import client as tc_client
 from grpc_internal.execution_service import client as code_client
 from grpc_internal.storage_service import client as file_client
@@ -34,6 +36,31 @@ class Canceller:
 
     def is_cancelled(self):
         return self.status
+
+class ProcessMetadata:
+    def __init__(self, code_uuid, code1, code2):
+        self.code_uuid = code_uuid
+        self.code1 = code1
+        self.code2 = code2
+        self.code1_name = None
+        self.code2_name = None
+        self.lock = asyncio.Lock()
+        self.kth = 0
+
+    async def get_kth(self):
+        async with self.lock:
+            self.kth += 1
+            return self.kth
+
+    def get_code1_name(self):
+        if self.code1_name is None:
+            self.code1_name = os.path.basename(file_client.file_save(self.code1, self.code_uuid + "_1")['filepath'])
+        return self.code1_name
+
+    def get_code2_name(self):
+        if self.code2_name is None:
+            self.code2_name = os.path.basename(file_client.file_save(self.code2, self.code_uuid + "_2")['filepath'])
+        return self.code2_name
 
 
 class CodeServiceAsync:
@@ -71,6 +98,7 @@ class CodeServiceAsync:
                 repeat_count=args["repeat_count"],
                 tracker=args.get("tracker", None),
                 canceller=args.get("canceller", None),
+                metadata=args.get("metadata", None)
             )
 
     async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker):
@@ -90,6 +118,7 @@ class CodeServiceAsync:
                 "repeat_count": pushed,
                 "tracker": tracker,
                 "canceller": canceller,
+                "metadata": metadata
             }
             await self.queue.put(args)
             repeat_count -= pushed
@@ -99,17 +128,15 @@ class CodeServiceAsync:
             if canceller.is_cancelled():
                 break
 
-    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, canceller):
-        code_uuid = str(uuid.uuid4())
-
-        code1_name = os.path.basename(file_client.file_save(code1, code_uuid + "_1")['filepath'])
-        code2_name = os.path.basename(file_client.file_save(code2, code_uuid + "_2")['filepath'])
-        kth = 0
+    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, canceller, metadata):
+        code_uuid = metadata.code_uuid
+        code1_name = metadata.get_code1_name()
+        code2_name = metadata.get_code2_name()
 
         async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, canceller):
             if canceller.is_cancelled():
                 break
-            kth += 1
+            kth = await metadata.get_kth()
             input_filename = f"{code_uuid}_{kth}"
             output_filename = f"{code_uuid}_{kth}"
 
