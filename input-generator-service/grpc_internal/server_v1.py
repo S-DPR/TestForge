@@ -5,7 +5,7 @@ from concurrent import futures
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from input_generator_service import v1_pb2, v1_pb2_grpc
 from request.config_structs import TestcaseConfig
-from request.executor import process, process_with_file_save
+from request.executor import process
 
 
 class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
