@@ -3,7 +3,7 @@ from collections import defaultdict
 from types import NoneType
 
 from request.config_structs import Output
-from request.expression import safe_eval_helper
+from request.expression import safe_eval_helper, safe_eval
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseConfig, BaseGenerator, TYPE_FUNCTION
 
@@ -26,10 +26,15 @@ class MatrixConfig(BaseConfig):
         self.is_symmetric = config.get('is_symmetric', False) # 이거 True면 대칭
         self.validate()
 
-    def _range_simplify(self, ranges):
+    def _range_simplify(self, ranges, variables):
         if not ranges:
             return []
-        sorted_ranges = sorted(ranges)
+        try:
+            ranges_as_int = [*map(lambda x: [safe_eval(x[0], variables), safe_eval(x[1], variables)], ranges)]
+        except Exception as e:
+            print(e)
+            return []
+        sorted_ranges = sorted(ranges_as_int)
         merged = [sorted_ranges[0]]
         for s, e in sorted_ranges[1:]:
             last_s, last_e = merged[-1]
