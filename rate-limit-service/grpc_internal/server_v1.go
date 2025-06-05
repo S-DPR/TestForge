@@ -13,7 +13,7 @@ import (
 var testExecutionLimit service.TestExecutionLimitService
 
 type server struct {
-	pb.UnimplementedFileServer
+	pb.UnimplementedLimitServer
 }
 
 func (s *server) FileSave(ctx context.Context, req *pb.TestExecutionLimitReq) (*pb.TestExecutionLimitRes, error) {
@@ -42,7 +42,7 @@ func Serve() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterWhateverServer(s, &server{})
+	pb.RegisterLimitServer(s, &server{})
 
 	log.Println("gRPC server listening on :50051")
 	if err := s.Serve(lis); err != nil {
