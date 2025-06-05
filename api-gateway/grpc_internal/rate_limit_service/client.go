@@ -7,11 +7,11 @@ import (
 )
 
 type RateLimitClient struct {
-	client rate_limit_service.LimitClient
+	client LimitClient
 }
 
 type RateLimitInterface interface {
-	CheckExecutionLimit(ctx context.Context, accountID string, count int32) (*rate_limit_service.TestExecutionLimitRes, error)
+	CheckExecutionLimit(ctx context.Context, accountID string, count int32) (*TestExecutionLimitRes, error)
 }
 
 func NewRateLimitGRPCClient(addr string, creds credentials.TransportCredentials) (*RateLimitClient, error) {
@@ -20,15 +20,15 @@ func NewRateLimitGRPCClient(addr string, creds credentials.TransportCredentials)
 		return nil, err
 	}
 
-	client := rate_limit_service.NewLimitClient(conn)
+	client := NewLimitClient(conn)
 
 	return &RateLimitClient{
 		client: client,
 	}, nil
 }
 
-func (r *RateLimitClient) CheckExecutionLimit(ctx context.Context, accountID string, count int32) (*rate_limit_service.TestExecutionLimitRes, error) {
-	req := &rate_limit_service.TestExecutionLimitReq{
+func (r *RateLimitClient) CheckExecutionLimit(ctx context.Context, accountID string, count int32) (*TestExecutionLimitRes, error) {
+	req := &TestExecutionLimitReq{
 		AccountId: accountID,
 		Count:     count,
 	}
