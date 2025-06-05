@@ -3,7 +3,7 @@ package rate_limit_service.v1;
 
 option go_package = "./rate_limit_service;rate_limit_servicev1";
 
-service File {
+service Limit {
   rpc TestExecutionLimit (TestExecutionLimitReq) returns (TestExecutionLimitRes);
 }
 
