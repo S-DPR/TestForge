@@ -13,7 +13,7 @@ protoc \
   $(find "$PROTO_DIR" -name "*.proto")
 
 cd /app/rate-limit-service
-cd /apprate-limit-service/cmd/server
+cd /app/rate-limit-service/cmd/server
 go build -o /app/rate-limit-service/main .
 
 cd /app/rate-limit-service
