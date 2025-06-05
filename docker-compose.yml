@@ -110,11 +110,11 @@ services:
   rate-limit-service:
     build:
       context: .
-      dockerfile: api-limit-service/Dockerfile
-    container_name: api-limit-service
+      dockerfile: rate-limit-service/Dockerfile
+    container_name: rate-limit-service
     restart: always
     volumes:
-      - ./api-limit-service:/app/api-limit-service
+      - ./rate-limit-service:/app/rate-limit-service
       - ./grpc:/app/grpc
     networks:
       - default
