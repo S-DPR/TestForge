@@ -16,7 +16,7 @@ type server struct {
 	pb.UnimplementedLimitServer
 }
 
-func (s *server) FileSave(ctx context.Context, req *pb.TestExecutionLimitReq) (*pb.TestExecutionLimitRes, error) {
+func (s *server) TestExecutionLimit(ctx context.Context, req *pb.TestExecutionLimitReq) (*pb.TestExecutionLimitRes, error) {
 	log.Printf("Received request: account_id=%s, count=%d", req.AccountId, req.Count)
 
 	isLimit, accCount := testExecutionLimit.IsRateLimited(req.AccountId, req.Count)
