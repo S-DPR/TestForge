@@ -106,3 +106,15 @@ services:
       - "9001:9001"
     networks:
       - default
+
+  rate-limit-service:
+    build:
+      context: .
+      dockerfile: api-limit-service/Dockerfile
+    container_name: api-limit-service
+    restart: always
+    volumes:
+      - ./api-limit-service:/app/api-limit-service
+      - ./grpc:/app/grpc
+    networks:
+      - default
