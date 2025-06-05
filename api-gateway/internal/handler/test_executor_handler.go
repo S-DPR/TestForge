@@ -4,6 +4,7 @@ import (
 	"bff/internal/model"
 	"bff/internal/service"
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"strings"
@@ -21,9 +22,27 @@ func NewTestExecutorHandler(TestExecutorService service.TestExecutorServiceInter
 	return &TestExecutorHandler{TestExecutorService}
 }
 
-func (h *TestExecutorHandler) TestExecute(c *gin.Context, req *model.TestExecutorReqDTO) {
+func (h *TestExecutorHandler) TestExecute(c *gin.Context, rateLimitService service.RateLimitService, req *model.TestExecutorReqDTO) {
+	accountId := c.GetHeader("account-id")
+	count := req.RepeatCount
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	if accountId == "" {
+		c.JSON(401, gin.H{"error": "missing account-id header"})
+		return
+	}
+	limitCheckRes, err := rateLimitService.Check(accountId, count, ctx)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	if limitCheckRes.IsLimit {
+		c.JSON(403, gin.H{
+			"error": fmt.Sprintf("할당량 초과: %d회", limitCheckRes.AccCount),
+		})
+		return
+	}
 
 	stream, err := h.TestExecutorService.TestExecute(req, ctx)
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"bff/grpc_internal/rate_limit_service"
 	"context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 type RateLimitClient struct {
@@ -14,8 +15,8 @@ type RateLimitInterface interface {
 	CheckExecutionLimit(ctx context.Context, accountID string, count int32) (*rate_limit_service.TestExecutionLimitRes, error)
 }
 
-func NewRateLimitGRPCClient(addr string, dialOpts ...grpc.DialOption) (*RateLimitClient, error) {
-	conn, err := grpc.Dial(addr, dialOpts...)
+func NewRateLimitGRPCClient(addr string, creds credentials.TransportCredentials) (*RateLimitClient, error) {
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(creds))
 	if err != nil {
 		return nil, err
 	}
