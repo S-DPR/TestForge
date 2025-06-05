@@ -36,9 +36,11 @@ func (t *TestExecutionLimitService) IsRateLimited(accountId string, count int32)
 
 	newCount := int32(currentCount) + count
 
-	erro := t.rdb.Set(t.ctx, accountId, newCount, 0).Err()
-	if erro != nil {
-		panic(erro)
+	if newCount <= MaxExecutionsPerDay {
+		erro := t.rdb.Set(t.ctx, accountId, newCount, 0).Err()
+		if erro != nil {
+			panic(erro)
+		}
 	}
 
 	return newCount > MaxExecutionsPerDay, newCount
