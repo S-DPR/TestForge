@@ -103,6 +103,7 @@ class CodeServiceAsync:
     async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker):
         account_id = str(uuid.uuid4())
         canceller = Canceller()
+        process_metadata = ProcessMetadata(str(uuid.uuid4()), code1, code2)
         # chunks = (repeat_count + 99) // 100
         # tracker = StreamingTracker(chunks)
 
@@ -117,7 +118,7 @@ class CodeServiceAsync:
                 "repeat_count": pushed,
                 "tracker": tracker,
                 "canceller": canceller,
-                "metadata": ProcessMetadata(str(uuid.uuid4()), code1, code2)
+                "metadata": process_metadata
             }
             await self.queue.put(args)
             repeat_count -= pushed
