@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/redis/go-redis/v9"
 	"log"
-	pb "rate-limit-service/grpc_internal/rate-limit-service"
+	pb "rate-limit-service/grpc_internal/rate_limit_service"
 	"rate-limit-service/internal/service"
 )
 
