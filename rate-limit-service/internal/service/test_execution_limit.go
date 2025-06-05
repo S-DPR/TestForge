@@ -22,7 +22,7 @@ func NewTestExecutionLimitService(ctx context.Context, rdb *redis.Client) TestEx
 	return TestExecutionLimitService{ctx: ctx, rdb: rdb}
 }
 
-func (t *TestExecutionLimitService) IsRateLimited(accountId string, count int) (bool, int) {
+func (t *TestExecutionLimitService) IsRateLimited(accountId string, count int32) (bool, int32) {
 	val, err := t.rdb.Get(t.ctx, accountId).Result()
 	if errors.Is(err, redis.Nil) {
 		val = "0"
@@ -30,7 +30,11 @@ func (t *TestExecutionLimitService) IsRateLimited(accountId string, count int) (
 		panic(err)
 	}
 	currentCount, err := strconv.Atoi(val)
-	newCount := currentCount + count
+	if err != nil {
+		panic(err)
+	}
+
+	newCount := int32(currentCount) + count
 
 	erro := t.rdb.Set(t.ctx, accountId, newCount, 0).Err()
 	if erro != nil {
