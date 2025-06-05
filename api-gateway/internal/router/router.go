@@ -36,7 +36,7 @@ func New() *gin.Engine {
 			return
 		}
 
-		executorHandler.TestExecute(c, rateLimitService, &req)
+		executorHandler.TestExecute(c, *rateLimitService, &req)
 	})
 
 	storageRrpcClient, _ := storage_servicev1.NewStorageServiceGRPCClient("storage-service:50051", insecure.NewCredentials())
