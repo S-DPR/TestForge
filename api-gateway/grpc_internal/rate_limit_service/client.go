@@ -1,7 +1,6 @@
 package rate_limit_servicev1
 
 import (
-	"bff/grpc_internal/rate_limit_service"
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
