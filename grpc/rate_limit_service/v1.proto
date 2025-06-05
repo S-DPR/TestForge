@@ -9,10 +9,10 @@ service File {
 
 message TestExecutionLimitReq {
   string account_id = 1;
-  int count = 2;
+  int32 count = 2;
 }
 
 message TestExecutionLimitRes {
   bool is_limit = 1;
-  int acc_count = 2;
+  int32 acc_count = 2;
 }
