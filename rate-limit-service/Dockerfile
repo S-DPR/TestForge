@@ -9,7 +9,7 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.1 && \
 ENV PATH="$PATH:/go/bin"
 
 COPY ./rate-limit-service /app/rate-limit-service
-COPY grpc_internal /app/grpc
+COPY ./grpc /app/grpc
 WORKDIR /app/rate-limit-service
 RUN go mod download
 
