@@ -41,5 +41,5 @@ func (t *TestExecutionLimitService) IsRateLimited(accountId string, count int32)
 		panic(erro)
 	}
 
-	return newCount <= MaxExecutionsPerDay, newCount
+	return newCount > MaxExecutionsPerDay, newCount
 }
