@@ -1,0 +1,18 @@
+syntax = "proto3";
+package rate_limit_service.v1;
+
+option go_package = "./rate_limit_service;rate_limit_servicev1";
+
+service File {
+  rpc TestExecutionLimit (TestExecutionLimitReq) returns (TestExecutionLimitRes);
+}
+
+message TestExecutionLimitReq {
+  string account_id = 1;
+  int count = 2;
+}
+
+message TestExecutionLimitRes {
+  bool is_limit = 1;
+  int acc_count = 2;
+}

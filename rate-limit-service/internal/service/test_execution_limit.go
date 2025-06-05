@@ -2,28 +2,40 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"github.com/redis/go-redis/v9"
+	"strconv"
 )
 
-var ctx = context.Background()
+type TestExecutionLimitService struct {
+	ctx context.Context
+	rdb *redis.Client
+}
 
-func IsRateLimited() {
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "",
-		DB:       0,
-	})
+type TestExecutionLimitServiceInterface interface {
+	IsRateLimited(accountId string, count int) bool
+}
 
-	err := rdb.Set(ctx, "mykey", "hello", 0).Err()
-	if err != nil {
+const MaxExecutionsPerDay = 3000
+
+func NewTestExecutionLimitService(ctx context.Context, rdb *redis.Client) TestExecutionLimitService {
+	return TestExecutionLimitService{ctx: ctx, rdb: rdb}
+}
+
+func (t *TestExecutionLimitService) IsRateLimited(accountId string, count int) (bool, int) {
+	val, err := t.rdb.Get(t.ctx, accountId).Result()
+	if errors.Is(err, redis.Nil) {
+		val = "0"
+	} else if err != nil {
 		panic(err)
 	}
+	currentCount, err := strconv.Atoi(val)
+	newCount := currentCount + count
 
-	val, err := rdb.Get(ctx, "mykey").Result()
-	if err != nil {
-		panic(err)
+	erro := t.rdb.Set(t.ctx, accountId, newCount, 0).Err()
+	if erro != nil {
+		panic(erro)
 	}
 
-	fmt.Println("mykey:", val)
+	return newCount <= MaxExecutionsPerDay, newCount
 }
