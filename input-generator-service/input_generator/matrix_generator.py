@@ -3,7 +3,7 @@ from collections import defaultdict
 from types import NoneType
 
 from request.config_structs import Output
-from request.expression import safe_eval_helper
+from request.expression import safe_eval_helper, safe_eval
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseConfig, BaseGenerator, TYPE_FUNCTION
 
@@ -16,7 +16,7 @@ class MatrixConfig(BaseConfig):
         self.row_size = safe_eval_helper(variables, config, 'row_size', '1')
         self.num_type = config.get('num_type', 'int')
 
-        self.num_range = self._range_simplify(config.get('num_range', [[1, 255]]))
+        self.num_range = self._range_simplify(config.get('num_range', [[1, 255]]), variables)
         self.is_distinct = config.get('is_distinct', False) # ranges에서 각 수가 한 번 씩만 나오게 할지 여부
         self.value_limit = self._value_limit_simplify(self.num_range, config.get('value_limit', {})) # 특정 valuee가 일정 횟수 이상 나오지 못 하도록 할지 여부. {1: 3} 처럼 사용. distinct 있어도 이거 있으면 이거 우선
         self.empty_value = config.get('empty_value', None) # is_distinct가 True일 때 가능한 숫자를 모두 썼으면 사용할 숫자. None이면 비활성화
@@ -26,10 +26,15 @@ class MatrixConfig(BaseConfig):
         self.is_symmetric = config.get('is_symmetric', False) # 이거 True면 대칭
         self.validate()
 
-    def _range_simplify(self, ranges):
+    def _range_simplify(self, ranges, variables):
         if not ranges:
             return []
-        sorted_ranges = sorted(ranges)
+        try:
+            ranges_as_int = [*map(lambda x: [safe_eval(x[0], variables), safe_eval(x[1], variables)], ranges)]
+        except Exception as e:
+            print(e)
+            return []
+        sorted_ranges = sorted(ranges_as_int)
         merged = [sorted_ranges[0]]
         for s, e in sorted_ranges[1:]:
             last_s, last_e = merged[-1]

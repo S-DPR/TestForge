@@ -2,6 +2,7 @@ package router
 
 import (
 	orchestratorv1 "bff/grpc_internal/orchestrator"
+	rate_limit_servicev1 "bff/grpc_internal/rate_limit_service"
 	storage_servicev1 "bff/grpc_internal/storage_service"
 	"bff/internal/handler"
 	"bff/internal/model"
@@ -18,9 +19,12 @@ func New() *gin.Engine {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "account-id"},
 		AllowCredentials: true,
 	}))
+
+	rateLimitRrpcClient, _ := rate_limit_servicev1.NewRateLimitGRPCClient("rate-limit-service:50051", insecure.NewCredentials())
+	rateLimitService := service.NewRateLimitService(rateLimitRrpcClient)
 
 	grpcClient, _ := orchestratorv1.NewOrchestratorGRPCClient("orchestrator:50051", insecure.NewCredentials())
 	executorService := service.NewTestExecutorService(grpcClient)
@@ -32,7 +36,7 @@ func New() *gin.Engine {
 			return
 		}
 
-		executorHandler.TestExecute(c, &req)
+		executorHandler.TestExecute(c, *rateLimitService, &req)
 	})
 
 	storageRrpcClient, _ := storage_servicev1.NewStorageServiceGRPCClient("storage-service:50051", insecure.NewCredentials())

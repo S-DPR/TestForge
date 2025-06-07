@@ -71,7 +71,6 @@ from db.tcgen_file.schema import TcGenFileCreate
 from db.tcgen import service as tcgen_service
 from db.tcgen_file import service as file_service
 from db.tcgen_block import service as block_service
-from db.sessions import SessionLocal
 from dataclasses import asdict
 
 
