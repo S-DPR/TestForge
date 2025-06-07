@@ -15,10 +15,10 @@ type server struct {
 	pb.UnimplementedGatekeeperServer
 }
 
-func (s *server) TestExecutionLimit(ctx context.Context, req *pb.ValidateJwtReq) (*pb.ValidateJwtRes, error) {
+func (s *server) ValidateJwt(ctx context.Context, req *pb.ValidateJwtReq) (*pb.ValidateJwtRes, error) {
 	log.Printf("Received request: account_id=%s, count=%d", req.AccessToken)
 
-	accountId := jwtAuthService.JWTAuth(req.AccessToken)
+	accountId := jwtAuthService.ValidateJwt(req.AccessToken)
 
 	return &pb.ValidateJwtRes{
 		AccountId: accountId,

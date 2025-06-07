@@ -9,7 +9,7 @@ type JwtAuthzService struct {
 }
 
 type JwtAuthzServiceInterface interface {
-	JWTAuth(accessToken string) string
+	ValidateJwt(accessToken string) string
 }
 
 var jwtKey = []byte("django-insecure-q^o()$%1xke^3=gc0a@!%3og^l=yroxmswc74i*vp+-d@cc++p")
@@ -18,7 +18,7 @@ func NewJwtAuthzService() *JwtAuthzService {
 	return &JwtAuthzService{}
 }
 
-func (j *JwtAuthzService) JWTAuth(accessToken string) string {
+func (j *JwtAuthzService) ValidateJwt(accessToken string) string {
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
