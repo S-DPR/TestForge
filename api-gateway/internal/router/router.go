@@ -5,6 +5,7 @@ import (
 	rate_limit_servicev1 "bff/grpc_internal/rate_limit_service"
 	storage_servicev1 "bff/grpc_internal/storage_service"
 	"bff/internal/handler"
+	"bff/internal/middleware"
 	"bff/internal/model"
 	"bff/internal/service"
 	"github.com/gin-contrib/cors"
@@ -19,9 +20,10 @@ func New() *gin.Engine {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "account-id"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
 	}))
+	r.Use(middleware.AuthMiddleware())
 
 	rateLimitRrpcClient, _ := rate_limit_servicev1.NewRateLimitGRPCClient("rate-limit-service:50051", insecure.NewCredentials())
 	rateLimitService := service.NewRateLimitService(rateLimitRrpcClient)
