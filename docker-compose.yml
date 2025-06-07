@@ -94,6 +94,7 @@ services:
     volumes:
       - ./api-gateway:/app/api-gateway
       - ./grpc:/app/grpc
+    ports:
       - "9001:9001"
     networks:
       - default
