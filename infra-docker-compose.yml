@@ -42,8 +42,6 @@ services:
     restart: always
     env_file:
       - ./auth_server/.env
-    ports:
-      - "5432:5432"
     volumes:
       - ./databases/auth-db-volume:/var/lib/postgresql/data
     networks:
@@ -55,8 +53,6 @@ services:
     restart: always
     env_file:
       - input-generator-service/.env
-    ports:
-      - "5433:5433"
     volumes:
       - ./databases/testcase-db-volume:/var/lib/postgresql/data
     networks:
@@ -68,8 +64,6 @@ services:
     restart: always
     env_file:
       - execution-service/.env
-    ports:
-      - "5434:5434"
     volumes:
       - ./databases/code-db-volume:/var/lib/postgresql/data
     networks:
