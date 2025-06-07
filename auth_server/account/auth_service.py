@@ -9,8 +9,8 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-def authenticate_user(login_id, password):
-    user = authenticate(login_id=login_id, password=password)
+def authenticate_user(email, password):
+    user = authenticate(username=email, password=password)
     if user is None or not user.is_active:
         raise AuthenticationFailed("Invalid login_id or password.")
     return user
