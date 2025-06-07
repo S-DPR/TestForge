@@ -23,7 +23,12 @@ func NewTestExecutorHandler(TestExecutorService service.TestExecutorServiceInter
 }
 
 func (h *TestExecutorHandler) TestExecute(c *gin.Context, rateLimitService service.RateLimitService, req *model.TestExecutorReqDTO) {
-	accountId := c.GetHeader("account-id")
+	accountIdAny, exist := c.Get("accountId")
+	if !exist {
+		c.JSON(401, gin.H{"error": "account id not found"})
+	}
+	accountId := accountIdAny.(string)
+
 	count := req.RepeatCount
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

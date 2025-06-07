@@ -32,7 +32,7 @@ func (j *JwtAuthzService) ValidateJwt(accessToken string) string {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims["account_id"].(string)
+		return claims["user_id"].(string)
 	} else {
 		return ""
 	}
