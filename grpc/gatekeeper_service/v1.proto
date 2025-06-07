@@ -1,0 +1,16 @@
+syntax = "proto3";
+package gatekeeper_service.v1;
+
+option go_package = "./gatekeeper_service;gatekeeper_servicev1";
+
+service Gatekeeper {
+  rpc ValidateJwt (ValidateJwtReq) returns (ValidateJwtRes);
+}
+
+message ValidateJwtReq {
+  string access_token = 1;
+}
+
+message ValidateJwtRes {
+  string account_id = 1;
+}

@@ -118,3 +118,15 @@ services:
       - ./grpc:/app/grpc
     networks:
       - default
+
+  gatekeeper-service:
+    build:
+      context: .
+      dockerfile: gatekeeper-service/Dockerfile
+    container_name: gatekeeper-service
+    restart: always
+    volumes:
+      - ./gatekeeper-service:/app/gatekeeper-service
+      - ./grpc:/app/grpc
+    networks:
+      - default
