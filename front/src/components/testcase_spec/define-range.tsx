@@ -1,4 +1,3 @@
-import {Input} from "@/components/ui/input";
 import React from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
 import VariableInput from "@/components/testcase_spec/variable-input";
