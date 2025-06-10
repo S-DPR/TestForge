@@ -20,20 +20,27 @@ export interface VariableSpec {
 }
 
 export interface VariableProps {
+  variable: VariableSpec;
   blockIndex: number;
   variableIndex: number;
   onRemove: (blockIndex: number, variableIndex: number) => void;
+  onChange: (updated: VariableSpec) => void;
 }
 
-const Variable = ({ blockIndex, variableIndex, onRemove }: VariableProps) => {
-  console.log(`나는 ${blockIndex}번째 블럭의 ${variableIndex}번째 변수`);
+const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange }: VariableProps) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...variable, name: e.target.value });
+  };
+
   return (
     <div>
       <Label>변수 이름</Label>
-      <Input></Input>
+      <Input value={variable.name} onChange={handleNameChange} ></Input>
 
       <Label>변수 타입</Label>
-      <Select>
+      <Select value={variable.type} onValueChange={(val) => {
+        onChange({ ...variable, type: val });
+      }}>
         <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
           <SelectValue placeholder="변수 타입" />
         </SelectTrigger>

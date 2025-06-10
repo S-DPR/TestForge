@@ -4,7 +4,10 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import CodeEditor from "@/components/code_editor/CodeEditor";
-import React from "react";
+import React, {useContext} from "react";
+import {TestcaseContext, TestcaseProvider} from "@/context/TestcaseContext";
+import {Button} from "@/components/ui/button";
+import {Variable} from "lucide-react";
 
 export default function Home() {
   const [code1, setCode1] = React.useState('')
@@ -38,9 +41,39 @@ export default function Home() {
             </Card>
           </TabsContent>
           <TabsContent value={"테스트케이스 명세 설정"}>
+            <TestcaseProvider>
+              <Editor />
+            </TestcaseProvider>
           </TabsContent>
         </Tabs>
       </div>
     </>
   );
 }
+
+const Editor = () => {
+  const context = useContext(TestcaseContext);
+  if (!context) throw new Error("context 없음. 개판임");
+
+  const { variables, setVariables } = context;
+
+  const addVariable = () => {
+    setVariables((prev) => [
+      ...prev,
+      { name: "", type: "", ranges: [] },
+    ]);
+  };
+
+  const removeVariable = (idx: number) => {
+    setVariables((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  return (
+    <div>
+      <Button onClick={addVariable}>변수 추가</Button>
+      {variables.map((_, idx) => (
+        <Variable key={idx} index={idx} onRemove={() => removeVariable(idx)} />
+      ))}
+    </div>
+  );
+};

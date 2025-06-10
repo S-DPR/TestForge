@@ -11,7 +11,7 @@ interface EditorContextType {
   // setBlocks: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const TestcaseContext = createContext<EditorContextType | null>(null);
+export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const [variables, setVariables] = useState<VariableSpec[]>([]);
