@@ -1,4 +1,4 @@
-import DefineRange from "@/components/testcase_spec/define-range";
+import DefineRange, {Range} from "@/components/testcase_spec/define-range";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {
@@ -16,31 +16,27 @@ import {Button} from "@/components/ui/button";
 export interface VariableSpec {
   name: string;
   type: string;
-  ranges: (number[] | string[])[];
+  ranges: Range[];
 }
 
 export interface VariableProps {
   variable: VariableSpec;
   blockIndex: number;
   variableIndex: number;
+  onVariableRangeAddClick: (blockIndex: number, variableIndex: number) => void;
   onRemove: (blockIndex: number, variableIndex: number) => void;
-  onChange: (updated: VariableSpec) => void;
+  onChange: (field: string, value: string) => void;
+  updateVariablesRange: (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string) => void;
 }
 
-const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange }: VariableProps) => {
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...variable, name: e.target.value });
-  };
-
+const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange, onVariableRangeAddClick, updateVariablesRange }: VariableProps) => {
   return (
     <div>
       <Label>변수 이름</Label>
-      <Input value={variable.name} onChange={handleNameChange} ></Input>
+      <Input defaultValue={variable.name} onChange={(e) => onChange('name', e.target.value)} ></Input>
 
       <Label>변수 타입</Label>
-      <Select value={variable.type} onValueChange={(val) => {
-        onChange({ ...variable, type: val });
-      }}>
+      <Select value={variable.type} onValueChange={(e) => onChange('type', e)}>
         <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
           <SelectValue placeholder="변수 타입" />
         </SelectTrigger>
@@ -54,7 +50,10 @@ const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange }: V
       </Select>
 
       <Label>범위</Label>
-      <DefineRange min={0} max={0}></DefineRange>
+      {variable.ranges.map((r, i) => (
+          <DefineRange key={i} blockIndex={blockIndex} variableIndex={variableIndex} rangeIndex={i} min={r.min} max={r.max} updateVariablesRange={updateVariablesRange}/>
+      ))}
+      <Button onClick={() => onVariableRangeAddClick(blockIndex, variableIndex)}>범위 추가</Button>
 
       <Button onClick={() => onRemove(blockIndex, variableIndex)}>변수 제거</Button>
     </div>

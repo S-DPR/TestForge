@@ -18,7 +18,7 @@ interface EditorContextType {
 export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
-  const [variables, setVariables] = useState<VariableSpec[][]>([]);
+  const [variables, setVariables] = useState<VariableSpec[][]>([[]]); // 사전설졍변수 있어서 이중으로 초기화
   const [blocks, setBlocks] = useState<BlockSpec[]>([]);
   // const [blocks, setBlocks] = useState([]);
 

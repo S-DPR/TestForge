@@ -8,6 +8,7 @@ import React, {useContext} from "react";
 import {TestcaseContext, TestcaseProvider} from "@/context/TestcaseContext";
 import {Button} from "@/components/ui/button";
 import LineBlock from "@/components/testcase_spec/line-block";
+import {VariableSpec} from "@/components/testcase_spec/variable";
 
 export default function Home() {
   const [code1, setCode1] = React.useState('')
@@ -59,11 +60,45 @@ const Editor = () => {
 
   const addVariable = (blockIndex: number) => {
     setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({ ...j })));
-      newVariable[blockIndex].push({ name: "", type: "", ranges: [[]] })
+      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
+      newVariable[blockIndex].push({ name: "", type: "", ranges: [] })
       return newVariable;
     });
   };
+
+  const updateVariables = (blockIndex: number, variableIndex: number, field: string, value: string)=> {
+    const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
+      'type': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].type = value,
+      'name': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].name = value,
+    }
+
+    setVariables((prev) => {
+      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
+      updateMap[field](newVariable);
+      return newVariable;
+    })
+  }
+
+  const addVariableRange = (blockIndex: number, variableIndex: number) => {
+    setVariables((prev) => {
+      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
+      newVariable[blockIndex][variableIndex].ranges.push({ min: '0', max: '0' })
+      return newVariable;
+    });
+  };
+
+  const updateVariablesRange = (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string)=> {
+    const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
+      'min': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].min = value,
+      'max': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].max = value,
+    }
+
+    setVariables((prev) => {
+      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
+      updateMap[field](newVariable);
+      return newVariable;
+    })
+  }
 
   const addBlock = (type: string) => {
     setBlocks((prev) => [
@@ -74,7 +109,7 @@ const Editor = () => {
 
   const removeVariable = (blockIndex: number, variableIndex: number) => {
     setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({...j})));
+      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
       newVariable[blockIndex] = newVariable[blockIndex].filter((_, idx) => idx !== variableIndex);
       return newVariable;
     });
@@ -83,9 +118,19 @@ const Editor = () => {
   return (
       <>
         {blocks.map((block, i) => {
-          if (!variables[i]) variables[i] = [];
+          const blockIndex = i+1; // 사전 설정 변수가 있으니까
+          if (!variables[blockIndex]) variables[blockIndex] = [];
           return (
-              <LineBlock key={i} blockIndex={i} variables={variables[i]} onVariableAddClick={addVariable} onRemoveVariable={removeVariable}></LineBlock>
+              <LineBlock
+                  key={i}
+                  blockIndex={blockIndex}
+                  variables={variables}
+                  onVariableAddClick={addVariable}
+                  onRemoveVariable={removeVariable}
+                  updateVariables={updateVariables}
+                  updateVariablesRange={updateVariablesRange}
+                  onVariableRangeAddClick={addVariableRange}
+              ></LineBlock>
           )
         })}
         <Button onClick={() => addBlock('type')}>블럭 추가</Button>

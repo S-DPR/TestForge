@@ -1,9 +1,18 @@
 import {Input} from "@/components/ui/input";
 import React from "react";
 
+export type Range = {
+    min: string;
+    max: string;
+}
+
 interface DefineRangeSpec {
-  min: number;
-  max: number;
+    blockIndex: number;
+    variableIndex: number;
+    rangeIndex: number;
+    min: string;
+    max: string;
+    updateVariablesRange: (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string) => void;
 }
 
 const DefineRange = ({ min, max }: DefineRangeSpec) => {
