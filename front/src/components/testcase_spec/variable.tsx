@@ -52,7 +52,7 @@ const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange, onV
 
       <Label>범위</Label>
       {currentVar.ranges.map((r, i) => (
-          <DefineRange key={i} variable={variable} blockIndex={blockIndex} variableIndex={variableIndex} rangeIndex={i} min={r.min} max={r.max} updateVariablesRange={updateVariablesRange}/>
+          <DefineRange key={i} variable={variable} blockIndex={blockIndex} variableIndex={variableIndex} rangeIndex={i} updateVariablesRange={updateVariablesRange}/>
       ))}
       <Button onClick={() => onVariableRangeAddClick(blockIndex, variableIndex)}>범위 추가</Button>
 
