@@ -54,7 +54,7 @@ const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange }: V
       </Select>
 
       <Label>범위</Label>
-      <DefineRange></DefineRange>
+      <DefineRange min={0} max={0}></DefineRange>
 
       <Button onClick={() => onRemove(blockIndex, variableIndex)}>변수 제거</Button>
     </div>

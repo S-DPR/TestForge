@@ -9,8 +9,8 @@ interface DefineRangeSpec {
 const DefineRange = ({ min, max }: DefineRangeSpec) => {
   return (
     <div>
-      <Input placeholder={"min"} value={min}></Input>
-      <Input placeholder={"max"} value={max}></Input>
+      <Input placeholder={"min"} defaultValue={min}></Input>
+      <Input placeholder={"max"} defaultValue={max}></Input>
     </div>
   )
 }

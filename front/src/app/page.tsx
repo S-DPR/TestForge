@@ -7,7 +7,7 @@ import CodeEditor from "@/components/code_editor/CodeEditor";
 import React, {useContext} from "react";
 import {TestcaseContext, TestcaseProvider} from "@/context/TestcaseContext";
 import {Button} from "@/components/ui/button";
-import {Variable} from "lucide-react";
+import LineBlock from "@/components/testcase_spec/line-block";
 
 export default function Home() {
   const [code1, setCode1] = React.useState('')
@@ -55,25 +55,40 @@ const Editor = () => {
   const context = useContext(TestcaseContext);
   if (!context) throw new Error("context 없음. 개판임");
 
-  const { variables, setVariables } = context;
+  const { variables, setVariables, blocks, setBlocks } = context;
 
-  const addVariable = () => {
-    setVariables((prev) => [
-      ...prev,
-      { name: "", type: "", ranges: [] },
-    ]);
+  const addVariable = (blockIndex: number) => {
+    setVariables((prev) => {
+      const newVariable = prev.map(i => i.map(j => ({ ...j })));
+      newVariable[blockIndex].push({ name: "", type: "", ranges: [[]] })
+      return newVariable;
+    });
   };
 
-  const removeVariable = (idx: number) => {
-    setVariables((prev) => prev.filter((_, i) => i !== idx));
+  const addBlock = (type: string) => {
+    setBlocks((prev) => [
+        ...prev,
+      { type: type, variables: [] }
+    ])
+  }
+
+  const removeVariable = (blockIndex: number, variableIndex: number) => {
+    setVariables((prev) => {
+      const newVariable = prev.map(i => i.map(j => ({...j})));
+      newVariable[blockIndex] = newVariable[blockIndex].filter((_, idx) => idx !== variableIndex);
+      return newVariable;
+    });
   };
 
   return (
-    <div>
-      <Button onClick={addVariable}>변수 추가</Button>
-      {variables.map((_, idx) => (
-        <Variable key={idx} index={idx} onRemove={() => removeVariable(idx)} />
-      ))}
-    </div>
+      <>
+        {blocks.map((block, i) => {
+          if (!variables[i]) variables[i] = [];
+          return (
+              <LineBlock key={i} blockIndex={i} variables={variables[i]} onVariableAddClick={addVariable} onRemoveVariable={removeVariable}></LineBlock>
+          )
+        })}
+        <Button onClick={() => addBlock('type')}>블럭 추가</Button>
+      </>
   );
 };
