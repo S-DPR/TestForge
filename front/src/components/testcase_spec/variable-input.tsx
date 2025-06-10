@@ -10,9 +10,10 @@ export interface VariableInputSpec {
     variable: VariableSpec[][];
     blockIndex: number;
     variableIndex: number;
+    onChange?: (value: string) => void;
 }
 
-const VariableInput = ({ variable, blockIndex, variableIndex }: VariableInputSpec) => {
+const VariableInput = ({ variable, blockIndex, variableIndex, onChange }: VariableInputSpec) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState<string>("")
 
@@ -35,6 +36,7 @@ const VariableInput = ({ variable, blockIndex, variableIndex }: VariableInputSpe
     const handleSelect = (val: string) => {
         setValue(val)
         setOpen(false)
+        onChange?.(val)
     }
 
     return (

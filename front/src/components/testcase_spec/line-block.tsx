@@ -27,7 +27,7 @@ const LineBlock = ({ blockIndex, variables, onVariableAddClick, onRemoveVariable
           {variables[blockIndex].map((v, idx) => (
                 <Variable
                     key={idx}
-                    variable={v}
+                    variable={variables}
                     blockIndex={blockIndex}
                     variableIndex={idx}
                     onRemove={() => onRemoveVariable(blockIndex, idx)}

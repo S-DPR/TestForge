@@ -20,7 +20,7 @@ export interface VariableSpec {
 }
 
 export interface VariableProps {
-  variable: VariableSpec;
+  variable: VariableSpec[][];
   blockIndex: number;
   variableIndex: number;
   onVariableRangeAddClick: (blockIndex: number, variableIndex: number) => void;
@@ -30,13 +30,14 @@ export interface VariableProps {
 }
 
 const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange, onVariableRangeAddClick, updateVariablesRange }: VariableProps) => {
+  const currentVar = variable[blockIndex][variableIndex];
   return (
     <div>
       <Label>변수 이름</Label>
-      <Input defaultValue={variable.name} onChange={(e) => onChange('name', e.target.value)} ></Input>
+      <Input defaultValue={currentVar.name} onChange={(e) => onChange('name', e.target.value)} ></Input>
 
       <Label>변수 타입</Label>
-      <Select value={variable.type} onValueChange={(e) => onChange('type', e)}>
+      <Select value={currentVar.type} onValueChange={(e) => onChange('type', e)}>
         <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
           <SelectValue placeholder="변수 타입" />
         </SelectTrigger>
@@ -50,8 +51,8 @@ const Variable = ({ variable, blockIndex, variableIndex, onRemove, onChange, onV
       </Select>
 
       <Label>범위</Label>
-      {variable.ranges.map((r, i) => (
-          <DefineRange key={i} blockIndex={blockIndex} variableIndex={variableIndex} rangeIndex={i} min={r.min} max={r.max} updateVariablesRange={updateVariablesRange}/>
+      {currentVar.ranges.map((r, i) => (
+          <DefineRange key={i} variable={variable} blockIndex={blockIndex} variableIndex={variableIndex} rangeIndex={i} min={r.min} max={r.max} updateVariablesRange={updateVariablesRange}/>
       ))}
       <Button onClick={() => onVariableRangeAddClick(blockIndex, variableIndex)}>범위 추가</Button>
 
