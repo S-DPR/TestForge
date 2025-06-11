@@ -26,8 +26,9 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
-  const { blocks, setBlocks, addVariable } = ctx;
-  const currentVariable = blocks[blockIndex].variables;
+  const { blocks, setBlocks, addVariable, updateBlockRepeat } = ctx;
+  const currentBlock = blocks[blockIndex]
+  const currentVariable = currentBlock.variables;
   const config: GraphConfig = blocks[blockIndex].config as GraphConfig;
 
   const updateConfig = (config: GraphConfig) => {
@@ -61,7 +62,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
       <Card>
         <Card>
           <Label>반복 횟수</Label>
-          <VariableInput blockIndex={blockIndex-1} variableIndex={10}></VariableInput>
+          <VariableInput initValue={currentBlock.repeat} onChange={(val) => updateBlockRepeat(blockIndex, val)} blockIndex={blockIndex-1} variableIndex={10}></VariableInput>
         </Card>
         <Card>
           <Label>변수 설정</Label>

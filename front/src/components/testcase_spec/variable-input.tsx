@@ -68,13 +68,10 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue,
                 <Command>
                     <CommandInput
                         placeholder="변수 선택 혹은 입력"
-                        onValueChange={setValue}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                e.preventDefault()
-                                if (value.trim() !== "") {
-                                    handleSelect(value)
-                                }
+                        onValueChange={(val) => {
+                            setValue(val)
+                            if (val.trim() !== "") {
+                                handleSelect(val)
                             }
                         }}
                     />

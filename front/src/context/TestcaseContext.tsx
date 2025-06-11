@@ -19,6 +19,7 @@ interface BlockSpec {
   variables: VariableSpec[];
   output: Output;
   config: AbstractConfig;
+  repeat: string;
 }
 
 interface EditorContextType {
@@ -36,15 +37,16 @@ interface EditorContextType {
   addOutputSequence: (blockIndex: number) => void;
   updateOutputSequence: (blockIndex: number, sequenceIndex: number, value: string) => void;
   updateBlockType: (blockIndex: number, type: string) => void;
+  updateBlockRepeat: (blockIndex: number, value: string) => void;
+  updateSeparator: (blockIndex: number, value: string) => void;
 }
 
 export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
-  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: {} as LineConfig }]);
+  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
 
   const addVariable = (blockIndex: number, variable: VariableSpec) => {
-    console.log("hihi")
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].variables.push(variable);
@@ -85,56 +87,6 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  // const addVariable = (blockIndex: number, variable: VariableSpec) => {
-  //   setVariables((prev) => {
-  //     const newVariable = structuredClone(prev);
-  //     newVariable[blockIndex].push(variable);
-  //     return newVariable;
-  //   });
-  // };
-  //
-  // const initVariables = (blockIndex: number) => {
-  //   setVariables((prev) => {
-  //     const newVariable = structuredClone(prev);
-  //     newVariable[blockIndex] = []
-  //     return newVariable;
-  //   })
-  // }
-
-  // const updateVariables = (blockIndex: number, variableIndex: number, field: string, value: string)=> {
-  //   const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
-  //     'type': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].type = value,
-  //     'name': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].name = value,
-  //   }
-
-  //   setVariables((prev) => {
-  //     const newVariable = structuredClone(prev);
-  //     updateMap[field](newVariable);
-  //     return newVariable;
-  //   })
-  // }
-  //
-  // const addVariableRange = (blockIndex: number, variableIndex: number) => {
-  //   setVariables((prev) => {
-  //     const newVariable = structuredClone(prev);
-  //     newVariable[blockIndex][variableIndex].ranges.push({ min: '0', max: '0' })
-  //     return newVariable;
-  //   });
-  // };
-
-  // const updateVariablesRange = (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string)=> {
-  //   const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
-  //     'min': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].min = value,
-  //     'max': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].max = value,
-  //   }
-  //
-  //   setVariables((prev) => {
-  //     const newVariable = structuredClone(prev);
-  //     updateMap[field](newVariable);
-  //     return newVariable;
-  //   })
-  // }
-
   const addOutputSequence = (blockIndex: number) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
@@ -147,6 +99,14 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].output.sequence[sequenceIndex] = value;
+      return newBlocks;
+    })
+  }
+
+  const updateSeparator = (blockIndex: number, value: string) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].output.separator = value;
       return newBlocks;
     })
   }
@@ -186,7 +146,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const addBlock = (type: string) => {
     setBlocks((prev) => [
       ...prev,
-      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: configs(type) }
+      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: configs(type), repeat: '1' }
     ])
   }
 
@@ -195,6 +155,14 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].type = type;
       newBlocks[blockIndex].config = configs(type);
+      return newBlocks;
+    })
+  }
+
+  const updateBlockRepeat = (blockIndex: number, value: string) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].repeat = value;
       return newBlocks;
     })
   }
@@ -209,7 +177,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TestcaseContext.Provider value={{
-      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType
+      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator
     }}>
       {children}
     </TestcaseContext.Provider>

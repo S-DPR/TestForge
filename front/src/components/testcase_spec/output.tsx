@@ -17,7 +17,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error("또 콘텍스트야");
 
-  const { blocks, addOutputSequence, updateOutputSequence } = ctx;
+  const { blocks, addOutputSequence, updateOutputSequence, updateSeparator } = ctx;
 
   return (
     <>
@@ -25,7 +25,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
         <VariableInput
           key={idx}
           blockIndex={blockIndex}
-          variableIndex={999}
+          variableIndex={10}
           initValue={seq}
           onChange={(val) => updateOutputSequence(blockIndex, idx, val)}
           isRenderReserved={true}
@@ -34,7 +34,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
       <Button onClick={() => addOutputSequence(blockIndex)}>sequence 추가</Button>
 
       <Label>구분자 설정</Label>
-      <VariableInput blockIndex={blockIndex} variableIndex={999} />
+      <VariableInput initValue={blocks[blockIndex].output.separator} onChange={(val) => updateSeparator(blockIndex, val)} blockIndex={blockIndex} variableIndex={10} />
     </>
   )
 }

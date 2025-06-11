@@ -19,15 +19,16 @@ const LineBlock = ({ blockIndex }: LineBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
-  const { blocks, addVariable } = ctx;
-  const currentVariable = blocks[blockIndex].variables;
+  const { blocks, addVariable, updateBlockRepeat } = ctx;
+  const currentBlock = blocks[blockIndex]
+  const currentVariable = currentBlock.variables;
 
   return (
     <div>
       <Card>
         <Card>
           <Label>반복 횟수</Label>
-          <VariableInput blockIndex={blockIndex-1} variableIndex={999}></VariableInput>
+          <VariableInput initValue={currentBlock.repeat} onChange={(val) => updateBlockRepeat(blockIndex, val)} blockIndex={blockIndex-1} variableIndex={999}></VariableInput>
         </Card>
         <Card>
           <Label>변수 설정</Label>
