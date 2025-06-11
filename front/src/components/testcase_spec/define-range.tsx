@@ -13,7 +13,6 @@ interface DefineRangeSpec {
     rangeIndex: number;
 }
 
-// 이거 VariableInput으로 바꿔야함
 const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error("context 없음. 개판임.");
@@ -23,11 +22,32 @@ const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec)
   const currentRange = blocks[blockIndex].variables[variableIndex].ranges[rangeIndex];
 
   return (
-    <div>
-      <VariableInput blockIndex={blockIndex} variableIndex={variableIndex} onChange={(val) => updateVariableRange(blockIndex, variableIndex, rangeIndex, { ...currentRange, min: val })} />
-      <VariableInput blockIndex={blockIndex} variableIndex={variableIndex} onChange={(val) => updateVariableRange(blockIndex, variableIndex, rangeIndex, { ...currentRange, max: val })} />
+    <div className="flex justify-center items-center gap-2 w-full">
+      <VariableInput
+        blockIndex={blockIndex}
+        variableIndex={variableIndex}
+        value={currentRange.min}
+        onChange={(val) =>
+          updateVariableRange(blockIndex, variableIndex, rangeIndex, {
+            ...currentRange,
+            min: val,
+          })
+        }
+      />
+      <span className="text-gray-500 text-sm"> to </span>
+      <VariableInput
+        blockIndex={blockIndex}
+        variableIndex={variableIndex}
+        value={currentRange.max}
+        onChange={(val) =>
+          updateVariableRange(blockIndex, variableIndex, rangeIndex, {
+            ...currentRange,
+            max: val,
+          })
+        }
+      />
     </div>
-  )
+  );
 }
 
 export default DefineRange

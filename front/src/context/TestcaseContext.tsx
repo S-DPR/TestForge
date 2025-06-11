@@ -2,7 +2,7 @@
 
 import React, {createContext, ReactNode, useState} from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
-import Output from "@/components/testcase_spec/output";
+import {OutputType} from "@/components/testcase_spec/output";
 import {Range} from "@/components/testcase_spec/define-range";
 import {LineConfig} from "@/components/testcase_spec/line-block";
 import {GraphConfig} from "@/components/testcase_spec/graph-block";
@@ -17,7 +17,7 @@ type Config = LineConfig | GraphConfig | MatrixConfig;
 interface BlockSpec {
   type: string;
   variables: VariableSpec[];
-  output: Output;
+  output: OutputType;
   config: AbstractConfig;
   repeat: string;
 }
@@ -35,7 +35,9 @@ interface EditorContextType {
 
   addBlock: (type: string) => void;
   addOutputSequence: (blockIndex: number) => void;
-  updateOutputSequence: (blockIndex: number, sequenceIndex: number, value: string) => void;
+  updateOutputSequence: (blockIndex: number, sequenceIndex: number, sequence: string[]) => void;
+  removeOutputSequence: (blockIndex: number, sequenceIndex: number) => void;
+
   updateBlockType: (blockIndex: number, type: string) => void;
   updateBlockRepeat: (blockIndex: number, value: string) => void;
   updateSeparator: (blockIndex: number, value: string) => void;
@@ -95,10 +97,18 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const updateOutputSequence = (blockIndex: number, sequenceIndex: number, value: string) => {
+  const updateOutputSequence = (blockIndex: number, sequenceIndex: number, sequence: string[]) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].output.sequence[sequenceIndex] = value;
+      newBlocks[blockIndex].output.sequence = sequence;
+      return newBlocks;
+    })
+  }
+
+  const removeOutputSequence = (blockIndex: number, sequenceIndex: number) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].output.sequence = newBlocks[blockIndex].output.sequence.filter((_, idx) => idx !== sequenceIndex);
       return newBlocks;
     })
   }
@@ -177,7 +187,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TestcaseContext.Provider value={{
-      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator
+      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence
     }}>
       {children}
     </TestcaseContext.Provider>

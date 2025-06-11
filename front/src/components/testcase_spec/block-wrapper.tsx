@@ -23,13 +23,13 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
   const { blocks, updateBlockType } = ctx;
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="bg-white shadow-sm border border-gray-200 rounded-xl p-4">
+      <CardHeader className="pb-2 flex flex-row justify-between items-center">
         <Select value={blocks[blockIndex]?.type ?? 'line'} onValueChange={(type: 'line' | 'graph') => updateBlockType(blockIndex, type)}>
-          <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
+          <SelectTrigger className="w-[180px] border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none">
             <SelectValue placeholder="블럭 타입 선택" />
           </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-700">
+          <SelectContent className="bg-white border border-gray-200 shadow-md rounded-md">
             <SelectGroup>
               <SelectLabel>타입</SelectLabel>
               <SelectItem value="line">Line</SelectItem>
@@ -39,7 +39,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-4">
         {children}
       </CardContent>
     </Card>

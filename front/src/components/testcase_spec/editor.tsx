@@ -18,7 +18,7 @@ const Editor = () => {
   }
 
   return (
-    <>
+    <div className="space-y-6 w-full max-w-4xl mx-auto px-4">
       {blocks.slice(1, blocks.length).map((block, i) => {
         const blockIndex = i+1; // 사전 설정 변수가 있으니까
         return block.type !== 'null' && (
@@ -27,8 +27,8 @@ const Editor = () => {
           </BlockWrapper>
         )
       })}
-      <Button onClick={() => addBlock('line')}>블럭 추가</Button>
-    </>
+      <Button className="mt-6 mx-auto block px-6 py-2 text-base" onClick={() => addBlock('line')}>블럭 추가</Button>
+    </div>
   );
 };
 

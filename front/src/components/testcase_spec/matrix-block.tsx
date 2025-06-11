@@ -27,7 +27,7 @@ interface MatrixBlockProps {
   blockIndex: number;
 }
 
-const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
+const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
@@ -40,7 +40,6 @@ const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].config = config;
-      console.log(newBlocks[blockIndex].config);
       return newBlocks;
     })
   }
@@ -64,38 +63,82 @@ const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
   }
 
   return (
-    <div>
-      <Card>
-        <Card>
-          <Label>반복 횟수</Label>
-          <VariableInput initValue={currentBlock.repeat} onChange={(val) => updateBlockRepeat(blockIndex, val)} blockIndex={blockIndex-1} variableIndex={10}></VariableInput>
-        </Card>
-        <Card>
-          <Label>변수 설정</Label>
-          {currentVariable.map((v, idx) => !v.isReserved && (
-            <Variable
-              key={idx}
-              blockIndex={blockIndex}
-              variableIndex={idx}
-            />
-          ))}
-          <Button onClick={() => addVariable(blockIndex, {name: '', type: '', ranges: [], isReserved: false})}>변수 추가</Button>
-        </Card>
-        <Card>
-          <Label>상세 설정</Label>
+    <Card className="p-6 space-y-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+      {/* 반복 횟수 */}
+      <div className="space-y-1">
+        <Label className="text-sm text-gray-700">반복 횟수</Label>
+        <VariableInput
+          value={currentBlock.repeat}
+          onChange={(val) => updateBlockRepeat(blockIndex, val)}
+          blockIndex={blockIndex - 1}
+          variableIndex={10}
+        />
+      </div>
 
-          <Label>가로 길이</Label>
-          <VariableInput initValue={config.colSize} blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, colSize: val}) }} />
+      {/* 변수 설정 */}
+      <div className="space-y-2">
+        <Label className="text-sm text-gray-700">변수 설정</Label>
+        <div className="space-y-2">
+          {currentVariable.map((v, idx) =>
+              !v.isReserved && (
+                <Variable
+                  key={idx}
+                  blockIndex={blockIndex}
+                  variableIndex={idx}
+                />
+              )
+          )}
+        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() =>
+            addVariable(blockIndex, {
+              name: "",
+              type: "",
+              ranges: [],
+              isReserved: false,
+            })
+          }
+        >
+          변수 추가
+        </Button>
+      </div>
 
-          <Label>세로 길이</Label>
-          <VariableInput initValue={config.rowSize} blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, rowSize: val}) }} />
+      {/* 상세 설정 */}
+      <div className="space-y-4">
+        <Label className="text-sm text-gray-700">상세 설정</Label>
 
-          <Label>내부 타입</Label>
-          <Select value={config.numType} onValueChange={(val) => updateConfig({ ...config, numType: val })}>
-            <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
+        <div className="space-y-1">
+          <Label className="text-sm text-gray-600">가로 길이</Label>
+          <VariableInput
+            value={config.colSize}
+            blockIndex={blockIndex}
+            variableIndex={10}
+            onChange={(val) => updateConfig({ ...config, colSize: val })}
+          />
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-sm text-gray-600">세로 길이</Label>
+          <VariableInput
+            value={config.rowSize}
+            blockIndex={blockIndex}
+            variableIndex={10}
+            onChange={(val) => updateConfig({ ...config, rowSize: val })}
+          />
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-sm text-gray-600">내부 타입</Label>
+          <Select
+            value={config.numType}
+            onValueChange={(val) => updateConfig({ ...config, numType: val })}
+          >
+            <SelectTrigger className="w-[180px] border-gray-300 rounded-md px-3 py-2 text-sm">
               <SelectValue placeholder="변수 타입" />
             </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-700">
+            <SelectContent className="bg-white border border-gray-200 shadow-md rounded-md">
               <SelectGroup>
                 <SelectItem value="int">Number</SelectItem>
                 <SelectItem value="char">Char</SelectItem>
@@ -103,27 +146,66 @@ const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
 
-          <Label>수 범위</Label>
-          {config.numRange.map((v, idx) => (
-            <>
-              <VariableInput blockIndex={blockIndex} variableIndex={10} initValue={v.min} onChange={(val) => updateNumRange(idx, { ...v, min: val })} />
-              <VariableInput blockIndex={blockIndex} variableIndex={10} initValue={v.max} onChange={(val) => updateNumRange(idx, { ...v, max: val })} />
-            </>
+        <div className="space-y-2">
+          <Label className="text-sm text-gray-600">수 범위</Label>
+          <div className="space-y-2">
+            {config.numRange.map((v, idx) => (
+              <div key={idx} className="flex gap-2">
+                <VariableInput
+                  blockIndex={blockIndex}
+                  variableIndex={10}
+                  value={v.min}
+                  onChange={(val) =>
+                    updateNumRange(idx, { ...v, min: val })
+                  }
+                />
+                <VariableInput
+                  blockIndex={blockIndex}
+                  variableIndex={10}
+                  value={v.max}
+                  onChange={(val) =>
+                    updateNumRange(idx, { ...v, max: val })
+                  }
+                />
+              </div>
+            ))}
+          </div>
+          <Button size="sm" onClick={addNumRange}>
+            수 범위 추가
+          </Button>
+        </div>
+
+        {/* 체크박스 그룹 */}
+        <div className="space-y-2">
+          {[
+            ["isDistinct", "중복 없는 행렬"],
+            ["randomEmpty", "랜덤한 위치 비우기"],
+            ["isGraph", "행렬그래프 여부"],
+            ["isSymmetric", "대칭행렬 여부"]
+          ].map(([key, label]) => (
+            <div key={key} className="flex items-center gap-2">
+              <Checkbox
+                checked={(config as any)[key]}
+                id={key}
+                onCheckedChange={(chk) =>
+                  updateConfig({ ...config, [key]: !!chk.valueOf() })
+                }
+              />
+              <Label htmlFor={key}>{label}</Label>
+            </div>
           ))}
-          <Button onClick={addNumRange}>수 범위 추가</Button>
+        </div>
+      </div>
 
-          <Checkbox checked={config.isDistinct} id={'is-distinct'} onCheckedChange={(chk) => { updateConfig({...config, isDistinct: !!chk.valueOf() }) }}/> <Label htmlFor={'is-distinct'}>중복 없는 행렬</Label>
-          <Checkbox checked={config.randomEmpty} id={'random-empty'} onCheckedChange={(chk) => { updateConfig({...config, randomEmpty: !!chk.valueOf() }) }}/> <Label htmlFor={'random-empty'}>랜덤한 위치 비우기</Label>
-          <Checkbox checked={config.isGraph} id={'is-graph'} onCheckedChange={(chk) => { updateConfig({...config, isGraph: !!chk.valueOf() }) }}/> <Label htmlFor={'is-graph'}>행렬그래프 여부</Label>
-          <Checkbox checked={config.isSymmetric} id={'is-symmetric'} onCheckedChange={(chk) => { updateConfig({...config, isSymmetric: !!chk.valueOf() }) }}/> <Label htmlFor={'is-symmetric'}>대칭행렬 여부</Label>
-        </Card>
-        <Card>
-          <Output blockIndex={blockIndex} />
-        </Card>
-      </Card>
-    </div>
+      {/* Output */}
+      <div>
+        <Label className="text-sm text-gray-700">출력 설정</Label>
+        <Output blockIndex={blockIndex} />
+      </div>
+    </Card>
   )
 }
 
-export default GraphBlock;
+export default MatrixBlock;

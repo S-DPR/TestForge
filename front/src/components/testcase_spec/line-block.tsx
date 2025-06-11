@@ -24,28 +24,55 @@ const LineBlock = ({ blockIndex }: LineBlockProps) => {
   const currentVariable = currentBlock.variables;
 
   return (
-    <div>
-      <Card>
-        <Card>
-          <Label>반복 횟수</Label>
-          <VariableInput initValue={currentBlock.repeat} onChange={(val) => updateBlockRepeat(blockIndex, val)} blockIndex={blockIndex-1} variableIndex={999}></VariableInput>
-        </Card>
-        <Card>
-          <Label>변수 설정</Label>
-          {currentVariable.filter(v => !v.isReserved).map((v, idx) => !v.isReserved && (
-                <Variable
-                    key={idx}
-                    blockIndex={blockIndex}
-                    variableIndex={idx}
-                />
-          ))}
-          <Button onClick={() => addVariable(blockIndex, {name: '', type: '', ranges: [], isReserved: false})}>변수 추가</Button>
-        </Card>
-        <Card>
-          <Output blockIndex={blockIndex} />
-        </Card>
-      </Card>
-    </div>
+    <Card className="p-6 space-y-6 bg-white border border-gray-200 shadow-sm rounded-lg">
+      {/* 반복 횟수 */}
+      <div className="space-y-2">
+        <Label className="text-sm text-gray-700">반복 횟수</Label>
+        <VariableInput
+          value={currentBlock.repeat}
+          onChange={(val) => updateBlockRepeat(blockIndex, val)}
+          blockIndex={blockIndex - 1}
+          variableIndex={999}
+        />
+      </div>
+
+      {/* 변수 설정 */}
+      <div className="space-y-3">
+        <Label className="text-sm text-gray-700">변수 설정</Label>
+        <div className="space-y-2">
+          {currentVariable
+            .filter((v) => !v.isReserved)
+            .map((v, idx) => (
+              <Variable
+                key={idx}
+                blockIndex={blockIndex}
+                variableIndex={idx}
+              />
+            ))}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            addVariable(blockIndex, {
+              name: "",
+              type: "",
+              ranges: [],
+              isReserved: false,
+            })
+          }
+        >
+          변수 추가
+        </Button>
+      </div>
+
+      {/* Output */}
+      <div>
+        <Label className="text-sm text-gray-700">출력 설정</Label>
+        <Output blockIndex={blockIndex} />
+      </div>
+    </Card>
+
   )
 }
 

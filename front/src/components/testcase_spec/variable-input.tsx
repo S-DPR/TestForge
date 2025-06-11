@@ -10,20 +10,21 @@ export interface VariableInputSpec {
     blockIndex: number;
     variableIndex: number;
     isRenderReserved?: boolean;
-    initValue?: string;
     onChange?: (value: string) => void;
+    value: string;
+    setValue?: (v: string) => void;
 }
 
-const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue, onChange }: VariableInputSpec) => {
+const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, value, setValue }: VariableInputSpec) => {
     const ctx = useContext(TestcaseContext);
     if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
 
     const { blocks } = ctx;
 
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState<string>(initValue ?? "")
 
     if (!isRenderReserved) isRenderReserved = false;
+    if (!setValue) setValue = (_: string) => {}
     const reservedVariable: Record<string, Array<string>> = {
         'line': [],
         'graph': ['$_s', '$_e', '$_w'],
@@ -60,14 +61,15 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue,
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="outline" className="w-[280px] justify-start">
+                <Button variant="outline" className="w-[280px] justify-start text-sm text-gray-800 bg-white hover:bg-gray-50 border-gray-300">
                     {value || "값 선택 또는 입력"}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[280px] p-0 bg-white border border-gray-700">
+            <PopoverContent className="w-[280px] p-0 bg-white border border-gray-200 shadow-md rounded-md z-50">
                 <Command>
                     <CommandInput
                         placeholder="변수 선택 혹은 입력"
+                        className="text-sm px-3 py-2 border-b border-gray-200"
                         onValueChange={(val) => {
                             setValue(val)
                             if (val.trim() !== "") {
@@ -75,7 +77,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue,
                             }
                         }}
                     />
-                    <CommandGroup heading="사용 가능 변수">
+                    <CommandGroup heading="사용 가능 변수" className="px-3 py-2 text-xs text-muted-foreground">
                         {usableVariables.map((v, idx) => {
                             const name = `$${v.name}`
                             return (
@@ -89,7 +91,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue,
                         })}
                     </CommandGroup>
                     {isRenderReserved && blockTypes.map((type, idx) => {
-                        return (<CommandGroup key={idx} heading={`${type} 예약 변수`}>
+                        return (<CommandGroup key={idx} heading={`${type} 예약 변수`} className="px-3 py-2 text-xs text-muted-foreground">
                             {reservedVariable[type].map((name, varIdx) => (
                               <CommandItem key={varIdx} onSelect={() => handleSelect(name)}>
                                   {name}
