@@ -72,7 +72,6 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, 
                         className="text-sm px-3 py-2 border-b border-gray-200"
                         onValueChange={(val) => {
                             setValue(val)
-                            handleSelect(val)
                         }}
                     />
                     <CommandGroup heading="사용 가능 변수" className="px-3 py-2 text-xs text-muted-foreground">
