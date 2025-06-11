@@ -9,23 +9,27 @@ import {TestcaseContext} from "@/context/TestcaseContext";
 export interface VariableInputSpec {
     blockIndex: number;
     variableIndex: number;
+    initValue?: string;
     onChange?: (value: string) => void;
 }
 
-const VariableInput = ({ blockIndex, variableIndex, onChange }: VariableInputSpec) => {
+const VariableInput = ({ blockIndex, variableIndex, initValue, onChange }: VariableInputSpec) => {
     const ctx = useContext(TestcaseContext);
     if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
 
     const { variables } = ctx;
 
     const [open, setOpen] = useState(false)
-    const [value, setValue] = useState<string>("")
+    const [value, setValue] = useState<string>(initValue ?? "")
 
     const usableVariables = []
     for (let innerBlockIdx = 0; innerBlockIdx <= blockIndex; innerBlockIdx++) {
         for (let innerVariableIdx = 0; innerVariableIdx < variables[innerBlockIdx].length; innerVariableIdx++) {
             if (innerBlockIdx === blockIndex && innerVariableIdx > variableIndex-1) { // 현재 보는 variable index는 사용 불가능
                 break;
+            }
+            if (!variables[innerBlockIdx][innerVariableIdx]) {
+                continue;
             }
             if (variables[innerBlockIdx][innerVariableIdx].name === '') {
                 continue;

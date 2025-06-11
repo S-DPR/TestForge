@@ -5,6 +5,7 @@ import Variable, {VariableSpec} from "@/components/testcase_spec/variable";
 import VariableInput from "@/components/testcase_spec/variable-input";
 import {useContext} from "react";
 import {TestcaseContext} from "@/context/TestcaseContext";
+import Output from "@/components/testcase_spec/output";
 
 interface LineBlockProps {
   blockIndex: number;
@@ -35,7 +36,7 @@ const LineBlock = ({ blockIndex }: LineBlockProps) => {
           <Button onClick={() => addVariable(blockIndex)}>변수 추가</Button>
         </Card>
         <Card>
-          <VariableInput blockIndex={blockIndex} variableIndex={999}></VariableInput>
+          <Output blockIndex={blockIndex} />
         </Card>
       </Card>
     </div>

@@ -60,7 +60,7 @@ const Editor = () => {
 
   return (
       <>
-        {blocks.map((block, i) => {
+        {blocks.slice(1, blocks.length).map((block, i) => {
           const blockIndex = i+1; // 사전 설정 변수가 있으니까
           if (!variables[blockIndex]) variables[blockIndex] = [];
           return (
