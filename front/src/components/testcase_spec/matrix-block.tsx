@@ -31,7 +31,6 @@ const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
-  const [numType, setNumType] = useState<string>('int');
   const { blocks, setBlocks, addVariable } = ctx;
   const currentVariable = blocks[blockIndex].variables;
   const config: MatrixConfig = blocks[blockIndex].config as MatrixConfig;
@@ -85,16 +84,13 @@ const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
           <Label>상세 설정</Label>
 
           <Label>가로 길이</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, colSize: val}) }} />
+          <VariableInput initValue={config.colSize} blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, colSize: val}) }} />
 
           <Label>세로 길이</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, rowSize: val}) }} />
+          <VariableInput initValue={config.rowSize} blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, rowSize: val}) }} />
 
           <Label>내부 타입</Label>
-          <Select value={numType} onValueChange={(val) => {
-            setNumType(val);
-            updateConfig({ ...config, numType: val })}
-          }>
+          <Select value={config.numType} onValueChange={(val) => updateConfig({ ...config, numType: val })}>
             <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
               <SelectValue placeholder="변수 타입" />
             </SelectTrigger>
@@ -116,10 +112,10 @@ const GraphBlock = ({ blockIndex }: MatrixBlockProps) => {
           ))}
           <Button onClick={addNumRange}>수 범위 추가</Button>
 
-          <Checkbox id={'is-distinct'} onCheckedChange={(chk) => { updateConfig({...config, isDistinct: !!chk.valueOf() }) }}/> <Label htmlFor={'is-distinct'}>중복 없는 행렬</Label>
-          <Checkbox id={'random-empty'} onCheckedChange={(chk) => { updateConfig({...config, randomEmpty: !!chk.valueOf() }) }}/> <Label htmlFor={'random-empty'}>랜덤한 위치 비우기</Label>
-          <Checkbox id={'is-graph'} onCheckedChange={(chk) => { updateConfig({...config, isGraph: !!chk.valueOf() }) }}/> <Label htmlFor={'is-graph'}>행렬그래프 여부</Label>
-          <Checkbox id={'is-symmetric'} onCheckedChange={(chk) => { updateConfig({...config, isSymmetric: !!chk.valueOf() }) }}/> <Label htmlFor={'is-symmetric'}>대칭행렬 여부</Label>
+          <Checkbox checked={config.isDistinct} id={'is-distinct'} onCheckedChange={(chk) => { updateConfig({...config, isDistinct: !!chk.valueOf() }) }}/> <Label htmlFor={'is-distinct'}>중복 없는 행렬</Label>
+          <Checkbox checked={config.randomEmpty} id={'random-empty'} onCheckedChange={(chk) => { updateConfig({...config, randomEmpty: !!chk.valueOf() }) }}/> <Label htmlFor={'random-empty'}>랜덤한 위치 비우기</Label>
+          <Checkbox checked={config.isGraph} id={'is-graph'} onCheckedChange={(chk) => { updateConfig({...config, isGraph: !!chk.valueOf() }) }}/> <Label htmlFor={'is-graph'}>행렬그래프 여부</Label>
+          <Checkbox checked={config.isSymmetric} id={'is-symmetric'} onCheckedChange={(chk) => { updateConfig({...config, isSymmetric: !!chk.valueOf() }) }}/> <Label htmlFor={'is-symmetric'}>대칭행렬 여부</Label>
         </Card>
         <Card>
           <Output blockIndex={blockIndex} />
