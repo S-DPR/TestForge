@@ -10,6 +10,7 @@ import {Button} from "@/components/ui/button";
 import LineBlock from "@/components/testcase_spec/line-block";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 import GraphBlock from "@/components/testcase_spec/graph-block";
+import MatrixBlock from "@/components/testcase_spec/matrix-block";
 
 export default function Home() {
   const [code1, setCode1] = React.useState('')
@@ -61,6 +62,7 @@ const Editor = () => {
   const child: Record<string, (blockIndex: number) => ReactNode> = {
     'line': (blockIndex: number) => (<LineBlock blockIndex={blockIndex} key={blockIndex}/>),
     'graph': (blockIndex: number) => (<GraphBlock blockIndex={blockIndex} key={blockIndex}/>),
+    'matrix': (blockIndex: number) => (<MatrixBlock blockIndex={blockIndex} key={blockIndex}/>),
   }
 
   return (

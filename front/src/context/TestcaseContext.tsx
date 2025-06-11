@@ -6,12 +6,13 @@ import Output from "@/components/testcase_spec/output";
 import {Range} from "@/components/testcase_spec/define-range";
 import {LineConfig} from "@/components/testcase_spec/line-block";
 import {GraphConfig} from "@/components/testcase_spec/graph-block";
+import {MatrixConfig} from "@/components/testcase_spec/matrix-block";
 
 export interface AbstractConfig {
-  type: 'line' | 'graph';
+  type: 'line' | 'graph' | 'matrix';
 }
 
-type Config = LineConfig | GraphConfig;
+type Config = LineConfig | GraphConfig | MatrixConfig;
 
 interface BlockSpec {
   type: string;
@@ -150,22 +151,42 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const configs: Record<string, Config> = {
-    'line': {} as LineConfig,
-    'graph': {
-      nodeCount: "",
-      edgeCount: "",
-      weightRange: {min: '0', max: '10'},
-      isPerfect: false,
-      isConnect: false,
-      isCycle: false
-    } as GraphConfig
+  const configs: (type: string) => Config = (type: string) => {
+    switch (type) {
+      case 'graph':
+        return {
+          type: 'graph',
+          nodeCount: "",
+          edgeCount: "",
+          weightRange: {min: '0', max: '10'},
+          isPerfect: false,
+          isConnect: false,
+          isCycle: false
+        } as GraphConfig
+      case 'matrix':
+        return {
+          type: 'matrix',
+          colSize: "",
+          rowSize: "",
+          numType: "int",
+          numRange: [],
+          isDistinct: false,
+          valueLimit: {},
+          emptyValue: null,
+          randomEmpty: false,
+          isGraph: false,
+          isSymmetric: false
+        } as MatrixConfig
+      case 'line':
+      default:
+        return {} as LineConfig;
+    }
   }
 
   const addBlock = (type: string) => {
     setBlocks((prev) => [
       ...prev,
-      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: configs[type] }
+      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: configs(type) }
     ])
   }
 
@@ -173,7 +194,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].type = type;
-      newBlocks[blockIndex].config = configs[type];
+      newBlocks[blockIndex].config = configs(type);
       return newBlocks;
     })
   }

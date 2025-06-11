@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import React, {ReactNode, useContext, useEffect} from "react";
+import React, {ReactNode, useContext} from "react";
 import {TestcaseContext} from "@/context/TestcaseContext";
 
 interface BlockWrapperProps {
@@ -34,6 +34,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
               <SelectLabel>타입</SelectLabel>
               <SelectItem value="line">Line</SelectItem>
               <SelectItem value="graph">Graph</SelectItem>
+              <SelectItem value="matrix">Matrix</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

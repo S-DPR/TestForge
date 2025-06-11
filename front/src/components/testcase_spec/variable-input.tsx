@@ -27,6 +27,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue,
     const reservedVariable: Record<string, Array<string>> = {
         'line': [],
         'graph': ['$_s', '$_e', '$_w'],
+        'matrix': ['$_element']
     }
 
     const usableVariables = []
