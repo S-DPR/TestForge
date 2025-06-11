@@ -83,7 +83,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue,
                             const name = `$${v.name}`
                             return (
                                 <CommandItem
-                                    key={idx}
+                                    key={`variable-select-${blockIndex}-${variableIndex}-${idx}`}
                                     onSelect={() => handleSelect(name)}
                                 >
                                     {name}

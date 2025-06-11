@@ -70,7 +70,7 @@ const Editor = () => {
         {blocks.slice(1, blocks.length).map((block, i) => {
           const blockIndex = i+1; // 사전 설정 변수가 있으니까
           return block.type !== 'null' && (
-            <BlockWrapper key={blockIndex} blockIndex={blockIndex}>
+            <BlockWrapper key={`block-${blockIndex}`} blockIndex={blockIndex}>
               {child[block.type](blockIndex)}
             </BlockWrapper>
           )

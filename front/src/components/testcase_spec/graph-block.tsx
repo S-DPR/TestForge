@@ -67,7 +67,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <Label>변수 설정</Label>
           {currentVariable.map((v, idx) => !v.isReserved && (
             <Variable
-              key={idx}
+              key={`${blockIndex}-variable-${idx}`}
               blockIndex={blockIndex}
               variableIndex={idx}
             />
@@ -78,23 +78,23 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <Label>상세 설정</Label>
 
           <Label>노드 개수</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, nodeCount: val}) }} />
+          <VariableInput initValue={config.nodeCount} blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, nodeCount: val}) }} />
 
           <Label>간선 개수</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, edgeCount: val}) }} />
+          <VariableInput initValue={config.edgeCount} blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, edgeCount: val}) }} />
 
           <Label>가중치 범위</Label>
           {config.weightRange.map((v, idx) => (
-            <>
-              <VariableInput blockIndex={blockIndex} variableIndex={10} initValue={v.min} onChange={(val) => updateWeightRange(idx, { ...v, min: val })} />
-              <VariableInput blockIndex={blockIndex} variableIndex={10} initValue={v.max} onChange={(val) => updateWeightRange(idx, { ...v, max: val })} />
-            </>
+            <div key={`weight-range-${idx}`}>
+              <VariableInput key={`weight-range-${idx}-1`} blockIndex={blockIndex} variableIndex={10} initValue={v.min} onChange={(val) => updateWeightRange(idx, { ...v, min: val })} />
+              <VariableInput key={`weight-range-${idx}-2`} blockIndex={blockIndex} variableIndex={10} initValue={v.max} onChange={(val) => updateWeightRange(idx, { ...v, max: val })} />
+            </div>
           ))}
           <Button onClick={addWeightRange}>수 범위 추가</Button>
 
-          <Checkbox id={'is-perfect'} onCheckedChange={(chk) => { updateConfig({...config, isPerfect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-perfect'}>완전그래프 여부</Label>
-          <Checkbox id={'is-connect'} onCheckedChange={(chk) => { updateConfig({...config, isConnect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-connect'}>연결그래프 여부</Label>
-          <Checkbox id={'is-cycle'} onCheckedChange={(chk) => { updateConfig({...config, isCycle: !!chk.valueOf() }) }}/> <Label htmlFor={'is-cycle'}>사이클 여부</Label>
+          <Checkbox checked={config.isPerfect} id={'is-perfect'} onCheckedChange={(chk) => { updateConfig({...config, isPerfect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-perfect'}>완전그래프 여부</Label>
+          <Checkbox checked={config.isConnect} id={'is-connect'} onCheckedChange={(chk) => { updateConfig({...config, isConnect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-connect'}>연결그래프 여부</Label>
+          <Checkbox checked={config.isCycle} id={'is-cycle'} onCheckedChange={(chk) => { updateConfig({...config, isCycle: !!chk.valueOf() }) }}/> <Label htmlFor={'is-cycle'}>사이클 여부</Label>
         </Card>
         <Card>
           <Output blockIndex={blockIndex} />
