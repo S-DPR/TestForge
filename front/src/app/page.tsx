@@ -9,6 +9,7 @@ import {TestcaseContext, TestcaseProvider} from "@/context/TestcaseContext";
 import {Button} from "@/components/ui/button";
 import LineBlock from "@/components/testcase_spec/line-block";
 import {VariableSpec} from "@/components/testcase_spec/variable";
+import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 
 export default function Home() {
   const [code1, setCode1] = React.useState('')
@@ -64,10 +65,12 @@ const Editor = () => {
           const blockIndex = i+1; // 사전 설정 변수가 있으니까
           if (!variables[blockIndex]) variables[blockIndex] = [];
           return (
+            <BlockWrapper key={blockIndex} blockIndex={blockIndex}>
               <LineBlock
                   key={i}
                   blockIndex={blockIndex}
-              ></LineBlock>
+              />
+            </BlockWrapper>
           )
         })}
         <Button onClick={() => addBlock('type')}>블럭 추가</Button>

@@ -24,6 +24,7 @@ interface EditorContextType {
   addBlock: (type: string) => void;
   addOutputSequence: (blockIndex: number) => void;
   updateOutputSequence: (blockIndex: number, sequenceIndex: number, value: string) => void;
+  updateBlockType: (blockIndex: number, type: string) => void;
 }
 
 export const TestcaseContext = createContext<EditorContextType | null>(null);
@@ -97,6 +98,14 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     ])
   }
 
+  const updateBlockType = (blockIndex: number, type: string) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].type = type;
+      return newBlocks;
+    })
+  }
+
   const removeVariable = (blockIndex: number, variableIndex: number) => {
     setVariables((prev) => {
       const newVariable = structuredClone(prev);
@@ -107,7 +116,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TestcaseContext.Provider value={{
-      variables, setVariables, blocks, setBlocks, addVariable, updateVariables, addVariableRange, updateVariablesRange, addBlock, addOutputSequence, updateOutputSequence, removeVariable
+      variables, setVariables, blocks, setBlocks, addVariable, updateVariables, addVariableRange, updateVariablesRange, addBlock, addOutputSequence, updateOutputSequence, removeVariable, updateBlockType
     }}>
       {children}
     </TestcaseContext.Provider>
