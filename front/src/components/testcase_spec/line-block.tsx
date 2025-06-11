@@ -1,11 +1,15 @@
 import {Card} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
-import Variable, {VariableSpec} from "@/components/testcase_spec/variable";
+import Variable from "@/components/testcase_spec/variable";
 import VariableInput from "@/components/testcase_spec/variable-input";
 import {useContext} from "react";
-import {TestcaseContext} from "@/context/TestcaseContext";
+import {AbstractConfig, TestcaseContext} from "@/context/TestcaseContext";
 import Output from "@/components/testcase_spec/output";
+
+export interface LineConfig extends AbstractConfig {
+  _: null;
+}
 
 interface LineBlockProps {
   blockIndex: number;

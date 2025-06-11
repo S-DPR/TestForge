@@ -4,10 +4,15 @@ import React, {createContext, ReactNode, useState} from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
 import Output from "@/components/testcase_spec/output";
 
+export interface AbstractConfig {
+  _: null;
+}
+
 interface BlockSpec {
   type: string;
   variables: VariableSpec[];
   output: Output;
+  config: AbstractConfig;
 }
 
 interface EditorContextType {
@@ -31,7 +36,7 @@ export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const [variables, setVariables] = useState<VariableSpec[][]>([[]]); // 사전설졍변수 있어서 이중으로 초기화
-  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' } }]);
+  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: { _: null } }]);
 
   const addVariable = (blockIndex: number) => {
     setVariables((prev) => {
@@ -94,7 +99,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const addBlock = (type: string) => {
     setBlocks((prev) => [
       ...prev,
-      { type: type, variables: [], output: {sequence: [], separator: ' '} }
+      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: { _: null } }
     ])
   }
 
