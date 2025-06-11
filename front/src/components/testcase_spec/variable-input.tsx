@@ -24,7 +24,7 @@ const VariableInput = ({ blockIndex, variableIndex, onChange }: VariableInputSpe
     const usableVariables = []
     for (let innerBlockIdx = 0; innerBlockIdx <= blockIndex; innerBlockIdx++) {
         for (let innerVariableIdx = 0; innerVariableIdx < variables[innerBlockIdx].length; innerVariableIdx++) {
-            if (innerBlockIdx === blockIndex && innerVariableIdx > variableIndex) {
+            if (innerBlockIdx === blockIndex && innerVariableIdx > variableIndex-1) { // 현재 보는 variable index는 사용 불가능
                 break;
             }
             if (variables[innerBlockIdx][innerVariableIdx].name === '') {
