@@ -9,37 +9,46 @@ import {TestcaseContext} from "@/context/TestcaseContext";
 export interface VariableInputSpec {
     blockIndex: number;
     variableIndex: number;
+    isRenderReserved?: boolean;
     initValue?: string;
     onChange?: (value: string) => void;
 }
 
-const VariableInput = ({ blockIndex, variableIndex, initValue, onChange }: VariableInputSpec) => {
+const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, initValue, onChange }: VariableInputSpec) => {
     const ctx = useContext(TestcaseContext);
     if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
 
-    const { variables } = ctx;
+    const { blocks } = ctx;
 
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState<string>(initValue ?? "")
 
+    if (!isRenderReserved) isRenderReserved = false;
+    const reservedVariable: Record<string, Array<string>> = {
+        'line': [],
+        'graph': ['$_s', '$_e', '$_w'],
+    }
+
     const usableVariables = []
     for (let innerBlockIdx = 0; innerBlockIdx <= blockIndex; innerBlockIdx++) {
-        for (let innerVariableIdx = 0; innerVariableIdx < variables[innerBlockIdx].length; innerVariableIdx++) {
+        for (let innerVariableIdx = 0; innerVariableIdx < blocks[innerBlockIdx].variables.length; innerVariableIdx++) {
             if (innerBlockIdx === blockIndex && innerVariableIdx > variableIndex-1) { // 현재 보는 variable index는 사용 불가능
                 break;
             }
-            if (!variables[innerBlockIdx][innerVariableIdx]) {
+            if (!blocks[innerBlockIdx].variables[innerVariableIdx]) {
                 continue;
             }
-            if (variables[innerBlockIdx][innerVariableIdx].name === '') {
+            if (blocks[innerBlockIdx].variables[innerVariableIdx].name === '') {
                 continue;
             }
-            if (variables[innerBlockIdx][innerVariableIdx].type === 'char') {
+            if (blocks[innerBlockIdx].variables[innerVariableIdx].type === 'char') {
                 continue;
             }
-            usableVariables.push(variables[innerBlockIdx][innerVariableIdx]);
+            usableVariables.push(blocks[innerBlockIdx].variables[innerVariableIdx]);
         }
     }
+
+    const blockTypes = [...new Set(blocks.slice(1, blocks.length).map(block => block.type))]
 
     const handleSelect = (val: string) => {
         setValue(val)
@@ -81,6 +90,15 @@ const VariableInput = ({ blockIndex, variableIndex, initValue, onChange }: Varia
                             )
                         })}
                     </CommandGroup>
+                    {isRenderReserved && blockTypes.map((type, idx) => {
+                        return (<CommandGroup key={idx} heading={`${type} 예약 변수`}>
+                            {reservedVariable[type].map((name, varIdx) => (
+                              <CommandItem key={varIdx} onSelect={() => handleSelect(name)}>
+                                  {name}
+                              </CommandItem>)
+                            )}
+                        </CommandGroup>)
+                    })}
                     <CommandEmpty>결과 없음. Enter로 직접 입력 가능</CommandEmpty>
                 </Command>
             </PopoverContent>

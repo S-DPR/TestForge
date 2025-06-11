@@ -4,12 +4,12 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import CodeEditor from "@/components/code_editor/CodeEditor";
-import React, {useContext} from "react";
+import React, {ReactNode, useContext} from "react";
 import {TestcaseContext, TestcaseProvider} from "@/context/TestcaseContext";
 import {Button} from "@/components/ui/button";
 import LineBlock from "@/components/testcase_spec/line-block";
-import {VariableSpec} from "@/components/testcase_spec/variable";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
+import GraphBlock from "@/components/testcase_spec/graph-block";
 
 export default function Home() {
   const [code1, setCode1] = React.useState('')
@@ -57,23 +57,23 @@ const Editor = () => {
   const context = useContext(TestcaseContext);
   if (!context) throw new Error("context 없음. 개판임");
 
-  const { variables, blocks, addBlock } = context;
+  const { blocks, addBlock } = context;
+  const child: Record<string, (blockIndex: number) => ReactNode> = {
+    'line': (blockIndex: number) => (<LineBlock blockIndex={blockIndex} key={blockIndex}/>),
+    'graph': (blockIndex: number) => (<GraphBlock blockIndex={blockIndex} key={blockIndex}/>),
+  }
 
   return (
       <>
         {blocks.slice(1, blocks.length).map((block, i) => {
           const blockIndex = i+1; // 사전 설정 변수가 있으니까
-          if (!variables[blockIndex]) variables[blockIndex] = [];
-          return (
+          return block.type !== 'null' && (
             <BlockWrapper key={blockIndex} blockIndex={blockIndex}>
-              <LineBlock
-                  key={i}
-                  blockIndex={blockIndex}
-              />
+              {child[block.type](blockIndex)}
             </BlockWrapper>
           )
         })}
-        <Button onClick={() => addBlock('type')}>블럭 추가</Button>
+        <Button onClick={() => addBlock('line')}>블럭 추가</Button>
       </>
   );
 };

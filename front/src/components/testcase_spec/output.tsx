@@ -28,6 +28,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
           variableIndex={999}
           initValue={seq}
           onChange={(val) => updateOutputSequence(blockIndex, idx, val)}
+          isRenderReserved={true}
         />
       ))}
       <Button onClick={() => addOutputSequence(blockIndex)}>sequence 추가</Button>

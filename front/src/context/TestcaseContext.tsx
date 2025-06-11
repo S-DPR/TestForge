@@ -3,6 +3,7 @@
 import React, {createContext, ReactNode, useState} from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
 import Output from "@/components/testcase_spec/output";
+import {Range} from "@/components/testcase_spec/define-range";
 
 export interface AbstractConfig {
   _: null;
@@ -16,16 +17,18 @@ interface BlockSpec {
 }
 
 interface EditorContextType {
-  variables: VariableSpec[][];
-  setVariables: React.Dispatch<React.SetStateAction<VariableSpec[][]>>;
+  // variables: VariableSpec[][];
+  // setVariables: React.Dispatch<React.SetStateAction<VariableSpec[][]>>;
   blocks: BlockSpec[];
   setBlocks: React.Dispatch<React.SetStateAction<BlockSpec[]>>;
 
-  addVariable: (blockIndex: number) => void;
-  updateVariables: (blockIndex: number, variableIndex: number, field: string, value: string) => void;
-  addVariableRange: (blockIndex: number, variableIndex: number) => void;
-  updateVariablesRange: (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string) => void;
+  addVariable: (blockIndex: number, variable: VariableSpec) => void;
+  updateVariable: (blockIndex: number, variableIndex: number, variable: VariableSpec) => void;
   removeVariable: (blockIndex: number, variableIndex: number) => void;
+
+  addVariableRange: (blockIndex: number, variableIndex: number, range: Range) => void;
+  updateVariableRange: (blockIndex: number, variableIndex: number, rangeIndex: number, range: Range) => void;
+
   addBlock: (type: string) => void;
   addOutputSequence: (blockIndex: number) => void;
   updateOutputSequence: (blockIndex: number, sequenceIndex: number, value: string) => void;
@@ -35,50 +38,99 @@ interface EditorContextType {
 export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
-  const [variables, setVariables] = useState<VariableSpec[][]>([[]]); // 사전설졍변수 있어서 이중으로 초기화
   const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: { _: null } }]);
 
-  const addVariable = (blockIndex: number) => {
-    setVariables((prev) => {
-      const newVariable = structuredClone(prev);
-      newVariable[blockIndex].push({ name: "", type: "", ranges: [] })
-      return newVariable;
-    });
-  };
-
-  const updateVariables = (blockIndex: number, variableIndex: number, field: string, value: string)=> {
-    const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
-      'type': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].type = value,
-      'name': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].name = value,
-    }
-
-    setVariables((prev) => {
-      const newVariable = structuredClone(prev);
-      updateMap[field](newVariable);
-      return newVariable;
+  const addVariable = (blockIndex: number, variable: VariableSpec) => {
+    console.log("hihi")
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].variables.push(variable);
+      console.log(newBlocks)
+      return newBlocks;
     })
   }
 
-  const addVariableRange = (blockIndex: number, variableIndex: number) => {
-    setVariables((prev) => {
-      const newVariable = structuredClone(prev);
-      newVariable[blockIndex][variableIndex].ranges.push({ min: '0', max: '0' })
-      return newVariable;
-    });
-  };
-
-  const updateVariablesRange = (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string)=> {
-    const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
-      'min': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].min = value,
-      'max': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].max = value,
-    }
-
-    setVariables((prev) => {
-      const newVariable = structuredClone(prev);
-      updateMap[field](newVariable);
-      return newVariable;
+  const updateVariable = (blockIndex: number, variableIndex: number, variable: VariableSpec) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].variables[variableIndex] = variable;
+      return newBlocks;
     })
   }
+
+  const removeVariable = (blockIndex: number, variableIndex: number) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].variables = newBlocks[blockIndex].variables.filter((_, idx) => idx !== variableIndex);
+      return newBlocks;
+    })
+  }
+
+  const addVariableRange = (blockIndex: number, variableIndex: number, range: Range) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].variables[variableIndex].ranges.push(range);
+      return newBlocks;
+    })
+  }
+
+  const updateVariableRange = (blockIndex: number, variableIndex: number, rangeIndex: number, range: Range) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].variables[variableIndex].ranges[rangeIndex] = range;
+      return newBlocks;
+    })
+  }
+
+  // const addVariable = (blockIndex: number, variable: VariableSpec) => {
+  //   setVariables((prev) => {
+  //     const newVariable = structuredClone(prev);
+  //     newVariable[blockIndex].push(variable);
+  //     return newVariable;
+  //   });
+  // };
+  //
+  // const initVariables = (blockIndex: number) => {
+  //   setVariables((prev) => {
+  //     const newVariable = structuredClone(prev);
+  //     newVariable[blockIndex] = []
+  //     return newVariable;
+  //   })
+  // }
+
+  // const updateVariables = (blockIndex: number, variableIndex: number, field: string, value: string)=> {
+  //   const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
+  //     'type': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].type = value,
+  //     'name': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].name = value,
+  //   }
+
+  //   setVariables((prev) => {
+  //     const newVariable = structuredClone(prev);
+  //     updateMap[field](newVariable);
+  //     return newVariable;
+  //   })
+  // }
+  //
+  // const addVariableRange = (blockIndex: number, variableIndex: number) => {
+  //   setVariables((prev) => {
+  //     const newVariable = structuredClone(prev);
+  //     newVariable[blockIndex][variableIndex].ranges.push({ min: '0', max: '0' })
+  //     return newVariable;
+  //   });
+  // };
+
+  // const updateVariablesRange = (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string)=> {
+  //   const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
+  //     'min': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].min = value,
+  //     'max': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].max = value,
+  //   }
+  //
+  //   setVariables((prev) => {
+  //     const newVariable = structuredClone(prev);
+  //     updateMap[field](newVariable);
+  //     return newVariable;
+  //   })
+  // }
 
   const addOutputSequence = (blockIndex: number) => {
     setBlocks((prev) => {
@@ -111,17 +163,17 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const removeVariable = (blockIndex: number, variableIndex: number) => {
-    setVariables((prev) => {
-      const newVariable = structuredClone(prev);
-      newVariable[blockIndex] = newVariable[blockIndex].filter((_, idx) => idx !== variableIndex);
-      return newVariable;
-    });
-  };
+  // const removeVariable = (blockIndex: number, variableIndex: number) => {
+  //   setVariables((prev) => {
+  //     const newVariable = structuredClone(prev);
+  //     newVariable[blockIndex] = newVariable[blockIndex].filter((_, idx) => idx !== variableIndex);
+  //     return newVariable;
+  //   });
+  // };
 
   return (
     <TestcaseContext.Provider value={{
-      variables, setVariables, blocks, setBlocks, addVariable, updateVariables, addVariableRange, updateVariablesRange, addBlock, addOutputSequence, updateOutputSequence, removeVariable, updateBlockType
+      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType
     }}>
       {children}
     </TestcaseContext.Provider>

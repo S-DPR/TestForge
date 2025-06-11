@@ -19,7 +19,8 @@ const LineBlock = ({ blockIndex }: LineBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
-  const { variables, addVariable } = ctx;
+  const { blocks, addVariable } = ctx;
+  const currentVariable = blocks[blockIndex].variables;
 
   return (
     <div>
@@ -30,14 +31,14 @@ const LineBlock = ({ blockIndex }: LineBlockProps) => {
         </Card>
         <Card>
           <Label>변수 설정</Label>
-          {variables[blockIndex].map((v, idx) => (
+          {currentVariable.filter(v => !v.isReserved).map((v, idx) => !v.isReserved && (
                 <Variable
                     key={idx}
                     blockIndex={blockIndex}
                     variableIndex={idx}
                 />
           ))}
-          <Button onClick={() => addVariable(blockIndex)}>변수 추가</Button>
+          <Button onClick={() => addVariable(blockIndex, {name: '', type: '', ranges: [], isReserved: false})}>변수 추가</Button>
         </Card>
         <Card>
           <Output blockIndex={blockIndex} />

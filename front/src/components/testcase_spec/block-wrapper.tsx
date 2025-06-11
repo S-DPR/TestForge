@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import React, {ReactNode, useContext} from "react";
+import React, {ReactNode, useContext, useEffect} from "react";
 import {TestcaseContext} from "@/context/TestcaseContext";
 
 interface BlockWrapperProps {
@@ -20,12 +20,12 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('콘텍스트없서요');
 
-  const { updateBlockType } = ctx;
+  const { blocks, updateBlockType } = ctx;
 
   return (
     <Card>
       <CardHeader>
-        <Select value={'line'} onValueChange={(type: 'line') => updateBlockType(blockIndex, type)}>
+        <Select value={blocks[blockIndex]?.type ?? 'line'} onValueChange={(type: 'line' | 'graph') => updateBlockType(blockIndex, type)}>
           <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
             <SelectValue placeholder="블럭 타입 선택" />
           </SelectTrigger>
@@ -33,6 +33,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
             <SelectGroup>
               <SelectLabel>타입</SelectLabel>
               <SelectItem value="line">Line</SelectItem>
+              <SelectItem value="graph">Graph</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
