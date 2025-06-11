@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useContext} from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
 import VariableInput from "@/components/testcase_spec/variable-input";
+import {TestcaseContext} from "@/context/TestcaseContext";
 
 export type Range = {
     min: string;
@@ -8,19 +9,22 @@ export type Range = {
 }
 
 interface DefineRangeSpec {
-    variable: VariableSpec[][];
     blockIndex: number;
     variableIndex: number;
     rangeIndex: number;
-    updateVariablesRange: (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string) => void;
 }
 
 // 이거 VariableInput으로 바꿔야함
-const DefineRange = ({ variable, blockIndex, variableIndex, rangeIndex, updateVariablesRange }: DefineRangeSpec) => {
+const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec) => {
+  const ctx = useContext(TestcaseContext);
+  if (!ctx) throw new Error("context 없음. 개판임.");
+
+  const { updateVariablesRange } = ctx;
+
   return (
     <div>
-      <VariableInput variable={variable} blockIndex={blockIndex} variableIndex={variableIndex} onChange={(val) => updateVariablesRange(blockIndex, variableIndex, rangeIndex, 'min', val)} />
-      <VariableInput variable={variable} blockIndex={blockIndex} variableIndex={variableIndex} onChange={(val) => updateVariablesRange(blockIndex, variableIndex, rangeIndex, 'max', val)} />
+      <VariableInput blockIndex={blockIndex} variableIndex={variableIndex} onChange={(val) => updateVariablesRange(blockIndex, variableIndex, rangeIndex, 'min', val)} />
+      <VariableInput blockIndex={blockIndex} variableIndex={variableIndex} onChange={(val) => updateVariablesRange(blockIndex, variableIndex, rangeIndex, 'max', val)} />
     </div>
   )
 }

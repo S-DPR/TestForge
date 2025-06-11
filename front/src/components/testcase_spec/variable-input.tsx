@@ -1,35 +1,39 @@
 "use client";
 
-import {VariableSpec} from "@/components/testcase_spec/variable";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem} from "../ui/command";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {TestcaseContext} from "@/context/TestcaseContext";
 
 export interface VariableInputSpec {
-    variable: VariableSpec[][];
     blockIndex: number;
     variableIndex: number;
     onChange?: (value: string) => void;
 }
 
-const VariableInput = ({ variable, blockIndex, variableIndex, onChange }: VariableInputSpec) => {
+const VariableInput = ({ blockIndex, variableIndex, onChange }: VariableInputSpec) => {
+    const ctx = useContext(TestcaseContext);
+    if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
+
+    const { variables } = ctx;
+
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState<string>("")
 
     const usableVariables = []
     for (let innerBlockIdx = 0; innerBlockIdx <= blockIndex; innerBlockIdx++) {
-        for (let innerVariableIdx = 0; innerVariableIdx < variable[innerBlockIdx].length; innerVariableIdx++) {
+        for (let innerVariableIdx = 0; innerVariableIdx < variables[innerBlockIdx].length; innerVariableIdx++) {
             if (innerBlockIdx === blockIndex && innerVariableIdx > variableIndex) {
                 break;
             }
-            if (variable[innerBlockIdx][innerVariableIdx].name === '') {
+            if (variables[innerBlockIdx][innerVariableIdx].name === '') {
                 continue;
             }
-            if (variable[innerBlockIdx][innerVariableIdx].type === 'char') {
+            if (variables[innerBlockIdx][innerVariableIdx].type === 'char') {
                 continue;
             }
-            usableVariables.push(variable[innerBlockIdx][innerVariableIdx]);
+            usableVariables.push(variables[innerBlockIdx][innerVariableIdx]);
         }
     }
 

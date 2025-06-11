@@ -41,11 +41,11 @@ export default function Home() {
               </CardContent>
             </Card>
           </TabsContent>
-          <TabsContent value={"테스트케이스 명세 설정"}>
-            <TestcaseProvider>
-              <Editor />
-            </TestcaseProvider>
-          </TabsContent>
+          <TestcaseProvider>
+            <TabsContent value={"테스트케이스 명세 설정"}>
+                <Editor />
+            </TabsContent>
+          </TestcaseProvider>
         </Tabs>
       </div>
     </>
@@ -56,64 +56,7 @@ const Editor = () => {
   const context = useContext(TestcaseContext);
   if (!context) throw new Error("context 없음. 개판임");
 
-  const { variables, setVariables, blocks, setBlocks } = context;
-
-  const addVariable = (blockIndex: number) => {
-    setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
-      newVariable[blockIndex].push({ name: "", type: "", ranges: [] })
-      return newVariable;
-    });
-  };
-
-  const updateVariables = (blockIndex: number, variableIndex: number, field: string, value: string)=> {
-    const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
-      'type': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].type = value,
-      'name': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].name = value,
-    }
-
-    setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
-      updateMap[field](newVariable);
-      return newVariable;
-    })
-  }
-
-  const addVariableRange = (blockIndex: number, variableIndex: number) => {
-    setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
-      newVariable[blockIndex][variableIndex].ranges.push({ min: '0', max: '0' })
-      return newVariable;
-    });
-  };
-
-  const updateVariablesRange = (blockIndex: number, variableIndex: number, rangeIndex: number, field: string, value: string)=> {
-    const updateMap: Record<string, (data: VariableSpec[][]) => void> = {
-      'min': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].min = value,
-      'max': (newVariable: VariableSpec[][]) => newVariable[blockIndex][variableIndex].ranges[rangeIndex].max = value,
-    }
-
-    setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
-      updateMap[field](newVariable);
-      return newVariable;
-    })
-  }
-
-  const addBlock = (type: string) => {
-    setBlocks((prev) => [
-        ...prev,
-      { type: type, variables: [] }
-    ])
-  }
-
-  const removeVariable = (blockIndex: number, variableIndex: number) => {
-    setVariables((prev) => {
-      const newVariable = prev.map(i => i.map(j => ({ ...j, ranges: [...j.ranges] })));
-      newVariable[blockIndex] = newVariable[blockIndex].filter((_, idx) => idx !== variableIndex);
-      return newVariable;
-    });
-  };
+  const { variables, blocks, addBlock } = context;
 
   return (
       <>
@@ -124,12 +67,6 @@ const Editor = () => {
               <LineBlock
                   key={i}
                   blockIndex={blockIndex}
-                  variables={variables}
-                  onVariableAddClick={addVariable}
-                  onRemoveVariable={removeVariable}
-                  updateVariables={updateVariables}
-                  updateVariablesRange={updateVariablesRange}
-                  onVariableRangeAddClick={addVariableRange}
               ></LineBlock>
           )
         })}
