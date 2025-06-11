@@ -3,7 +3,7 @@ import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
 import Variable from "@/components/testcase_spec/variable";
 import VariableInput from "@/components/testcase_spec/variable-input";
-import {useContext} from "react";
+import React, {useContext} from "react";
 import {AbstractConfig, TestcaseContext} from "@/context/TestcaseContext";
 import Output from "@/components/testcase_spec/output";
 import {Range} from "@/components/testcase_spec/define-range";
@@ -12,7 +12,7 @@ import {Checkbox} from "@/components/ui/checkbox";
 export interface GraphConfig extends AbstractConfig {
   nodeCount: string;
   edgeCount: string;
-  weightRange: Range;
+  weightRange: Range[];
   isPerfect: boolean;
   isConnect: boolean;
   isCycle: boolean;
@@ -34,6 +34,24 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].config = config;
+      return newBlocks;
+    })
+  }
+
+  const updateWeightRange = (rangeIndex: number, range: Range) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      const cfg: GraphConfig = newBlocks[blockIndex].config as GraphConfig;
+      cfg.weightRange[rangeIndex] = range;
+      return newBlocks;
+    })
+  }
+
+  const addWeightRange = () => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      const cfg: GraphConfig = newBlocks[blockIndex].config as GraphConfig;
+      cfg.weightRange.push({ min: '0', max: '10' })
       return newBlocks;
     })
   }
@@ -66,8 +84,13 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, edgeCount: val}) }} />
 
           <Label>가중치 범위</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, weightRange: { ...config.weightRange, min: val } }) }} />
-          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, weightRange: { ...config.weightRange, max: val } }) }} />
+          {config.weightRange.map((v, idx) => (
+            <>
+              <VariableInput blockIndex={blockIndex} variableIndex={10} initValue={v.min} onChange={(val) => updateWeightRange(idx, { ...v, min: val })} />
+              <VariableInput blockIndex={blockIndex} variableIndex={10} initValue={v.max} onChange={(val) => updateWeightRange(idx, { ...v, max: val })} />
+            </>
+          ))}
+          <Button onClick={addWeightRange}>수 범위 추가</Button>
 
           <Checkbox id={'is-perfect'} onCheckedChange={(chk) => { updateConfig({...config, isPerfect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-perfect'}>완전그래프 여부</Label>
           <Checkbox id={'is-connect'} onCheckedChange={(chk) => { updateConfig({...config, isConnect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-connect'}>연결그래프 여부</Label>

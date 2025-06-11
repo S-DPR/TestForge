@@ -158,7 +158,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
           type: 'graph',
           nodeCount: "",
           edgeCount: "",
-          weightRange: {min: '0', max: '10'},
+          weightRange: [],
           isPerfect: false,
           isConnect: false,
           isCycle: false
