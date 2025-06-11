@@ -4,10 +4,14 @@ import React, {createContext, ReactNode, useState} from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
 import Output from "@/components/testcase_spec/output";
 import {Range} from "@/components/testcase_spec/define-range";
+import {LineConfig} from "@/components/testcase_spec/line-block";
+import {GraphConfig} from "@/components/testcase_spec/graph-block";
 
 export interface AbstractConfig {
-  _: null;
+  type: 'line' | 'graph';
 }
+
+type Config = LineConfig | GraphConfig;
 
 interface BlockSpec {
   type: string;
@@ -17,8 +21,6 @@ interface BlockSpec {
 }
 
 interface EditorContextType {
-  // variables: VariableSpec[][];
-  // setVariables: React.Dispatch<React.SetStateAction<VariableSpec[][]>>;
   blocks: BlockSpec[];
   setBlocks: React.Dispatch<React.SetStateAction<BlockSpec[]>>;
 
@@ -38,7 +40,7 @@ interface EditorContextType {
 export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
-  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: { _: null } }]);
+  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: {} as LineConfig }]);
 
   const addVariable = (blockIndex: number, variable: VariableSpec) => {
     console.log("hihi")
@@ -148,10 +150,22 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  const configs: Record<string, Config> = {
+    'line': {} as LineConfig,
+    'graph': {
+      nodeCount: "",
+      edgeCount: "",
+      weightRange: {min: '0', max: '10'},
+      isPerfect: false,
+      isConnect: false,
+      isCycle: false
+    } as GraphConfig
+  }
+
   const addBlock = (type: string) => {
     setBlocks((prev) => [
       ...prev,
-      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: { _: null } }
+      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: configs[type] }
     ])
   }
 
@@ -159,6 +173,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].type = type;
+      newBlocks[blockIndex].config = configs[type];
       return newBlocks;
     })
   }

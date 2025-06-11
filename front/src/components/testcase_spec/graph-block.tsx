@@ -12,7 +12,7 @@ import {Checkbox} from "@/components/ui/checkbox";
 export interface GraphConfig extends AbstractConfig {
   nodeCount: string;
   edgeCount: string;
-  weightRange: Range[];
+  weightRange: Range;
   isPerfect: boolean;
   isConnect: boolean;
   isCycle: boolean;
@@ -26,8 +26,17 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
-  const { blocks, addVariable } = ctx;
+  const { blocks, setBlocks, addVariable } = ctx;
   const currentVariable = blocks[blockIndex].variables;
+  const config: GraphConfig = blocks[blockIndex].config as GraphConfig;
+
+  const updateConfig = (config: GraphConfig) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].config = config;
+      return newBlocks;
+    })
+  }
 
   return (
     <div>
@@ -51,18 +60,18 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <Label>상세 설정</Label>
 
           <Label>노드 개수</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10}></VariableInput>
+          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, nodeCount: val}) }} />
 
           <Label>간선 개수</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10}></VariableInput>
+          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, edgeCount: val}) }} />
 
           <Label>가중치 범위</Label>
-          <VariableInput blockIndex={blockIndex} variableIndex={10}></VariableInput>
-          <VariableInput blockIndex={blockIndex} variableIndex={10}></VariableInput>
+          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, weightRange: { ...config.weightRange, min: val } }) }} />
+          <VariableInput blockIndex={blockIndex} variableIndex={10} onChange={(val) => { updateConfig({...config, weightRange: { ...config.weightRange, max: val } }) }} />
 
-          <Checkbox id={'is-perfect'}/> <Label htmlFor={'is-perfect'}>완전그래프 여부</Label>
-          <Checkbox id={'is-connect'}/> <Label htmlFor={'is-connect'}>연결그래프 여부</Label>
-          <Checkbox id={'is-cycle'}/> <Label htmlFor={'is-cycle'}>사이클 여부</Label>
+          <Checkbox id={'is-perfect'} onCheckedChange={(chk) => { updateConfig({...config, isPerfect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-perfect'}>완전그래프 여부</Label>
+          <Checkbox id={'is-connect'} onCheckedChange={(chk) => { updateConfig({...config, isConnect: !!chk.valueOf() }) }}/> <Label htmlFor={'is-connect'}>연결그래프 여부</Label>
+          <Checkbox id={'is-cycle'} onCheckedChange={(chk) => { updateConfig({...config, isCycle: !!chk.valueOf() }) }}/> <Label htmlFor={'is-cycle'}>사이클 여부</Label>
         </Card>
         <Card>
           <Output blockIndex={blockIndex} />
