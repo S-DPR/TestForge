@@ -14,7 +14,7 @@ export interface AbstractConfig {
 
 type Config = LineConfig | GraphConfig | MatrixConfig;
 
-interface BlockSpec {
+export interface BlockSpec {
   type: string;
   variables: VariableSpec[];
   output: OutputType;
