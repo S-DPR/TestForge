@@ -1,46 +1,46 @@
 import random
 from collections import deque
 
-from request.config_structs import Output
-from request.expression import safe_eval_helper
+from request.config_structs import Output, UndirectedGraphConfigDataclass, Range
+from request.expression import safe_eval_helper, safe_eval
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator
 
 class UndirectedGraphConfig(BaseConfig):
-    def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):
+    def __init__(self, variables: dict[str, tuple[int, str]], config: UndirectedGraphConfigDataclass):
         try:
-            self.node_count = safe_eval_helper(variables, config, 'node_count', None)  # 노드 개수
+            self.node_count = safe_eval(config.node_count, variables)  # 노드 개수
         except ValueError:
             raise ConfigValueError('node_count', 'node_count는 그래프 config에 반드시 포함되어있어야 합니다.')
 
-        self.is_zero_start = config.get('is_zero_start', False) # 노드 번호가 0부터인지 여부
+        self.is_zero_start = config.is_zero_start # 노드 번호가 0부터인지 여부
         self.start, self.end = [0, self.node_count-1] if self.is_zero_start else [1, self.node_count]
 
-        self.weight_range = None
-        if 'weight_range' in config:
-            w = random.choice(config.get('weight_range'))
+        self.weight_range = [Range(1, 10)]
+        if config.weight_range:
+            w = random.choice(config.weight_range)
             weight_start, weight_end = w.min, w.max
             weight_start = safe_eval_helper(weight_start, config, 'weight_start', '1')
             weight_end = safe_eval_helper(weight_end, config, 'weight_end', '100000')
             self.weight_range = [weight_start, weight_end]
 
-        self.is_perfect = config.get('is_perfect', False) # 완전그래프 여부
+        self.is_perfect = config.is_perfect # 완전그래프 여부
         # is_connect = config.get('is_connect', True) # 연결그래프 여부
         self.is_connect = True # 일단 이거 켜두자 너무 복잡해진다
-        self.is_cycle = config.get('is_cycle', True) # 사이클 여부
+        self.is_cycle = config.is_cycle # 사이클 여부
         # is_self_cycle = config.get('is_self_cycle', False) 이건 일반적으로 문제에 없으니까 나중에 생각하자
-        self.edge_count = self.get_edge_count(variables, config) # 간선 개수
+        self.edge_count = self.get_edge_count(variables, config.edge_count) # 간선 개수
         self.validate()
 
     @property
     def is_tree(self) -> bool:
         return self.is_connect and not self.is_cycle
 
-    def get_edge_count(self, variables, config) -> int:
+    def get_edge_count(self, variables, edge_count) -> int:
         node_count = self.node_count
-        if 'edge_count' in config:
-            return safe_eval_helper(variables, config, 'edge_count', None)
+        if edge_count is not None:
+            return safe_eval(edge_count, variables)
         if self.is_perfect:
             return node_count * (node_count - 1) // 2
         if self.is_tree:

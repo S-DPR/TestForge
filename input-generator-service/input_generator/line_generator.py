@@ -1,9 +1,9 @@
-from request.config_structs import Output
+from request.config_structs import Output, LineConfigDataclass
 from input_generator.base_generator import BaseGenerator, BaseConfig, TYPE_FUNCTION
 
 
 class LineConfig(BaseConfig):
-    def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):
+    def __init__(self, variables: dict[str, tuple[int, str]], config: LineConfigDataclass):
         pass
 
 

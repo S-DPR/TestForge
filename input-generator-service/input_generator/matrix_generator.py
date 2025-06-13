@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from dataclasses import dataclass
+from request.config_structs import MatrixConfigDataclass, Range
 from types import NoneType
 
 from request.config_structs import Output
@@ -11,26 +11,29 @@ from input_generator.base_generator import BaseConfig, BaseGenerator, TYPE_FUNCT
 from input_generator.line_generator import line_generator
 
 class MatrixConfig(BaseConfig):
-    def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):
-        self.col_size = safe_eval_helper(variables, config, 'col_size', None) # 필수
-        self.row_size = safe_eval_helper(variables, config, 'row_size', '1')
-        self.num_type = config.get('num_type', 'int')
+    def __init__(self, variables: dict[str, tuple[int, str]], config: MatrixConfigDataclass):
+        self.col_size = safe_eval_helper(variables, config.col_size, 'col_size', None) # 필수
+        self.row_size = safe_eval_helper(variables, config.row_size, 'row_size', '1')
+        self.num_type = config.num_type
 
-        self.num_range = self._range_simplify(config.get('num_range', [{ 'min': 1, 'max': 255 }]), variables)
-        self.is_distinct = config.get('is_distinct', False) # ranges에서 각 수가 한 번 씩만 나오게 할지 여부
-        self.value_limit = self._value_limit_simplify(self.num_range, config.get('value_limit', {})) # 특정 valuee가 일정 횟수 이상 나오지 못 하도록 할지 여부. {1: 3} 처럼 사용. distinct 있어도 이거 있으면 이거 우선
-        self.empty_value = config.get('empty_value', None) # is_distinct가 True일 때 가능한 숫자를 모두 썼으면 사용할 숫자. None이면 비활성화
-        self.random_empty = config.get('random_empty', False) # empty_value가 있어도 빈 공간을 최대한 제거할지 아니면 최대한 채울지
+        self.num_range = self._range_simplify(config.num_range, variables)
+        self.is_distinct = config.is_distinct # ranges에서 각 수가 한 번 씩만 나오게 할지 여부
+        self.value_limit = self._value_limit_simplify(self.num_range, config.value_limit) # 특정 valuee가 일정 횟수 이상 나오지 못 하도록 할지 여부. {1: 3} 처럼 사용. distinct 있어도 이거 있으면 이거 우선
+        self.empty_value = config.empty_value # is_distinct가 True일 때 가능한 숫자를 모두 썼으면 사용할 숫자. None이면 비활성화
+        self.random_empty = config.random_empty # empty_value가 있어도 빈 공간을 최대한 제거할지 아니면 최대한 채울지
 
-        self.is_graph = safe_eval_helper(variables, config, 'is_graph', False) # 이거 True면 col/row인덱스 같은곳이 0
-        self.is_symmetric = config.get('is_symmetric', False) # 이거 True면 대칭
-        self.validate()
+        self.is_graph = safe_eval_helper(variables, config.is_graph, 'is_graph', False) # 이거 True면 col/row인덱스 같은곳이 0
+        self.is_symmetric = config.is_symmetric # 이거 True면 대칭
+        try:
+            self.validate()
+        except ConfigValueError as e:
+            print(e, flush=True)
 
-    def _range_simplify(self, ranges, variables):
+    def _range_simplify(self, ranges: list[Range], variables):
         if not ranges:
             return []
         try:
-            ranges_as_int = [*map(lambda x: [safe_eval(x[0], variables), safe_eval(x[1], variables)], ranges)]
+            ranges_as_int = [*map(lambda x: [safe_eval(x.min, variables), safe_eval(x.max, variables)], ranges)]
         except Exception as e:
             print(e)
             return []

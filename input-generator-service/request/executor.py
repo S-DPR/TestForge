@@ -1,4 +1,7 @@
-from request.config_structs import TestcaseConfig
+from dacite import from_dict
+
+from request.config_structs import TestcaseConfig, LineConfigDataclass, UndirectedGraphConfigDataclass, \
+    MatrixConfigDataclass, QueryConfigDataclass
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
@@ -17,6 +20,13 @@ CONFIG_CLASS_REGISTRY = {
     "query": QueryConfig,
 }
 
+CONFIG_DATACLASS_REGISTRY = {
+    'line': LineConfigDataclass,
+    'undirected_graph': UndirectedGraphConfigDataclass,
+    'matrix': MatrixConfigDataclass,
+    'query': QueryConfigDataclass
+}
+
 GENERATOR_INSTANCE_REGISTRY = {
     "line": line_generator,
     "undirected_graph": undirected_graph_generator,
@@ -27,8 +37,10 @@ GENERATOR_INSTANCE_REGISTRY = {
 def resolve_generator_config(type_name: str, variables: dict, config: dict) -> tuple[BaseGenerator, BaseConfig]:
     try:
         cfg_class = CONFIG_CLASS_REGISTRY[type_name]
+        data_cfg_class = CONFIG_DATACLASS_REGISTRY[type_name]
         gen = GENERATOR_INSTANCE_REGISTRY[type_name]
-        return gen, cfg_class(variables, config)
+        from dacite import Config
+        return gen, cfg_class(variables, from_dict(data_class=data_cfg_class, data=config, config=Config(strict=False)))
     except KeyError:
         raise ValueError(f"지원하지 않는 타입: {type_name}")
 
@@ -351,24 +363,24 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # # ]))
 #
 #
-# # print(process(TestcaseConfig([], [
-# #     TestcaseBlockConfig(
-# #         output=Output(['nn', '$n', '$m']),
-# #         repeat='100000',
-# #         type='line',
-# #         variable=[
-# #             Variable('n', [[1, 5]]),
-# #             Variable('m', [[5, 10]]),
-# #         ],
-# #         config={}
-# #     ),
-# #     TestcaseBlockConfig(
-# #         output=Output(['$_s', '$_e']),
-# #         repeat='1',
-# #         type='undirected_graph',
-# #         variable=[],
-# #         config={
-# #             'node_count': '$n'
-# #         }
-# #     )
-# # ])))
+# print(process(TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='100000',
+#         type='line',
+#         variable=[
+#             Variable('n', [[1, 5]]),
+#             Variable('m', [[5, 10]]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output(['$_s', '$_e']),
+#         repeat='1',
+#         type='undirected_graph',
+#         variable=[],
+#         config={
+#             'node_count': '$n'
+#         }
+#     )
+# ])))
