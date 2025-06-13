@@ -1,7 +1,7 @@
 import random
 from collections import deque
 
-from request.config_structs import Output, UndirectedGraphConfigDataclass, Range
+from request.config_structs import Output, UndirectedGraphConfigDataclass, Range, IntRange
 from request.expression import safe_eval_helper, safe_eval
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig
@@ -9,21 +9,22 @@ from input_generator.line_generator import line_generator
 
 class UndirectedGraphConfig(BaseConfig):
     def __init__(self, variables: dict[str, tuple[int, str]], config: UndirectedGraphConfigDataclass):
+        print(config.node_count)
         try:
-            self.node_count = safe_eval(config.node_count, variables)  # 노드 개수
+            self.node_count = safe_eval(config.node_count.replace('$', ''), variables)  # 노드 개수
         except ValueError:
             raise ConfigValueError('node_count', 'node_count는 그래프 config에 반드시 포함되어있어야 합니다.')
 
         self.is_zero_start = config.is_zero_start # 노드 번호가 0부터인지 여부
         self.start, self.end = [0, self.node_count-1] if self.is_zero_start else [1, self.node_count]
 
-        self.weight_range = [Range(1, 10)]
+        self.weight_range = [IntRange(1, 10)]
         if config.weight_range:
-            w = random.choice(config.weight_range)
-            weight_start, weight_end = w.min, w.max
-            weight_start = safe_eval_helper(weight_start, config, 'weight_start', '1')
-            weight_end = safe_eval_helper(weight_end, config, 'weight_end', '100000')
-            self.weight_range = [weight_start, weight_end]
+            self.weight_range = []
+            for weight in config.weight_range:
+                mn = safe_eval(weight.min.replace('$', ''), variables)
+                mx = safe_eval(weight.max.replace('$', ''), variables)
+                self.weight_range.append(IntRange(mn, mx))
 
         self.is_perfect = config.is_perfect # 완전그래프 여부
         # is_connect = config.get('is_connect', True) # 연결그래프 여부
@@ -164,11 +165,12 @@ class UndirectedGraphGenerator(BaseGenerator):
             graph = create_general_graph(config.edge_count)
         return graph
 
-    def set_variable(self, variables, _s, _e, weight_range):
+    def set_variable(self, variables, _s, _e, weight_range: list[IntRange]):
         variables['_s'] = (_s, 'int')
         variables['_e'] = (_e, 'int')
         if weight_range is not None:
-            w = random.randint(*weight_range)
+            select_w = random.choice(weight_range)
+            w = random.randint(select_w.min, select_w.max)
             variables['_w'] = (w, 'int')
 
 undirected_graph_generator = UndirectedGraphGenerator()

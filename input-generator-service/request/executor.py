@@ -1,7 +1,7 @@
 from dacite import from_dict
 
 from request.config_structs import TestcaseConfig, LineConfigDataclass, UndirectedGraphConfigDataclass, \
-    MatrixConfigDataclass, QueryConfigDataclass
+    MatrixConfigDataclass, QueryConfigDataclass, TestcaseBlockConfig, Output, Variable, Range
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
@@ -64,7 +64,7 @@ def process(account_id, testcaseConfig: TestcaseConfig):
         output = line.output
         variable_format = line.variable
 
-        repeat_count = safe_eval(line.repeat, variables)
+        repeat_count = safe_eval(line.repeat.replace('$', ''), variables)
         variables['_repeat'] = repeat_count
         current_line_data = []
         generator, gen_config = resolve_generator_config(line_type, variables, config)
@@ -73,7 +73,7 @@ def process(account_id, testcaseConfig: TestcaseConfig):
             current_line_data.extend(generator.generate(variables, output, gen_config))
         for line_data in current_line_data:
             result.append(output.separator.join(map(str, line_data)))
-    save_database(account_id, "", testcaseConfig)
+    # save_database(account_id, "", testcaseConfig)
     return '\n'.join(result)
 
 
@@ -363,14 +363,14 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # # ]))
 #
 #
-# print(process(TestcaseConfig([], [
+# print(process('a', TestcaseConfig([], [
 #     TestcaseBlockConfig(
 #         output=Output(['nn', '$n', '$m']),
-#         repeat='100000',
+#         repeat='1',
 #         type='line',
 #         variable=[
-#             Variable('n', [[1, 5]]),
-#             Variable('m', [[5, 10]]),
+#             Variable('n', [Range(1, 5)]),
+#             Variable('m', [Range(5, 10)]),
 #         ],
 #         config={}
 #     ),
@@ -381,6 +381,72 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 #         variable=[],
 #         config={
 #             'node_count': '$n'
+#         }
+#     )
+# ])))
+
+# print(process('a', TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='1',
+#         type='line',
+#         variable=[
+#             Variable('n', [Range('3', '5')]),
+#             Variable('m', [Range('5', '10')]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output([]),
+#         repeat='$n',
+#         type='query',
+#         variable=[
+#             Variable('x', [Range('1', '$n')]),
+#             Variable('l', [Range('1', '$n')]),
+#             Variable('r', [Range('$l', '$n')])
+#         ],
+#         config={
+#             'outputs': [
+#                 {
+#                     'sequence': ['1', '$x']
+#                 },
+#                 {
+#                     'sequence': ['2', '$l', '$r']
+#                 }
+#             ],
+#             'distribution': ['10', '10'],
+#             'min_count': ['1', '1'],
+#             'max_count': ['1000000', '1000000'],
+#         }
+#     )
+# ])))
+
+# print(process('a', TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='1',
+#         type='line',
+#         variable=[
+#             Variable('n', [Range('3', '5')]),
+#             Variable('m', [Range('5', '10')]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output(['$_element']),
+#         repeat='$n',
+#         type='matrix',
+#         variable=[
+#             Variable('x', [Range('1', '$n')]),
+#             Variable('l', [Range('1', '$n')]),
+#             Variable('r', [Range('$l', '$n')])
+#         ],
+#         config={
+#             'col_size': '$n',
+#             'row_size': '$n',
+#             'is_distinct': True,
+#             'empty_value': '-1',
+#             'num_range': [Range('1', '10'), Range('1', '30'), Range('5', '48')]
 #         }
 #     )
 # ])))

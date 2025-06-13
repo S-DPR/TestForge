@@ -3,6 +3,11 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Range:
+    min: str
+    max: str
+
+@dataclass
+class IntRange:
     min: int
     max: int
 

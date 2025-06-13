@@ -16,7 +16,7 @@ class QueryConfig(BaseConfig):
         self.max_count = [safe_eval(i.replace('$', ''), variables) for i in config.max_count]
         self.repeat = variables.get("_repeat", 1)
 
-        self.outputs = [create_outputs(i) for i in self.outputs]
+        # self.outputs = [create_outputs(i) for i in self.outputs]
         while len(self.distribution) < len(self.outputs):
             self.distribution.append(1)
         while len(self.min_count) < len(self.outputs):

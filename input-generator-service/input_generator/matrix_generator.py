@@ -12,8 +12,8 @@ from input_generator.line_generator import line_generator
 
 class MatrixConfig(BaseConfig):
     def __init__(self, variables: dict[str, tuple[int, str]], config: MatrixConfigDataclass):
-        self.col_size = safe_eval_helper(variables, config.col_size, 'col_size', None) # 필수
-        self.row_size = safe_eval_helper(variables, config.row_size, 'row_size', '1')
+        self.col_size = safe_eval(config.col_size.replace('$', ''), variables) # 필수
+        self.row_size = safe_eval(config.row_size.replace('$', ''), variables)
         self.num_type = config.num_type
 
         self.num_range = self._range_simplify(config.num_range, variables)
@@ -22,7 +22,7 @@ class MatrixConfig(BaseConfig):
         self.empty_value = config.empty_value # is_distinct가 True일 때 가능한 숫자를 모두 썼으면 사용할 숫자. None이면 비활성화
         self.random_empty = config.random_empty # empty_value가 있어도 빈 공간을 최대한 제거할지 아니면 최대한 채울지
 
-        self.is_graph = safe_eval_helper(variables, config.is_graph, 'is_graph', False) # 이거 True면 col/row인덱스 같은곳이 0
+        self.is_graph = config.is_graph # 이거 True면 col/row인덱스 같은곳이 0
         self.is_symmetric = config.is_symmetric # 이거 True면 대칭
         try:
             self.validate()
