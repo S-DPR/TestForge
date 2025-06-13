@@ -4,9 +4,9 @@ import React, {createContext, ReactNode, useState} from "react";
 import {VariableSpec} from "@/components/testcase_spec/variable";
 import {OutputType} from "@/components/testcase_spec/output";
 import {Range} from "@/components/testcase_spec/define-range";
-import {LineConfig} from "@/components/testcase_spec/line-block";
-import {GraphConfig} from "@/components/testcase_spec/graph-block";
-import {MatrixConfig} from "@/components/testcase_spec/matrix-block";
+import {LineConfig} from "@/components/testcase_spec/blocks/line-block";
+import {GraphConfig} from "@/components/testcase_spec/blocks/graph-block";
+import {MatrixConfig} from "@/components/testcase_spec/blocks/matrix-block";
 
 export interface AbstractConfig {
   type: 'line' | 'graph' | 'matrix';
