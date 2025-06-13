@@ -18,20 +18,20 @@ const SubmitTestcaseRequestButton = () => {
 
     return <Button onClick={() => {
         initResult()
-        sendRequest(buildPayload(code1, lang1, code2, lang2, blocks), "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzgxMTMxLCJpYXQiOjE3NDk3ODA4MzEsImp0aSI6ImEzOGU1NmIyZmJhNzQ4MGNhMWYyNmIwYjE1OTkwMjIxIiwidXNlcl9pZCI6IjJjNmE3M2NlLTM4YTctNGRjYS05YTZhLTQ4MTIzM2Q3NTdkYiJ9.G8InCKgOaop1-iHu6AjbGHvtdodLiY3VBdKzjpXMGoc", addResult)
+        sendRequest(buildPayload(code1, lang1, code2, lang2, blocks), addResult)
     }}>제출</Button>
 }
 
-const sendRequest = async (payload: object, token: string, addResult: (result: Result) => void) => {
+const sendRequest = async (payload: object, addResult: (result: Result) => void) => {
     try {
         const res = await fetch('http://localhost:9001/test-execute', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'text/event-stream',
-                "Authorization": token
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            credentials: "include"
         });
         if (res.body == null) {
             console.log('nooo');

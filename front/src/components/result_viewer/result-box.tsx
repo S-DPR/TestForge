@@ -14,8 +14,8 @@ const ResultBox = () => {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzgxMTMxLCJpYXQiOjE3NDk3ODA4MzEsImp0aSI6ImEzOGU1NmIyZmJhNzQ4MGNhMWYyNmIwYjE1OTkwMjIxIiwidXNlcl9pZCI6IjJjNmE3M2NlLTM4YTctNGRjYS05YTZhLTQ4MTIzM2Q3NTdkYiJ9.G8InCKgOaop1-iHu6AjbGHvtdodLiY3VBdKzjpXMGoc"
-      }
+      },
+      credentials: "include"
     })
     const text = await res.text();
     const data = JSON.parse(text);

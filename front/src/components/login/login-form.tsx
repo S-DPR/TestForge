@@ -9,11 +9,15 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {useState} from "react";
 
 const LoginForm = ({
                             className,
                             ...props
                           }: React.ComponentProps<"div">) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -24,7 +28,10 @@ const LoginForm = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            login(email, password);
+          }}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -32,6 +39,7 @@ const LoginForm = ({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -45,7 +53,7 @@ const LoginForm = ({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" onChange={(e) => setPassword(e.target.value)} required />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
@@ -67,6 +75,23 @@ const LoginForm = ({
       </Card>
     </div>
   )
+}
+
+const login = async (email: string, password: string) => {
+  const res = await fetch('http://localhost:9000/api/account/login/', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+    credentials: "include",
+  })
+  const data = await res.json()
+  if (!data || !data.message) {
+    console.log('login failed');
+    return;
+  }
+  console.log('login success');
 }
 
 export default LoginForm;
