@@ -1,5 +1,6 @@
 import random
 from collections import defaultdict
+from dataclasses import dataclass
 from types import NoneType
 
 from request.config_structs import Output
@@ -8,7 +9,6 @@ from error.exception import ConfigValueError
 from input_generator.base_generator import BaseConfig, BaseGenerator, TYPE_FUNCTION
 
 from input_generator.line_generator import line_generator
-
 
 class MatrixConfig(BaseConfig):
     def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):

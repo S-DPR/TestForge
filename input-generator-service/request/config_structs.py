@@ -30,3 +30,17 @@ class TestcaseBlockConfig:
 class TestcaseConfig:
     variable_format: list[Variable]
     lines: list[TestcaseBlockConfig]
+
+
+@dataclass
+class MatrixConfigDatalist:
+    col_size: str = None
+    row_size: str = '1'
+    num_type: str = 'int'
+    num_range: list[Range] = field(default_factory=list)
+    is_distinct: bool = False
+    value_limit: dict[str, int] = field(default_factory=dict)
+    empty_value: str = None
+    random_empty: bool = False
+    is_graph: bool = False
+    is_symmetric: bool = False
