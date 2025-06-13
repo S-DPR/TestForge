@@ -33,7 +33,7 @@ class TestcaseConfig:
 
 
 @dataclass
-class MatrixConfigDatalist:
+class MatrixConfigDataclass:
     col_size: str = None
     row_size: str = '1'
     num_type: str = 'int'
@@ -44,3 +44,28 @@ class MatrixConfigDatalist:
     random_empty: bool = False
     is_graph: bool = False
     is_symmetric: bool = False
+
+
+@dataclass
+class QueryConfigDataclass:
+    outputs: list[Output] = None
+    distribution: list[str] = field(default_factory=list)
+    min_count: list[str] = field(default_factory=list)
+    max_count: list[str] = field(default_factory=list)
+    repeat: str = '1'
+
+
+@dataclass
+class UndirectedGraphConfigDataclass:
+    node_count: str = None
+    edge_count: str = None
+    is_zero_start: bool = False
+    weight_range: list[Range] = field(default_factory=list)
+    is_perfect: bool = False
+    is_connect: bool = False
+    is_cycle: bool = False
+
+
+@dataclass
+class LineConfigDataclass:
+    _: None = None
