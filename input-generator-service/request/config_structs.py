@@ -68,4 +68,4 @@ class UndirectedGraphConfigDataclass:
 
 @dataclass
 class LineConfigDataclass:
-    _: None = None
+    pass
