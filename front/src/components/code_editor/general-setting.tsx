@@ -15,7 +15,7 @@ const GeneralSetting = () => {
         <Card>
             <CardHeader>
                 <CardTitle>일반 설정</CardTitle>
-                <CardDescription>코드 설정 및 반복 횟수를 설정하는 부분입니다.</CardDescription>
+                <CardDescription>비교할 두 코드 및 반복 횟수를 설정하는 부분입니다.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-1">
