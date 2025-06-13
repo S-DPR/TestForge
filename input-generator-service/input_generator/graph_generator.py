@@ -1,14 +1,14 @@
 import random
 from collections import deque
 
-from request.config_structs import Output, UndirectedGraphConfigDataclass, Range, IntRange
+from request.config_structs import Output, GraphConfigDataclass, Range, IntRange
 from request.expression import safe_eval_helper, safe_eval
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator
 
-class UndirectedGraphConfig(BaseConfig):
-    def __init__(self, variables: dict[str, tuple[int, str]], config: UndirectedGraphConfigDataclass):
+class GraphConfig(BaseConfig):
+    def __init__(self, variables: dict[str, tuple[int, str]], config: GraphConfigDataclass):
         print(config.node_count)
         try:
             self.node_count = safe_eval(config.node_count.replace('$', ''), variables)  # 노드 개수
@@ -74,8 +74,8 @@ class UndirectedGraphConfig(BaseConfig):
         if self.is_tree and e != min_edge:
             raise ConfigValueError("edge_count", f"트리의 간선 개수는 {min_edge}여야 합니다. 현재 {e}개입니다.")
 
-class UndirectedGraphGenerator(BaseGenerator):
-    def generate(self, variables, output: Output, config: UndirectedGraphConfig):
+class GraphGenerator(BaseGenerator):
+    def generate(self, variables, output: Output, config: GraphConfig):
         def create_perfect_graph():
             graph = []
             start, end = config.start, config.end
@@ -173,4 +173,4 @@ class UndirectedGraphGenerator(BaseGenerator):
             w = random.randint(select_w.min, select_w.max)
             variables['_w'] = (w, 'int')
 
-undirected_graph_generator = UndirectedGraphGenerator()
+graph_generator = GraphGenerator()

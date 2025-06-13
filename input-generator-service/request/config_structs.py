@@ -61,7 +61,7 @@ class QueryConfigDataclass:
 
 
 @dataclass
-class UndirectedGraphConfigDataclass:
+class GraphConfigDataclass:
     node_count: str = None
     edge_count: str = None
     is_zero_start: bool = False

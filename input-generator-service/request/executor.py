@@ -1,12 +1,12 @@
 from dacite import from_dict
 
-from request.config_structs import TestcaseConfig, LineConfigDataclass, UndirectedGraphConfigDataclass, \
+from request.config_structs import TestcaseConfig, LineConfigDataclass, GraphConfigDataclass, \
     MatrixConfigDataclass, QueryConfigDataclass, TestcaseBlockConfig, Output, Variable, Range
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
 from input_generator.query_generator import query_generator, QueryConfig
-from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
+from input_generator.graph_generator import graph_generator, GraphConfig
 
 from request.parsing import create_variables
 from request.expression import safe_eval
@@ -15,21 +15,21 @@ from db.sessions import get_db
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
-    "undirected_graph": UndirectedGraphConfig,
+    "graph": GraphConfig,
     "matrix": MatrixConfig,
     "query": QueryConfig,
 }
 
 CONFIG_DATACLASS_REGISTRY = {
     'line': LineConfigDataclass,
-    'undirected_graph': UndirectedGraphConfigDataclass,
+    'graph': GraphConfigDataclass,
     'matrix': MatrixConfigDataclass,
     'query': QueryConfigDataclass
 }
 
 GENERATOR_INSTANCE_REGISTRY = {
     "line": line_generator,
-    "undirected_graph": undirected_graph_generator,
+    "graph": graph_generator,
     'matrix': matrix_generator,
     "query": query_generator,
 }
@@ -131,7 +131,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # from input_generator.line_generator import line_generator, LineConfig
 # from input_generator.matrix_generator import matrix_generator, MatrixConfig
 # from input_generator.query_generator import query_generator, QueryConfig
-# from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
+# from input_generator.graph_generator import graph_generator, UndirectedGraphConfig
 #
 # from request.parsing import create_variables
 # from request.expression import safe_eval
@@ -140,14 +140,14 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 #
 # CONFIG_CLASS_REGISTRY = {
 #     "line": LineConfig,
-#     "undirected_graph": UndirectedGraphConfig,
+#     "graph": UndirectedGraphConfig,
 #     "matrix": MatrixConfig,
 #     "query": QueryConfig,
 # }
 #
 # GENERATOR_INSTANCE_REGISTRY = {
 #     "line": line_generator,
-#     "undirected_graph": undirected_graph_generator,
+#     "graph": graph_generator,
 #     'matrix': matrix_generator,
 #     "query": query_generator,
 # }
@@ -266,7 +266,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # #         'output': { 'sequence': ['$n'] }
 # #     },
 # #     {
-# #         'type': 'undirected_graph',
+# #         'type': 'graph',
 # #         'config': {
 # #             'node_count': '$n',
 # #             'is_cycle': False
@@ -286,7 +286,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # #         'output': { 'sequence': ['$n', '$m'] }
 # #     },
 # #     {
-# #         'type': 'undirected_graph',
+# #         'type': 'graph',
 # #         'config': {
 # #             'node_count': '$n',
 # #             'edge_count': '$m',
@@ -377,7 +377,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 #     TestcaseBlockConfig(
 #         output=Output(['$_s', '$_e']),
 #         repeat='1',
-#         type='undirected_graph',
+#         type='graph',
 #         variable=[],
 #         config={
 #             'node_count': '$n'
