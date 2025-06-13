@@ -13,12 +13,12 @@ const SubmitTestcaseRequestButton = () => {
     if (!resultCtx) throw new Error("또 result ctx 에러야");
 
     const { blocks } = tcCtx;
-    const { code1, lang1, code2, lang2 } = codeCtx;
+    const { code1, lang1, code2, lang2, repeatCount } = codeCtx;
     const { addResult, initResult } = resultCtx;
 
     return <Button onClick={() => {
         initResult()
-        sendRequest(buildPayload(code1, lang1, code2, lang2, blocks), addResult)
+        sendRequest(buildPayload(code1, lang1, code2, lang2, repeatCount, blocks), addResult)
     }}>제출</Button>
 }
 
@@ -58,7 +58,7 @@ const sendRequest = async (payload: object, addResult: (result: Result) => void)
     }
 }
 
-const buildPayload = (code1: string, lang1: string, code2: string, lang2: string, blocks: BlockSpec[]) => {
+const buildPayload = (code1: string, lang1: string, code2: string, lang2: string, repeatCount: number, blocks: BlockSpec[]) => {
     return {
         TestcaseFormat: {
             variable_format: [],
@@ -67,7 +67,7 @@ const buildPayload = (code1: string, lang1: string, code2: string, lang2: string
         Code1: code1,
         Code2: code2,
         TimeLimit: 1,
-        RepeatCount: 50,
+        RepeatCount: repeatCount,
     }
 }
 
