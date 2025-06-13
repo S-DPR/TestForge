@@ -19,7 +19,8 @@ class UndirectedGraphConfig(BaseConfig):
 
         self.weight_range = None
         if 'weight_range' in config:
-            weight_start, weight_end = config.get('weight_range')
+            w = random.choice(config.get('weight_range'))
+            weight_start, weight_end = w.min, w.max
             weight_start = safe_eval_helper(weight_start, config, 'weight_start', '1')
             weight_end = safe_eval_helper(weight_end, config, 'weight_end', '100000')
             self.weight_range = [weight_start, weight_end]

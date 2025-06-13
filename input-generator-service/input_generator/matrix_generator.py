@@ -48,7 +48,7 @@ class MatrixConfig(BaseConfig):
         current_index = 0
         filtered_value_limit = {}
         for key in sorted(value_limit.keys()):
-            while current_index < len(merged_ranges) and not merged_ranges[current_index][0] <= key <= merged_ranges[current_index][1]:
+            while current_index < len(merged_ranges) and not merged_ranges[current_index].min <= key <= merged_ranges[current_index].max:
                 current_index += 1
             if current_index != len(merged_ranges):
                 filtered_value_limit[key] = value_limit[key]

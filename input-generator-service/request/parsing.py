@@ -11,7 +11,9 @@ def create_variables(variables: dict[str, tuple[int, str]], variable_format: lis
         # ranges = variable_format['range'] # range는 list[(s, e)]
         name, range_, type_ = variable.name, variable.range, variable.type
         if type_ in ['int', 'char']:
-            start_expression, end_expression = random.choice(range_)
+            select_range = random.choice(range_)
+            start_expression = select_range.min
+            end_expression = select_range.max
             # variable_format['start'] = str(start_expression)
             # variable_format['end'] = str(end_expression)
             start = safe_eval(str(start_expression).replace("$", ""), variables)

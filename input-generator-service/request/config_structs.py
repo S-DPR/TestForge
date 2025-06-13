@@ -2,6 +2,11 @@ from dataclasses import dataclass, field
 
 
 @dataclass
+class Range:
+    min: int
+    max: int
+
+@dataclass
 class Output:
     sequence: list[str]
     separator: str = ' '
@@ -10,7 +15,7 @@ class Output:
 @dataclass
 class Variable:
     name: str
-    range: list[list[object]]
+    range: list[Range]
     type: str = 'int'
 
 @dataclass
