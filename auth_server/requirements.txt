@@ -7,3 +7,4 @@ gunicorn
 python-decouple
 dj-database-url
 djangorestframework
+django-cors-headers
