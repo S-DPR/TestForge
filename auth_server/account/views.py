@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,8 +16,24 @@ class LoginView(APIView):
 
         user = authenticate_user(email, password)
         tokens = get_tokens_for_user(user)
-
-        return Response(tokens, status=status.HTTP_200_OK)
+        response = JsonResponse({"message": "login success"})
+        response.set_cookie(
+            key='access_token',
+            value=tokens['access_token'],
+            httponly=True,
+            samesite='Lax',
+            path='/',
+            max_age=300
+        )
+        response.set_cookie(
+            key='refresh_token',
+            value=tokens['refresh_token'],
+            httponly=True,
+            secure=True,
+            samesite='Strict',
+            max_age=3600,
+        )
+        return response
 
 class RegisterView(APIView):
     def post(self, request):

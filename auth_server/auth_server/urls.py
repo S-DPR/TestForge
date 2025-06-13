@@ -21,6 +21,6 @@ from django.contrib import admin
 
 urlpatterns = [
     # path('auth/', include('social_django.urls', namespace='social'))
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('api/account/', include('account.urls')),
 ]
