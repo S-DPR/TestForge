@@ -31,6 +31,7 @@ const LineBlock = ({ blockIndex }: LineBlockProps) => {
         <VariableInput
           value={currentBlock.repeat}
           onChange={(val) => updateBlockRepeat(blockIndex, val)}
+          showChar={false}
           blockIndex={blockIndex - 1}
           variableIndex={999}
         />

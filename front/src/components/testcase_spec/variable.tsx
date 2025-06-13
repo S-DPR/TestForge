@@ -65,9 +65,9 @@ const Variable = ({ blockIndex, variableIndex }: VariableProps) => {
           </SelectTrigger>
           <SelectContent className="bg-white border border-gray-200 shadow-md rounded-md">
             <SelectGroup>
-              <SelectItem value="Number">Number</SelectItem>
-              <SelectItem value="Char">Char</SelectItem>
-              <SelectItem value="Enum">Enum</SelectItem>
+              <SelectItem value="int">Integer</SelectItem>
+              <SelectItem value="char">Char</SelectItem>
+              <SelectItem value="enum">Enum</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

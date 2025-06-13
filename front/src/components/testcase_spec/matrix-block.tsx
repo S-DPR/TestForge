@@ -70,6 +70,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
         <VariableInput
           value={currentBlock.repeat}
           onChange={(val) => updateBlockRepeat(blockIndex, val)}
+          showChar={false}
           blockIndex={blockIndex - 1}
           variableIndex={10}
         />
@@ -114,6 +115,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
           <VariableInput
             value={config.colSize}
             blockIndex={blockIndex}
+            showChar={false}
             variableIndex={10}
             onChange={(val) => updateConfig({ ...config, colSize: val })}
           />
@@ -124,6 +126,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
           <VariableInput
             value={config.rowSize}
             blockIndex={blockIndex}
+            showChar={false}
             variableIndex={10}
             onChange={(val) => updateConfig({ ...config, rowSize: val })}
           />
@@ -156,6 +159,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
                 <VariableInput
                   blockIndex={blockIndex}
                   variableIndex={10}
+                  showChar={false}
                   value={v.min}
                   onChange={(val) =>
                     updateNumRange(idx, { ...v, min: val })
@@ -164,6 +168,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
                 <VariableInput
                   blockIndex={blockIndex}
                   variableIndex={10}
+                  showChar={false}
                   value={v.max}
                   onChange={(val) =>
                     updateNumRange(idx, { ...v, max: val })

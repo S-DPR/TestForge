@@ -63,6 +63,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
             value={inputValue}
             setValue={setInputValue}
             onChange={(val) => setInputValue(val)}
+            showChar={true}
             blockIndex={blockIndex}
             variableIndex={10}
           />
@@ -77,6 +78,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
           value={separator}
           setValue={setSeparator}
           onChange={(val) => updateSeparator(blockIndex, val)}
+          showChar={true}
           blockIndex={blockIndex}
           variableIndex={10}
         />

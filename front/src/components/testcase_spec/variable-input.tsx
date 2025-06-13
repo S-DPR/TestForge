@@ -10,12 +10,13 @@ export interface VariableInputSpec {
     blockIndex: number;
     variableIndex: number;
     isRenderReserved?: boolean;
+    showChar: boolean;
     onChange?: (value: string) => void;
     value: string;
     setValue?: (v: string) => void;
 }
 
-const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, value, setValue }: VariableInputSpec) => {
+const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, onChange, value, setValue }: VariableInputSpec) => {
     const ctx = useContext(TestcaseContext);
     if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
 
@@ -31,6 +32,15 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, 
         'matrix': ['$_element']
     }
 
+    const commonConstants = [
+        { description: '\'a\'의 아스키코드', value: '97' },
+        { description: '\'z\'의 아스키코드', value: '122' },
+        { description: '\'A\'의 아스키코드', value: '65' },
+        { description: '\'Z\'의 아스키코드', value: '90' },
+        { description: '\'0\'의 아스키코드', value: '48' },
+        { description: '\'9\'의 아스키코드', value: '57' }
+    ]
+
     const usableVariables = []
     for (let innerBlockIdx = 0; innerBlockIdx <= blockIndex; innerBlockIdx++) {
         for (let innerVariableIdx = 0; innerVariableIdx < blocks[innerBlockIdx].variables.length; innerVariableIdx++) {
@@ -43,7 +53,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, 
             if (blocks[innerBlockIdx].variables[innerVariableIdx].name === '') {
                 continue;
             }
-            if (blocks[innerBlockIdx].variables[innerVariableIdx].type === 'char') {
+            if (!showChar && blocks[innerBlockIdx].variables[innerVariableIdx].type === 'char') {
                 continue;
             }
             usableVariables.push(blocks[innerBlockIdx].variables[innerVariableIdx]);
@@ -67,6 +77,12 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, 
             </PopoverTrigger>
             <PopoverContent className="w-[280px] p-0 bg-white border border-gray-200 shadow-md rounded-md z-50">
                 <Command>
+                    {!showChar && (
+                      <CommandGroup
+                        heading="이 설정은 char형식을 지원하지 않습니다."
+                        className="px-3 py-2 text-xs text-muted-foreground"
+                      />
+                    )}
                     <CommandInput
                         placeholder="변수 선택 혹은 입력"
                         className="text-sm px-3 py-2 border-b border-gray-200"
@@ -74,7 +90,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, 
                             setValue(val)
                         }}
                     />
-                    <CommandGroup heading="사용 가능 변수" className="px-3 py-2 text-xs text-muted-foreground">
+                    <CommandGroup heading="정의된 사용 가능 변수" className="px-3 py-2 text-xs text-muted-foreground">
                         {usableVariables.map((v, idx) => {
                             const name = `$${v.name}`
                             return (
@@ -96,6 +112,15 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, onChange, 
                             )}
                         </CommandGroup>)
                     })}
+                    <CommandGroup heading="공통 상수" className="px-3 py-2 text-xs text-muted-foreground">
+                    {commonConstants.map(({description, value}, idx) => (
+                            <CommandItem key={`common-constants-${idx}`} className="justify-between"  onSelect={() => handleSelect(value)}>
+                                {value}
+                                <span className="text-muted-foreground text-xs">{description}</span>
+                            </CommandItem>
+                        ))
+                    }
+                    </CommandGroup>
                     <CommandEmpty>결과 없음. Enter로 직접 입력 가능</CommandEmpty>
                 </Command>
             </PopoverContent>

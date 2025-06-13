@@ -27,6 +27,7 @@ const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec)
         blockIndex={blockIndex}
         variableIndex={variableIndex}
         value={currentRange.min}
+        showChar={false}
         onChange={(val) =>
           updateVariableRange(blockIndex, variableIndex, rangeIndex, {
             ...currentRange,
@@ -39,6 +40,7 @@ const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec)
         blockIndex={blockIndex}
         variableIndex={variableIndex}
         value={currentRange.max}
+        showChar={false}
         onChange={(val) =>
           updateVariableRange(blockIndex, variableIndex, rangeIndex, {
             ...currentRange,

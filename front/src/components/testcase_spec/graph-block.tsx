@@ -65,6 +65,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
         <VariableInput
           value={currentBlock.repeat}
           onChange={(val) => updateBlockRepeat(blockIndex, val)}
+          showChar={false}
           blockIndex={blockIndex - 1}
           variableIndex={10}
         />
@@ -109,6 +110,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <VariableInput
             value={config.nodeCount}
             blockIndex={blockIndex}
+            showChar={false}
             variableIndex={10}
             onChange={(val) => updateConfig({ ...config, nodeCount: val })}
           />
@@ -119,6 +121,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <VariableInput
             value={config.edgeCount}
             blockIndex={blockIndex}
+            showChar={false}
             variableIndex={10}
             onChange={(val) => updateConfig({ ...config, edgeCount: val })}
           />
@@ -133,6 +136,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
                   key={`weight-range-${idx}-min`}
                   blockIndex={blockIndex}
                   variableIndex={10}
+                  showChar={false}
                   value={v.min}
                   onChange={(val) =>
                     updateWeightRange(idx, { ...v, min: val })
@@ -142,6 +146,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
                   key={`weight-range-${idx}-max`}
                   blockIndex={blockIndex}
                   variableIndex={10}
+                  showChar={false}
                   value={v.max}
                   onChange={(val) =>
                     updateWeightRange(idx, { ...v, max: val })
