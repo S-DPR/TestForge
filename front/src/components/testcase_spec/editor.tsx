@@ -6,6 +6,7 @@ import MatrixBlock from "@/components/testcase_spec/blocks/matrix-block";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import StringBlock from "@/components/testcase_spec/blocks/string-block";
 
 const Editor = () => {
   const context = useContext(TestcaseContext);
@@ -16,6 +17,7 @@ const Editor = () => {
     'line': (blockIndex: number) => (<LineBlock blockIndex={blockIndex} key={blockIndex}/>),
     'graph': (blockIndex: number) => (<GraphBlock blockIndex={blockIndex} key={blockIndex}/>),
     'matrix': (blockIndex: number) => (<MatrixBlock blockIndex={blockIndex} key={blockIndex}/>),
+    'string': (blockIndex: number) => (<StringBlock blockIndex={blockIndex} key={blockIndex}/>),
   }
 
   return (
@@ -28,9 +30,9 @@ const Editor = () => {
         <div className="space-y-6 w-full max-w-4xl mx-auto px-4">
           {blocks.slice(1, blocks.length).map((block, i) => {
             const blockIndex = i+1; // 사전 설정 변수가 있으니까
-            return block.type !== 'null' && (
+            return block.visibleType !== 'null' && (
               <BlockWrapper key={`block-${blockIndex}`} blockIndex={blockIndex}>
-                {child[block.type](blockIndex)}
+                {child[block.visibleType](blockIndex)}
               </BlockWrapper>
             )
           })}

@@ -11,12 +11,11 @@ export interface VariableInputSpec {
     variableIndex: number;
     isRenderReserved?: boolean;
     showChar: boolean;
-    onChange?: (value: string) => void;
+    onChange: (value: string) => void;
     value: string;
-    setValue?: (v: string) => void;
 }
 
-const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, onChange, value, setValue }: VariableInputSpec) => {
+const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, onChange, value }: VariableInputSpec) => {
     const ctx = useContext(TestcaseContext);
     if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
 
@@ -25,17 +24,22 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
     const [open, setOpen] = useState(false)
 
     if (!isRenderReserved) isRenderReserved = false;
-    if (!setValue) setValue = (_: string) => {}
-    const reservedVariable: Record<string, Array<{ description: string, value: string }>> = {
-        'line': [],
-        'graph': [
-            { description: '간선의 시작점', value: '$_s' },
-            { description: '간선의 끝점.', value: '$_e' },
-            { description: '간선의 가중치', value: '$_w' }
-        ],
-        'matrix': [
-            { description: '완성된 행렬을 담은 변수', value: '$_element' }
-        ]
+    const reservedVariable = (type: string): Array<{ description: string, value: string }> => {
+        switch (type) {
+            case 'line':
+                return [];
+            case 'graph':
+                return [
+                    { description: '간선의 시작점', value: '$_s' },
+                    { description: '간선의 끝점.', value: '$_e' },
+                    { description: '간선의 가중치', value: '$_w' }
+                ];
+            case 'matrix': case 'string':
+                return[
+                    { description: '완성된 행렬을 담은 변수', value: '$_element' }
+                ];
+        }
+        return [];
     }
 
     const commonConstants = [
@@ -69,7 +73,6 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
     const blockTypes = [...new Set(blocks.slice(1, blocks.length).map(block => block.type))]
 
     const handleSelect = (val: string) => {
-        setValue(val)
         setOpen(false)
         onChange?.(val)
     }
@@ -93,7 +96,13 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
                         placeholder="변수 선택 혹은 입력"
                         className="text-sm px-3 py-2 border-b border-gray-200"
                         onValueChange={(val) => {
-                            setValue(val)
+                            onChange(val)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSelect(value);
+                            }
                         }}
                     />
                     <CommandGroup heading="정의된 사용 가능 변수" className="px-3 py-2 text-xs text-muted-foreground">
@@ -111,7 +120,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
                     </CommandGroup>
                     {isRenderReserved && blockTypes.map((type, idx) => {
                         return (<CommandGroup key={idx} heading={`${type} 예약 변수`} className="px-3 py-2 text-xs text-muted-foreground">
-                            {reservedVariable[type].map(({description, value}, varIdx) => (
+                            {reservedVariable(type).map(({description, value}, varIdx) => (
                               <CommandItem key={`reserved-${varIdx}`} className="justify-between"  onSelect={() => handleSelect(value)}>
                                   {value}
                                   <span className="text-muted-foreground text-xs">{description}</span>

@@ -61,8 +61,9 @@ const Output = ({ blockIndex }: OutputSpec) => {
         <div className="flex gap-2">
           <VariableInput
             value={inputValue}
-            setValue={setInputValue}
-            onChange={(val) => setInputValue(val)}
+            onChange={(val) => {
+              setInputValue(val)
+            }}
             isRenderReserved={true}
             showChar={true}
             blockIndex={blockIndex}
@@ -77,8 +78,10 @@ const Output = ({ blockIndex }: OutputSpec) => {
         <Label className="text-sm text-gray-700 block">구분자 설정</Label>
         <VariableInput
           value={separator}
-          setValue={setSeparator}
-          onChange={(val) => updateSeparator(blockIndex, val)}
+          onChange={(val) => {
+            setSeparator(val)
+            updateSeparator(blockIndex, val)
+          }}
           showChar={true}
           blockIndex={blockIndex}
           variableIndex={10}

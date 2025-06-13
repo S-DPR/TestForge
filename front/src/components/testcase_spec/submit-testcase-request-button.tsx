@@ -62,7 +62,7 @@ const buildPayload = (code1: string, lang1: string, code2: string, lang2: string
     return {
         TestcaseFormat: {
             variable_format: [],
-            lines: blocks.slice(1, blocks.length)
+            lines: convertKeysToSnakeCase(blocks.slice(1, blocks.length))
         },
         Code1: code1,
         Code2: code2,
@@ -84,6 +84,24 @@ const handleEvent = (eventStr: string): Result => {
     }
     const obj = JSON.parse(data);
     return { filename: obj.filename, diffStatus: obj.diffStatus };
+}
+
+const toSnakeCase = (str: string) => {
+    return str.replace(/([A-Z])/g, "_$1").toLowerCase();
+}
+
+const convertKeysToSnakeCase = (obj: unknown): unknown => {
+    if (Array.isArray(obj)) {
+        return obj.map(convertKeysToSnakeCase);
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.fromEntries(
+          Object.entries(obj).map(([key, value]) => [
+              toSnakeCase(key),
+              convertKeysToSnakeCase(value),
+          ])
+        );
+    }
+    return obj;
 }
 
 export default SubmitTestcaseRequestButton;

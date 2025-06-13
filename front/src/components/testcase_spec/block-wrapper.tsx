@@ -26,7 +26,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
   return (
     <Card className="bg-white shadow-sm border border-gray-200 rounded-xl p-4">
       <CardHeader className="pb-2 flex flex-row justify-between items-center">
-        <Select value={blocks[blockIndex]?.type ?? 'line'} onValueChange={(type: 'line' | 'graph') => updateBlockType(blockIndex, type)}>
+        <Select value={blocks[blockIndex]?.visibleType ?? 'line'} onValueChange={(type: string) => updateBlockType(blockIndex, type)}>
           <SelectTrigger className="w-[180px] border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none">
             <SelectValue placeholder="블럭 타입 선택" />
           </SelectTrigger>
@@ -36,6 +36,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
               <SelectItem value="line">Line</SelectItem>
               <SelectItem value="graph">Graph</SelectItem>
               <SelectItem value="matrix">Matrix</SelectItem>
+              <SelectItem value="string">String</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

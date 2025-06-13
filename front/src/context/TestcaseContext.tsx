@@ -15,7 +15,8 @@ export interface AbstractConfig {
 type Config = LineConfig | GraphConfig | MatrixConfig;
 
 export interface BlockSpec {
-  type: string;
+  type: string; // 실제 타입
+  visibleType: string; // ui상 보이는 타입
   variables: VariableSpec[];
   output: OutputType;
   config: AbstractConfig;
@@ -47,13 +48,12 @@ interface EditorContextType {
 export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
-  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', variables: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
+  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', visibleType: 'null', variables: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
 
   const addVariable = (blockIndex: number, variable: VariableSpec) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].variables.push(variable);
-      console.log(newBlocks)
       return newBlocks;
     })
   }
@@ -134,11 +134,11 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
           isConnect: false,
           isCycle: false
         } as GraphConfig
-      case 'matrix':
+      case 'matrix': case 'string':
         return {
           type: 'matrix',
           colSize: "",
-          rowSize: "",
+          rowSize: "1",
           numType: "int",
           numRange: [],
           isDistinct: false,
@@ -154,18 +154,28 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const typeMapping: Record<string, string> = {
+    // base
+    line: 'line',
+    graph: 'graph',
+    matrix: 'matrix',
+    // using
+    string: 'matrix',
+  }
+
   const addBlock = (type: string) => {
     setBlocks((prev) => [
       ...prev,
-      { type: type, variables: [], output: {sequence: [], separator: ' '}, config: configs(type), repeat: '1' }
+      { type: typeMapping[type], visibleType: type, variables: [], output: {sequence: [], separator: ' '}, config: configs(typeMapping[type]), repeat: '1' }
     ])
   }
 
   const updateBlockType = (blockIndex: number, type: string) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].type = type;
-      newBlocks[blockIndex].config = configs(type);
+      newBlocks[blockIndex].type = typeMapping[type];
+      newBlocks[blockIndex].visibleType = type;
+      newBlocks[blockIndex].config = configs(typeMapping[type]);
       return newBlocks;
     })
   }
