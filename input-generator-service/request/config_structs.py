@@ -45,7 +45,7 @@ class MatrixConfigDataclass:
     num_range: list[Range] = field(default_factory=list)
     is_distinct: bool = False
     value_limit: dict[str, int] = field(default_factory=dict)
-    empty_value: str = None
+    empty_value: str | None = None
     random_empty: bool = False
     is_graph: bool = False
     is_symmetric: bool = False
