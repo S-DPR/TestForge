@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import React, {ReactNode, useContext} from "react";
 import {TestcaseContext} from "@/context/TestcaseContext";
+import {Button} from "@/components/ui/button";
 
 interface BlockWrapperProps {
   blockIndex: number;
@@ -20,7 +21,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('콘텍스트없서요');
 
-  const { blocks, updateBlockType } = ctx;
+  const { blocks, updateBlockType, deleteBlockType } = ctx;
 
   return (
     <Card className="bg-white shadow-sm border border-gray-200 rounded-xl p-4">
@@ -42,6 +43,7 @@ const BlockWrapper = ({ blockIndex, children }: BlockWrapperProps) => {
       <CardContent className="pt-4">
         {children}
       </CardContent>
+      <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => {deleteBlockType(blockIndex)}}>블럭 삭제</Button>
     </Card>
   )
 }

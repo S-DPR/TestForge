@@ -39,6 +39,7 @@ interface EditorContextType {
   removeOutputSequence: (blockIndex: number, sequenceIndex: number) => void;
 
   updateBlockType: (blockIndex: number, type: string) => void;
+  deleteBlockType: (blockIndex: number) => void;
   updateBlockRepeat: (blockIndex: number, value: string) => void;
   updateSeparator: (blockIndex: number, value: string) => void;
 }
@@ -177,6 +178,14 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  const deleteBlockType = (blockIndex: number) => {
+    setBlocks((prev) => {
+      let newBlocks = structuredClone(prev);
+      newBlocks = newBlocks.filter((_, idx) => idx !== blockIndex);
+      return newBlocks;
+    })
+  }
+
   // const removeVariable = (blockIndex: number, variableIndex: number) => {
   //   setVariables((prev) => {
   //     const newVariable = structuredClone(prev);
@@ -187,7 +196,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TestcaseContext.Provider value={{
-      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence
+      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence, deleteBlockType
     }}>
       {children}
     </TestcaseContext.Provider>
