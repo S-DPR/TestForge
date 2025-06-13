@@ -1,0 +1,54 @@
+import {useContext} from "react";
+import {Result, ResultContext} from "@/context/ResultContext";
+import {clsx} from "clsx";
+
+const ResultBox = () => {
+  const ctx = useContext(ResultContext);
+  if (!ctx) throw new Error("Can't find result context");
+
+  const { results, setInputSelected, setInputDialogOpen } = ctx;
+
+  const handleClick = async (result: Result) => {
+    const res = await fetch(`http://localhost:9001/file/${result.filename}`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NzgxMTMxLCJpYXQiOjE3NDk3ODA4MzEsImp0aSI6ImEzOGU1NmIyZmJhNzQ4MGNhMWYyNmIwYjE1OTkwMjIxIiwidXNlcl9pZCI6IjJjNmE3M2NlLTM4YTctNGRjYS05YTZhLTQ4MTIzM2Q3NTdkYiJ9.G8InCKgOaop1-iHu6AjbGHvtdodLiY3VBdKzjpXMGoc"
+      }
+    })
+    const text = await res.text();
+    const data = JSON.parse(text);
+    setInputSelected(data.content);
+    setInputDialogOpen(true);
+  }
+
+  return (
+    <div className="grid grid-cols-5 gap-4">
+      {results.map((result, idx) => (
+        <div
+          key={idx}
+          className={clsx(
+            "h-12 flex items-center justify-center font-semibold rounded-lg shadow-sm",
+            "cursor-pointer hover:brightness-95 transition",
+            getStatusClass(result.diffStatus)
+          )}
+          onClick={() => handleClick(result)}
+        >
+          {result.diffStatus}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const getStatusClass = (status: string) => {
+  if (!status) return "bg-gray-100";
+  if (status.includes("ERROR FAILED")) return "bg-red-500 text-white";
+  if (status.includes("ERROR BUT EQUAL")) return "bg-yellow-200";
+  if (status === "DIFFERENT") return "bg-red-100";
+  if (status === "EQUAL") return "bg-green-200";
+  return "bg-gray-100";
+};
+
+export default ResultBox;

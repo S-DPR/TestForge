@@ -5,6 +5,7 @@ import GraphBlock from "@/components/testcase_spec/graph-block";
 import MatrixBlock from "@/components/testcase_spec/matrix-block";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 
 const Editor = () => {
   const context = useContext(TestcaseContext);
@@ -18,17 +19,25 @@ const Editor = () => {
   }
 
   return (
-    <div className="space-y-6 w-full max-w-4xl mx-auto px-4">
-      {blocks.slice(1, blocks.length).map((block, i) => {
-        const blockIndex = i+1; // 사전 설정 변수가 있으니까
-        return block.type !== 'null' && (
-          <BlockWrapper key={`block-${blockIndex}`} blockIndex={blockIndex}>
-            {child[block.type](blockIndex)}
-          </BlockWrapper>
-        )
-      })}
-      <Button className="mt-6 mx-auto block px-6 py-2 text-base" onClick={() => addBlock('line')}>블럭 추가</Button>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>테스트케이스 명세 설정</CardTitle>
+        <CardDescription>테스트케이스가 어떻게 구성되어있는지 적는 공간입니다.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6 w-full max-w-4xl mx-auto px-4">
+          {blocks.slice(1, blocks.length).map((block, i) => {
+            const blockIndex = i+1; // 사전 설정 변수가 있으니까
+            return block.type !== 'null' && (
+              <BlockWrapper key={`block-${blockIndex}`} blockIndex={blockIndex}>
+                {child[block.type](blockIndex)}
+              </BlockWrapper>
+            )
+          })}
+          <Button className="mt-6 mx-auto block px-6 py-2 text-base" onClick={() => addBlock('line')}>블럭 추가</Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
