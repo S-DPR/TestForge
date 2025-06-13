@@ -19,7 +19,7 @@ class LoginView(APIView):
         response = JsonResponse({"message": "login success"})
         response.set_cookie(
             key='access_token',
-            value=tokens['access_token'],
+            value=tokens['access'],
             httponly=True,
             samesite='Lax',
             path='/',
@@ -27,7 +27,7 @@ class LoginView(APIView):
         )
         response.set_cookie(
             key='refresh_token',
-            value=tokens['refresh_token'],
+            value=tokens['refresh'],
             httponly=True,
             secure=True,
             samesite='Strict',
