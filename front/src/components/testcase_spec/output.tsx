@@ -63,6 +63,7 @@ const Output = ({ blockIndex }: OutputSpec) => {
             value={inputValue}
             setValue={setInputValue}
             onChange={(val) => setInputValue(val)}
+            isRenderReserved={true}
             showChar={true}
             blockIndex={blockIndex}
             variableIndex={10}
