@@ -3,6 +3,8 @@
 import React from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { python } from '@codemirror/lang-python'
+import { cpp } from '@codemirror/lang-cpp'
+import { java } from '@codemirror/lang-java'
 
 import {
   Select,
@@ -16,13 +18,13 @@ import {
 import {CodeEditorProps} from "@/components/code_editor/codeEditorTypes";
 
 const extensionsMap: Record<string, () => import('@codemirror/state').Extension> = {
-  python,
+  python, cpp, java
 }
 
 const CodeEditor = (codeEditorProps: CodeEditorProps) => {
   return (
     <div className="space-y-4">
-      <Select value={codeEditorProps.language} onValueChange={(val: 'python') => codeEditorProps.setLang(val)}>
+      <Select value={codeEditorProps.language} onValueChange={(val: 'python' | 'cpp' | 'java') => codeEditorProps.setLang(val)}>
         <SelectTrigger className="w-[180px] border-gray-600 rounded-md px-3 py-2">
           <SelectValue placeholder="언어 선택" />
         </SelectTrigger>
@@ -30,6 +32,8 @@ const CodeEditor = (codeEditorProps: CodeEditorProps) => {
           <SelectGroup>
             <SelectLabel>언어</SelectLabel>
             <SelectItem value="python">Python</SelectItem>
+            <SelectItem value="cpp">C++</SelectItem>
+            <SelectItem value="java">Java</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
