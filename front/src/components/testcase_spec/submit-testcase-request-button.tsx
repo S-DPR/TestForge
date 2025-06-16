@@ -65,7 +65,9 @@ const buildPayload = (code1: string, lang1: string, code2: string, lang2: string
             lines: convertKeysToSnakeCase(blocks.slice(1, blocks.length))
         },
         Code1: code1,
+        Code1Language: lang1,
         Code2: code2,
+        Code2Language: lang2,
         TimeLimit: 1,
         RepeatCount: repeatCount,
     }
