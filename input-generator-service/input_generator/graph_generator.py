@@ -144,15 +144,11 @@ class GraphGenerator(BaseGenerator):
 
             # 라인 만들기
             graph = []
-            for _s in range(start, end+1):
-                for _e in single_conn_graph[_s]:
-                    self.set_variable(variables, _s, _e, config.weight_range)
-                    # variables['_s'] = (_s, 'int')
-                    # variables['_e'] = (_e, 'int')
-                    # if config.weight_range is not None:
-                    #     w = random.randint(*config.weight_range)
-                    #     variables['_w'] = (w, 'int')
-                    graph.extend(line_generator.generate(variables, output, config))
+            edges = [[_s, _e] for _s in range(start, end+1) for _e in single_conn_graph[_s]]
+            random.shuffle(edges)
+            for _s, _e in edges:
+                self.set_variable(variables, _s, _e, config.weight_range)
+                graph.extend(line_generator.generate(variables, output, config))
             return graph
 
         if config.is_perfect:
