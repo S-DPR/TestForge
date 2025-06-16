@@ -36,11 +36,18 @@ class Canceller:
     def is_cancelled(self):
         return self.status
 
+extension = {
+    'python': 'py',
+    'cpp': 'cpp',
+    'java': 'java',
+}
 class ProcessMetadata:
-    def __init__(self, code_uuid, code1, code2):
+    def __init__(self, code_uuid, code1, lang1, code2, lang2):
         self.code_uuid = code_uuid
         self.code1 = code1
+        self.lang1 = lang1
         self.code2 = code2
+        self.lang2 = lang2
         self.code1_name = None
         self.code2_name = None
         self.lock = asyncio.Lock()
@@ -53,12 +60,12 @@ class ProcessMetadata:
 
     def get_code1_name(self):
         if self.code1_name is None:
-            self.code1_name = os.path.basename(file_client.file_save(self.code1, self.code_uuid + "_1")['filepath'])
+            self.code1_name = os.path.basename(file_client.file_save(self.code1, self.code_uuid + "_1", extension[self.lang1])['filepath'])
         return self.code1_name
 
     def get_code2_name(self):
         if self.code2_name is None:
-            self.code2_name = os.path.basename(file_client.file_save(self.code2, self.code_uuid + "_2")['filepath'])
+            self.code2_name = os.path.basename(file_client.file_save(self.code2, self.code_uuid + "_2", extension[self.lang2])['filepath'])
         return self.code2_name
 
 
@@ -103,7 +110,7 @@ class CodeServiceAsync:
     async def queue_push_streaming(self, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker):
         account_id = str(uuid.uuid4())
         canceller = Canceller()
-        process_metadata = ProcessMetadata(str(uuid.uuid4()), code1, code2)
+        process_metadata = ProcessMetadata(str(uuid.uuid4()), code1, code1_language, code2, code2_language)
         # chunks = (repeat_count + 99) // 100
         # tracker = StreamingTracker(chunks)
 

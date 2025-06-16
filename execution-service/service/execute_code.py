@@ -10,8 +10,8 @@ from db.sessions import SessionLocal
 from db.sessions import get_db
 
 
-def execute(account_id, language, code_path, input_filepath, output_filepath, timelimit, ctx):
-    exitcode = runner(Code(language=language, filepath=code_path), input_filepath, output_filepath, timelimit, ctx)
+def execute(account_id, language, code_path, input_filepath, output_filepath, timelimit):
+    exitcode = runner(Code(language=language, filepath=code_path), input_filepath, output_filepath, timelimit)
     code_file_create = CodeFileCreate(
         account_id = account_id,
         language = language,

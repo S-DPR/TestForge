@@ -7,15 +7,15 @@ def compile(container, code: Code, input_filepath: str):
     language = code.language
     uniq = str(uuid.uuid4())
     if language == 'python':
-        return 0, input_filepath
+        return 0, code.filepath
     if language == 'java':
-        return 0, input_filepath
+        return 0, code.filepath
     if language == 'cpp':
         exit_code, output = container.container.exec_run(
-            cmd=f"bash -c 'g++ {code.filepath} -o {uniq}'",
+            cmd=f"bash -c 'g++ -x c++ -std=c++20 {code.filepath} -o /script/{uniq}'",
             demux=False
         )
-        return exit_code, uniq
+        return exit_code, '/script/' + uniq
 
 def runner(code: Code, input_filepath, output_filepath, time_limit: int):
     container = docker_container_pool.get_container()

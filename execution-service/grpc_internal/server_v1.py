@@ -17,7 +17,7 @@ class CodeRunnerServicer(v1_pb2_grpc.CodeRunnerServicer):
         output_filepath = request.output_filepath
         timelimit = request.timelimit
 
-        exitcode = execute_code.execute(account_id, language, code_path, input_filepath, output_filepath, timelimit, context)
+        exitcode = execute_code.execute(account_id, language, code_path, input_filepath, output_filepath, timelimit)
         return self.ExecuteCodeRes(exitcode=exitcode)
 
 def serve():

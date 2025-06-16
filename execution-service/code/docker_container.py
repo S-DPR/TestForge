@@ -51,7 +51,7 @@ class DockerContainerPool:
                 "purpose": "code-execution",
             },
             security_opt=self.security_opt,
-            pids_limit=16,
+            pids_limit=128,
             cap_drop=["ALL"],
             restart_policy={"Name": "unless-stopped"},
             cpu_count=1
