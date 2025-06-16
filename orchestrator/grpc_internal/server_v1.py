@@ -14,9 +14,9 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
     async def TestExecutor(self, request, context):
         testcase_format = json.loads(request.testcaseFormat)
         code1 = request.code1
-        code1_language = request.code1_language
+        code1_language = request.code1Language
         code2 = request.code2
-        code2_language = request.code2_language
+        code2_language = request.code2Language
         time_limit = request.timelimit
         repeat_count = request.repeatCount
 
