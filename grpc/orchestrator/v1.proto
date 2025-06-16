@@ -10,9 +10,11 @@ service TestForgeService {
 message TestExecutorReq {
     string testcaseFormat = 1;
     string code1 = 2;
-    string code2 = 3;
-    int32 timelimit = 4;
-    int32 repeatCount = 5;
+    string code1Language = 3;
+    string code2 = 4;
+    string code2Language = 5;
+    int32 timelimit = 6;
+    int32 repeatCount = 7;
 }
 
 message TestExecutorRes {

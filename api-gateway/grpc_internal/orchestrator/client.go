@@ -42,7 +42,9 @@ func (o *OrchestratorClient) RunTestClient(reqDto *model.TestExecutorReqDTO, ctx
 	req := &TestExecutorReq{
 		TestcaseFormat: string(formatJson),
 		Code1:          reqDto.Code1,
+		Code1Language:          reqDto.Code1Language,
 		Code2:          reqDto.Code2,
+		Code2Language:          reqDto.Code2Language,
 		Timelimit:      reqDto.TimeLimit,
 		RepeatCount:    reqDto.RepeatCount,
 	}

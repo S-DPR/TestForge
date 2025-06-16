@@ -90,9 +90,9 @@ class CodeServiceAsync:
                 account_id=args["account_id"],
                 format_=args["format_"],
                 code1=args["code1"],
-                # code1_language="python",
+                code1_language=args["code1_language"],
                 code2=args["code2"],
-                # code2_language="python",
+                code2_language=args["code2_language"],
                 time_limit=args["time_limit"],
                 repeat_count=args["repeat_count"],
                 tracker=args.get("tracker", None),
@@ -113,7 +113,9 @@ class CodeServiceAsync:
                 "account_id": account_id,
                 "format_": format_,
                 "code1": code1,
+                "code1_language": code1_language,
                 "code2": code2,
+                "code2_language": code2_language,
                 "time_limit": time_limit,
                 "repeat_count": pushed,
                 "tracker": tracker,
@@ -128,7 +130,7 @@ class CodeServiceAsync:
             if canceller.is_cancelled():
                 break
 
-    async def run(self, account_id, format_, code1, code2, time_limit, repeat_count, tracker, canceller, metadata):
+    async def run(self, account_id, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker, canceller, metadata):
         code_uuid = metadata.code_uuid
         code1_name = metadata.get_code1_name()
         code2_name = metadata.get_code2_name()
@@ -148,9 +150,9 @@ class CodeServiceAsync:
             input_filepath = os.path.join("/script", input_filename + ".in")
 
             tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
-            task1 = code_client.execute_code_async(account_id, code1_name, "python",
+            task1 = code_client.execute_code_async(account_id, code1_name, code1_language,
                                                    input_filepath, first_output_filepath, time_limit)
-            task2 = code_client.execute_code_async(account_id, code2_name, "python",
+            task2 = code_client.execute_code_async(account_id, code2_name, code2_language,
                                                    input_filepath, second_output_filepath, time_limit)
 
             code1_result, code2_result = await asyncio.gather(task1, task2)
