@@ -111,8 +111,8 @@ class GraphGenerator(BaseGenerator):
         def create_general_graph(left_edge_count):
             start, end = config.start, config.end
             nodes = [*range(start, end + 1)]
-            all_nodes = set(nodes)
             random.shuffle(nodes)
+            all_nodes = set(nodes)
             deq = deque([nodes.pop()])
             conn_graph = [set() for _ in ' '*(end+1)]
             single_conn_graph = [[] for _ in ' '*(end+1)]
