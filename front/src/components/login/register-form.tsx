@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -9,30 +10,31 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {useState} from "react";
 
-interface LoginFormProps {
+interface RegisterFormProps {
   setIsRenderLogin: (isRenderLogin: boolean) => void;
 }
 
-const LoginForm = ({ setIsRenderLogin }: LoginFormProps) => {
+const RegisterForm = ({ setIsRenderLogin }: RegisterFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   return (
-    <div className={"flex flex-col gap-6"}>
+    <div className={cn("flex flex-col gap-6")}>
       <Card>
         <CardHeader>
           <CardDescription>
-            이메일과 비밀번호를 입력해주세요.
+            이메일과 비밀번호, 그리고 비밀번호를 다시 한 번 입력해주세요.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={(e) => {
             e.preventDefault();
-            login(email, password);
+            register(email, password);
           }}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">이메일</Label>
                 <Input
                   id="email"
                   type="email"
@@ -43,29 +45,27 @@ const LoginForm = ({ setIsRenderLogin }: LoginFormProps) => {
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
+                  <Label htmlFor="password">비밀번호</Label>
                 </div>
                 <Input id="password" type="password" onChange={(e) => setPassword(e.target.value)} required />
               </div>
+
+              <div className="grid gap-3">
+                <div className="flex items-center">
+                  <Label htmlFor="password">비밀번호 확인</Label>
+                </div>
+                <Input id="passwordConfirm" type="password" onChange={(e) => setPasswordConfirm(e.target.value)} required />
+              </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
+                <Button type="submit" className="w-full" disabled={!email || password != passwordConfirm}>
+                  회원가입
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
-              계정이 없으신가요?{" "}
-              <a href="#" className="underline underline-offset-4" onClick={() => setIsRenderLogin(false)}>
-                회원가입
+              계정이 있으신가요?{" "}
+              <a href="#" className="underline underline-offset-4" onClick={() => setIsRenderLogin(true)}>
+                로그인
               </a>
             </div>
           </form>
@@ -75,8 +75,8 @@ const LoginForm = ({ setIsRenderLogin }: LoginFormProps) => {
   )
 }
 
-const login = async (email: string, password: string) => {
-  const res = await fetch('http://localhost:9000/api/account/login/', {
+const register = async (email: string, password: string) => {
+  const res = await fetch('http://localhost:9000/api/account/register/', {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -85,11 +85,11 @@ const login = async (email: string, password: string) => {
     credentials: "include",
   })
   const data = await res.json()
-  if (!data || !data.message) {
-    console.log('login failed');
+  if (res.status >= 400) {
+    console.log('register failed' + data.message);
     return;
   }
-  console.log('login success');
+  console.log('register success');
 }
 
-export default LoginForm;
+export default RegisterForm;
