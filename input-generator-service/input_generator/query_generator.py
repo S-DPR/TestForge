@@ -1,7 +1,7 @@
 import random
 
-from request.config_structs import Output
-from request.expression import safe_eval_helper
+from request.config_structs import Output, QueryConfigDataclass
+from request.expression import safe_eval_helper, safe_eval
 from request.parsing import create_outputs
 from error.exception import ConfigValueError
 from input_generator.base_generator import BaseGenerator, BaseConfig
@@ -9,14 +9,14 @@ from input_generator.line_generator import line_generator
 
 
 class QueryConfig(BaseConfig):
-    def __init__(self, variables: dict[str, tuple[int, str]], config: dict[str, str]):
-        self.outputs = config.get("outputs", None)
-        self.distribution = config.get("distribution", [])
-        self.min_count = config.get("min_count", [])
-        self.max_count = config.get("max_count", [])
+    def __init__(self, variables: dict[str, tuple[int, str]], config: QueryConfigDataclass):
+        self.outputs = config.outputs
+        self.distribution = [safe_eval(i.replace('$', ''), variables) for i in config.distribution]
+        self.min_count = [safe_eval(i.replace('$', ''), variables) for i in config.min_count]
+        self.max_count = [safe_eval(i.replace('$', ''), variables) for i in config.max_count]
         self.repeat = variables.get("_repeat", 1)
 
-        self.outputs = [create_outputs(i) for i in self.outputs]
+        # self.outputs = [create_outputs(i) for i in self.outputs]
         while len(self.distribution) < len(self.outputs):
             self.distribution.append(1)
         while len(self.min_count) < len(self.outputs):
@@ -28,7 +28,10 @@ class QueryConfig(BaseConfig):
         self.max_count = [safe_eval_helper(variables, variables, i, None) if type(i) == str else i for i in self.max_count]
 
         self.count = [0]*len(self.outputs)
-        self.validate()
+        try:
+            self.validate()
+        except ConfigValueError as e:
+            print(e, flush=True)
 
     def validate(self):
         eq_len = any(len(self.outputs) == len(i) for i in [self.distribution, self.min_count, self.max_count])

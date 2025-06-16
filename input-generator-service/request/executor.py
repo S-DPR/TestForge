@@ -1,9 +1,12 @@
-from request.config_structs import TestcaseConfig
+from dacite import from_dict
+
+from request.config_structs import TestcaseConfig, LineConfigDataclass, GraphConfigDataclass, \
+    MatrixConfigDataclass, QueryConfigDataclass, TestcaseBlockConfig, Output, Variable, Range
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator, LineConfig
 from input_generator.matrix_generator import matrix_generator, MatrixConfig
 from input_generator.query_generator import query_generator, QueryConfig
-from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
+from input_generator.graph_generator import graph_generator, GraphConfig
 
 from request.parsing import create_variables
 from request.expression import safe_eval
@@ -12,14 +15,21 @@ from db.sessions import get_db
 
 CONFIG_CLASS_REGISTRY = {
     "line": LineConfig,
-    "undirected_graph": UndirectedGraphConfig,
+    "graph": GraphConfig,
     "matrix": MatrixConfig,
     "query": QueryConfig,
 }
 
+CONFIG_DATACLASS_REGISTRY = {
+    'line': LineConfigDataclass,
+    'graph': GraphConfigDataclass,
+    'matrix': MatrixConfigDataclass,
+    'query': QueryConfigDataclass
+}
+
 GENERATOR_INSTANCE_REGISTRY = {
     "line": line_generator,
-    "undirected_graph": undirected_graph_generator,
+    "graph": graph_generator,
     'matrix': matrix_generator,
     "query": query_generator,
 }
@@ -27,8 +37,10 @@ GENERATOR_INSTANCE_REGISTRY = {
 def resolve_generator_config(type_name: str, variables: dict, config: dict) -> tuple[BaseGenerator, BaseConfig]:
     try:
         cfg_class = CONFIG_CLASS_REGISTRY[type_name]
+        data_cfg_class = CONFIG_DATACLASS_REGISTRY[type_name]
         gen = GENERATOR_INSTANCE_REGISTRY[type_name]
-        return gen, cfg_class(variables, config)
+        from dacite import Config
+        return gen, cfg_class(variables, from_dict(data_class=data_cfg_class, data=config, config=Config(strict=False)))
     except KeyError:
         raise ValueError(f"지원하지 않는 타입: {type_name}")
 
@@ -52,7 +64,7 @@ def process(account_id, testcaseConfig: TestcaseConfig):
         output = line.output
         variable_format = line.variable
 
-        repeat_count = safe_eval(line.repeat, variables)
+        repeat_count = safe_eval(line.repeat.replace('$', ''), variables)
         variables['_repeat'] = repeat_count
         current_line_data = []
         generator, gen_config = resolve_generator_config(line_type, variables, config)
@@ -61,7 +73,7 @@ def process(account_id, testcaseConfig: TestcaseConfig):
             current_line_data.extend(generator.generate(variables, output, gen_config))
         for line_data in current_line_data:
             result.append(output.separator.join(map(str, line_data)))
-    save_database(account_id, "", testcaseConfig)
+    # save_database(account_id, "", testcaseConfig)
     return '\n'.join(result)
 
 
@@ -119,7 +131,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # from input_generator.line_generator import line_generator, LineConfig
 # from input_generator.matrix_generator import matrix_generator, MatrixConfig
 # from input_generator.query_generator import query_generator, QueryConfig
-# from input_generator.undirected_graph_generator import undirected_graph_generator, UndirectedGraphConfig
+# from input_generator.graph_generator import graph_generator, UndirectedGraphConfig
 #
 # from request.parsing import create_variables
 # from request.expression import safe_eval
@@ -128,14 +140,14 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 #
 # CONFIG_CLASS_REGISTRY = {
 #     "line": LineConfig,
-#     "undirected_graph": UndirectedGraphConfig,
+#     "graph": UndirectedGraphConfig,
 #     "matrix": MatrixConfig,
 #     "query": QueryConfig,
 # }
 #
 # GENERATOR_INSTANCE_REGISTRY = {
 #     "line": line_generator,
-#     "undirected_graph": undirected_graph_generator,
+#     "graph": graph_generator,
 #     'matrix': matrix_generator,
 #     "query": query_generator,
 # }
@@ -254,7 +266,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # #         'output': { 'sequence': ['$n'] }
 # #     },
 # #     {
-# #         'type': 'undirected_graph',
+# #         'type': 'graph',
 # #         'config': {
 # #             'node_count': '$n',
 # #             'is_cycle': False
@@ -274,7 +286,7 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # #         'output': { 'sequence': ['$n', '$m'] }
 # #     },
 # #     {
-# #         'type': 'undirected_graph',
+# #         'type': 'graph',
 # #         'config': {
 # #             'node_count': '$n',
 # #             'edge_count': '$m',
@@ -351,24 +363,90 @@ def save_database(account_id, testcase_file_path, testcaseConfig: TestcaseConfig
 # # ]))
 #
 #
-# # print(process(TestcaseConfig([], [
-# #     TestcaseBlockConfig(
-# #         output=Output(['nn', '$n', '$m']),
-# #         repeat='100000',
-# #         type='line',
-# #         variable=[
-# #             Variable('n', [[1, 5]]),
-# #             Variable('m', [[5, 10]]),
-# #         ],
-# #         config={}
-# #     ),
-# #     TestcaseBlockConfig(
-# #         output=Output(['$_s', '$_e']),
-# #         repeat='1',
-# #         type='undirected_graph',
-# #         variable=[],
-# #         config={
-# #             'node_count': '$n'
-# #         }
-# #     )
-# # ])))
+# print(process('a', TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='1',
+#         type='line',
+#         variable=[
+#             Variable('n', [Range(1, 5)]),
+#             Variable('m', [Range(5, 10)]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output(['$_s', '$_e']),
+#         repeat='1',
+#         type='graph',
+#         variable=[],
+#         config={
+#             'node_count': '$n'
+#         }
+#     )
+# ])))
+
+# print(process('a', TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='1',
+#         type='line',
+#         variable=[
+#             Variable('n', [Range('3', '5')]),
+#             Variable('m', [Range('5', '10')]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output([]),
+#         repeat='$n',
+#         type='query',
+#         variable=[
+#             Variable('x', [Range('1', '$n')]),
+#             Variable('l', [Range('1', '$n')]),
+#             Variable('r', [Range('$l', '$n')])
+#         ],
+#         config={
+#             'outputs': [
+#                 {
+#                     'sequence': ['1', '$x']
+#                 },
+#                 {
+#                     'sequence': ['2', '$l', '$r']
+#                 }
+#             ],
+#             'distribution': ['10', '10'],
+#             'min_count': ['1', '1'],
+#             'max_count': ['1000000', '1000000'],
+#         }
+#     )
+# ])))
+
+# print(process('a', TestcaseConfig([], [
+#     TestcaseBlockConfig(
+#         output=Output(['nn', '$n', '$m']),
+#         repeat='1',
+#         type='line',
+#         variable=[
+#             Variable('n', [Range('3', '5')]),
+#             Variable('m', [Range('5', '10')]),
+#         ],
+#         config={}
+#     ),
+#     TestcaseBlockConfig(
+#         output=Output(['$_element']),
+#         repeat='$n',
+#         type='matrix',
+#         variable=[
+#             Variable('x', [Range('1', '$n')]),
+#             Variable('l', [Range('1', '$n')]),
+#             Variable('r', [Range('$l', '$n')])
+#         ],
+#         config={
+#             'col_size': '$n',
+#             'row_size': '$n',
+#             'is_distinct': True,
+#             'empty_value': '-1',
+#             'num_range': [Range('1', '10'), Range('1', '30'), Range('5', '48')]
+#         }
+#     )
+# ])))
