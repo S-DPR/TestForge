@@ -8,7 +8,6 @@ import {TestcaseContext} from "@/context/TestcaseContext";
 import Output from "@/components/testcase_spec/output";
 import {Range} from "@/components/testcase_spec/define-range";
 import {Checkbox} from "@/components/ui/checkbox";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {MatrixConfig} from "@/components/testcase_spec/blocks/matrix-block";
 
 interface StringBlockProps {
@@ -49,6 +48,8 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
       return newBlocks;
     })
   }
+
+  config.numType = 'char';
 
   return (
     <Card className="p-6 space-y-6 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -120,27 +121,12 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
         {/*  />*/}
         {/*</div>*/}
 
-        <div className="space-y-1">
-          <Label className="text-sm text-gray-600">내부 타입</Label>
-          <Select
-            value={config.numType}
-            onValueChange={(val) => updateConfig({ ...config, numType: val })}
-          >
-            <SelectTrigger className="w-[180px] border-gray-300 rounded-md px-3 py-2 text-sm">
-              <SelectValue placeholder="변수 타입" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-md rounded-md">
-              <SelectGroup>
-                <SelectItem value="int">Number</SelectItem>
-                <SelectItem value="char">Char</SelectItem>
-                <SelectItem value="enum">Enum</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+        {/*<div className="space-y-1">*/}
+        {/*  <Label className="text-sm text-gray-600">내부 타입</Label>*/}
+        {/*</div>*/}
 
         <div className="space-y-2">
-          <Label className="text-sm text-gray-600">수 범위</Label>
+          <Label className="text-sm text-gray-600">아스키코드 범위</Label>
           <div className="space-y-2">
             {config.numRange.map((v, idx) => (
               <div key={idx} className="flex gap-2">
@@ -166,7 +152,7 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
             ))}
           </div>
           <Button size="sm" onClick={addNumRange}>
-            수 범위 추가
+            아스키코드 범위 추가
           </Button>
         </div>
 
@@ -193,7 +179,7 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
       {/* Output */}
       <div>
         <Label className="text-sm text-gray-700">출력 설정</Label>
-        <Output blockIndex={blockIndex} />
+        <Output blockIndex={blockIndex} defaultSeparator={""} />
       </div>
     </Card>
   )

@@ -1,7 +1,7 @@
 import VariableInput from "@/components/testcase_spec/variable-input";
 import { Label } from "@/components/ui/label";
 import { TestcaseContext } from "@/context/TestcaseContext";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import { Button } from "@/components/ui/button";
 
 export type OutputType = {
@@ -11,9 +11,10 @@ export type OutputType = {
 
 interface OutputSpec {
   blockIndex: number;
+  defaultSeparator: string;
 };
 
-const Output = ({ blockIndex }: OutputSpec) => {
+const Output = ({ blockIndex, defaultSeparator }: OutputSpec) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error("또 콘텍스트야");
 
@@ -27,6 +28,13 @@ const Output = ({ blockIndex }: OutputSpec) => {
   const output = blocks[blockIndex].output;
   const [inputValue, setInputValue] = useState("");
   const [separator, setSeparator] = useState(output.separator);
+
+  useEffect(() => {
+    if (defaultSeparator !== null && defaultSeparator !== undefined) {
+      setSeparator(defaultSeparator);
+      updateSeparator(blockIndex, defaultSeparator);
+    }
+  }, [defaultSeparator]);
 
   const handleAdd = () => {
     if (inputValue.trim() === "") return;
