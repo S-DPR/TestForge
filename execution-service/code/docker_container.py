@@ -30,7 +30,7 @@ class DockerContainerPool:
 
     def create_container(self):
         container = client.containers.create(
-            image="python:3.13",
+            image="my/executor:latest",
             command="sleep infinity",
             detach=True,
             mem_limit='1024m',
