@@ -146,6 +146,7 @@ class GraphGenerator(BaseGenerator):
             graph = []
             edges = [[_s, _e] for _s in range(start, end+1) for _e in single_conn_graph[_s]]
             random.shuffle(edges)
+            for i in edges: random.shuffle(i)
             for _s, _e in edges:
                 self.set_variable(variables, _s, _e, config.weight_range)
                 graph.extend(line_generator.generate(variables, output, config))
