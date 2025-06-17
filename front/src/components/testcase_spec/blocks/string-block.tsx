@@ -7,6 +7,7 @@ import {Range} from "@/components/testcase_spec/define-range";
 import {Checkbox} from "@/components/ui/checkbox";
 import {MatrixConfig} from "@/components/testcase_spec/blocks/matrix-block";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
+import { Card } from "@/components/ui/card";
 
 interface StringBlockProps {
   blockIndex: number;
@@ -58,42 +59,46 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
           variableIndex={10}
           onChange={(val) => updateConfig({ ...config, colSize: val })}
         />
+
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
+          <div className="space-y-2">
+            <Label className="text-sm text-gray-600">아스키코드 범위</Label>
+            <div className="space-y-2">
+              {config.numRange.map((v, idx) => (
+                <div key={idx} className="flex gap-3 justify-center">
+                  <VariableInput
+                    blockIndex={blockIndex}
+                    variableIndex={10}
+                    showChar={false}
+                    value={v.min}
+                    onChange={(val) =>
+                      updateNumRange(idx, { ...v, min: val })
+                    }
+                  />
+                  <VariableInput
+                    blockIndex={blockIndex}
+                    variableIndex={10}
+                    showChar={false}
+                    value={v.max}
+                    onChange={(val) =>
+                      updateNumRange(idx, { ...v, max: val })
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+            <div className={"flex justify-center"}>
+              <Button size="sm" onClick={addNumRange}>
+                수 범위 추가
+              </Button>
+            </div>
+          </div>
+        </Card>
       </div>
     </>
   )
   const specialSetting = (
     <>
-      <div className="space-y-2">
-        <Label className="text-sm text-gray-600">아스키코드 범위</Label>
-        <div className="space-y-2">
-          {config.numRange.map((v, idx) => (
-            <div key={idx} className="flex gap-2">
-              <VariableInput
-                blockIndex={blockIndex}
-                variableIndex={10}
-                showChar={false}
-                value={v.min}
-                onChange={(val) =>
-                  updateNumRange(idx, { ...v, min: val })
-                }
-              />
-              <VariableInput
-                blockIndex={blockIndex}
-                variableIndex={10}
-                showChar={false}
-                value={v.max}
-                onChange={(val) =>
-                  updateNumRange(idx, { ...v, max: val })
-                }
-              />
-            </div>
-          ))}
-        </div>
-        <Button size="sm" onClick={addNumRange}>
-          아스키코드 범위 추가
-        </Button>
-      </div>
-
       {/* 체크박스 그룹 */}
       <div className="space-y-2">
         {[

@@ -6,6 +6,7 @@ import {AbstractConfig, TestcaseContext} from "@/context/TestcaseContext";
 import {Range} from "@/components/testcase_spec/define-range";
 import {Checkbox} from "@/components/ui/checkbox";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
+import {Card} from "@/components/ui/card";
 
 export interface GraphConfig extends AbstractConfig {
   nodeCount: string;
@@ -82,36 +83,40 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
   const specialSetting = (
     <>
       <div className="space-y-2">
-        <Label className="text-sm text-gray-600">가중치 범위</Label>
-        <div className="space-y-2">
-          {config.weightRange.map((v, idx) => (
-            <div key={`weight-range-${idx}`} className="flex gap-2">
-              <VariableInput
-                key={`weight-range-${idx}-min`}
-                blockIndex={blockIndex}
-                variableIndex={10}
-                showChar={false}
-                value={v.min}
-                onChange={(val) =>
-                  updateWeightRange(idx, { ...v, min: val })
-                }
-              />
-              <VariableInput
-                key={`weight-range-${idx}-max`}
-                blockIndex={blockIndex}
-                variableIndex={10}
-                showChar={false}
-                value={v.max}
-                onChange={(val) =>
-                  updateWeightRange(idx, { ...v, max: val })
-                }
-              />
-            </div>
-          ))}
-        </div>
-        <Button size="sm" onClick={addWeightRange}>
-          수 범위 추가
-        </Button>
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
+          <Label className="text-sm text-gray-600">가중치 범위</Label>
+          <div className="space-y-2">
+            {config.weightRange.map((v, idx) => (
+              <div key={`weight-range-${idx}`} className="flex gap-3 justify-center">
+                <VariableInput
+                  key={`weight-range-${idx}-min`}
+                  blockIndex={blockIndex}
+                  variableIndex={10}
+                  showChar={false}
+                  value={v.min}
+                  onChange={(val) =>
+                    updateWeightRange(idx, { ...v, min: val })
+                  }
+                />
+                <VariableInput
+                  key={`weight-range-${idx}-max`}
+                  blockIndex={blockIndex}
+                  variableIndex={10}
+                  showChar={false}
+                  value={v.max}
+                  onChange={(val) =>
+                    updateWeightRange(idx, { ...v, max: val })
+                  }
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex pt-4 justify-center">
+            <Button size="sm" onClick={addWeightRange}>
+              수 범위 추가
+            </Button>
+          </div>
+        </Card>
       </div>
 
       <div className="space-y-2">
