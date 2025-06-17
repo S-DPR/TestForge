@@ -162,6 +162,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     // using
     String: 'matrix',
     IntArray: 'matrix',
+    Tree: 'graph',
   }
 
   const addBlock = (type: string) => {

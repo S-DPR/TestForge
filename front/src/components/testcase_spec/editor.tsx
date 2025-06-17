@@ -9,6 +9,7 @@ import StringBlock from "@/components/testcase_spec/blocks/string-block";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card";
 import IntArrayBlock from "@/components/testcase_spec/blocks/int-array-block";
+import TreeBlock from "@/components/testcase_spec/blocks/tree-block";
 
 const Editor = () => {
   const context = useContext(TestcaseContext);
@@ -21,6 +22,7 @@ const Editor = () => {
     'Matrix': (blockIndex: number) => (<MatrixBlock blockIndex={blockIndex} key={blockIndex}/>),
     'String': (blockIndex: number) => (<StringBlock blockIndex={blockIndex} key={blockIndex}/>),
     'IntArray': (blockIndex: number) => (<IntArrayBlock blockIndex={blockIndex} key={blockIndex}/>),
+    'Tree': (blockIndex: number) => (<TreeBlock blockIndex={blockIndex} key={blockIndex}/>),
   }
 
   return (

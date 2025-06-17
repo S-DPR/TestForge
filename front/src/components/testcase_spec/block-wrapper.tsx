@@ -46,6 +46,7 @@ const BlockWrapper = ({ blockIndex, defaultSetting, specialSetting, isRenderOutp
               <SelectItem value="Matrix">Matrix</SelectItem>
               <SelectItem value="String">String</SelectItem>
               <SelectItem value="IntArray">IntArray</SelectItem>
+              <SelectItem value="Tree">Tree</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
