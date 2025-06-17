@@ -60,6 +60,7 @@ const Editor = () => {
                           </div>
                         ))}
                         {block.variables.length > 3 && <b>{" "}외 {block.variables.length-3}개</b>}
+                        {block.variables.length == 0 && <div>정의된 변수가 없습니다.</div>}
                       </HoverCardContent>
                     </HoverCard>
                     <AccordionContent>
