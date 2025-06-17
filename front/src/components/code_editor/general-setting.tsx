@@ -29,6 +29,8 @@ const GeneralSetting = () => {
                 <Input
                   type="number"
                   value={repeatCount}
+                  min={1}
+                  max={50}
                   onChange={(e) => setRepeatCount(e.target.valueAsNumber)}
                 />
               </Card>
