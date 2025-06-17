@@ -3,11 +3,11 @@ import {TestcaseContext} from "@/context/TestcaseContext";
 import LineBlock from "@/components/testcase_spec/blocks/line-block";
 import GraphBlock from "@/components/testcase_spec/blocks/graph-block";
 import MatrixBlock from "@/components/testcase_spec/blocks/matrix-block";
-import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import StringBlock from "@/components/testcase_spec/blocks/string-block";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card";
 
 const Editor = () => {
   const context = useContext(TestcaseContext);
@@ -39,7 +39,29 @@ const Editor = () => {
               return block.visibleType !== 'null' && (
                 <div key={blockIndex}>
                   <AccordionItem value={`${blockIndex}`}>
-                    <AccordionTrigger>{blocks[blockIndex].visibleType}</AccordionTrigger>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <AccordionTrigger>{blocks[blockIndex].visibleType}</AccordionTrigger>
+                      </HoverCardTrigger>
+                      <HoverCardContent side="top" align="end" sideOffset={8} className="bg-white shadow-xl border rounded-lg p-4">
+                        <b>설정된 변수 및 범위</b>
+                        {block.variables.slice(0, 3).map((variable, i) => (
+                          <div key={i} className="flex items-center text-sm">
+                            <span className="font-medium max-w-[5.5rem] truncate inline-block">
+                              {variable.name ? variable.name : "설정 필요"}
+                            </span>
+                            <span className="mx-1">:</span>
+                            <span className="font-semibold font-medium max-w-[5.5rem] truncate">
+                              {variable.ranges[0]
+                                ? `${variable.ranges[0].min} ~ ${variable.ranges[0].max}`
+                                : "설정 필요"}
+                            </span>
+                            {variable.ranges.length > 1 && <b>{" "}외 {variable.ranges.length-1}개</b>}
+                          </div>
+                        ))}
+                        {block.variables.length > 3 && <b>{" "}외 {block.variables.length-3}개</b>}
+                      </HoverCardContent>
+                    </HoverCard>
                     <AccordionContent>
                       {child[block.visibleType](blockIndex)}
                     </AccordionContent>
