@@ -31,7 +31,9 @@ const GeneralSetting = () => {
                   value={repeatCount}
                   min={1}
                   max={50}
-                  onChange={(e) => setRepeatCount(e.target.valueAsNumber)}
+                  onChange={(e) => {
+                    setRepeatCount(Math.max(Math.min(e.target.valueAsNumber, 50), 1))
+                  }}
                 />
               </Card>
 
