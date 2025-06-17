@@ -11,7 +11,7 @@ export type OutputType = {
 
 interface OutputSpec {
   blockIndex: number;
-  defaultSeparator: string;
+  defaultSeparator?: string;
 };
 
 const Output = ({ blockIndex, defaultSeparator }: OutputSpec) => {
