@@ -41,10 +41,10 @@ const BlockWrapper = ({ blockIndex, defaultSetting, specialSetting, isRenderOutp
           <SelectContent className="bg-white border border-gray-200 shadow-md rounded-md">
             <SelectGroup>
               <SelectLabel>타입</SelectLabel>
-              <SelectItem value="line">Line</SelectItem>
-              <SelectItem value="graph">Graph</SelectItem>
-              <SelectItem value="matrix">Matrix</SelectItem>
-              <SelectItem value="string">String</SelectItem>
+              <SelectItem value="Line">Line</SelectItem>
+              <SelectItem value="Graph">Graph</SelectItem>
+              <SelectItem value="Matrix">Matrix</SelectItem>
+              <SelectItem value="String">String</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

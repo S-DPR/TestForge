@@ -156,11 +156,11 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   const typeMapping: Record<string, string> = {
     // base
-    line: 'line',
-    graph: 'graph',
-    matrix: 'matrix',
+    Line: 'line',
+    Graph: 'graph',
+    Matrix: 'matrix',
     // using
-    string: 'matrix',
+    String: 'matrix',
   }
 
   const addBlock = (type: string) => {
