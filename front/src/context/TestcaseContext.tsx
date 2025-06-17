@@ -134,7 +134,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
           isConnect: false,
           isCycle: false
         } as GraphConfig
-      case 'matrix': case 'string':
+      case 'matrix':
         return {
           type: 'matrix',
           colSize: "",
@@ -161,6 +161,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     Matrix: 'matrix',
     // using
     String: 'matrix',
+    IntArray: 'matrix',
   }
 
   const addBlock = (type: string) => {

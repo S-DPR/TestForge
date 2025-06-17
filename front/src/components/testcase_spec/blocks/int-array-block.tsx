@@ -9,11 +9,11 @@ import {MatrixConfig} from "@/components/testcase_spec/blocks/matrix-block";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 import { Card } from "@/components/ui/card";
 
-interface StringBlockProps {
+interface IntArrayBlockProps {
   blockIndex: number;
 }
 
-const StringBlock = ({ blockIndex }: StringBlockProps) => {
+const IntArrayBlock = ({ blockIndex }: IntArrayBlockProps) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error('근데 이거 계속 반복되네');
 
@@ -46,12 +46,12 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
     })
   }
 
-  config.numType = 'char';
+  config.numType = 'int';
 
   const defaultSetting = (
     <>
       <div className="space-y-1">
-        <Label className="text-sm text-gray-600">문자열 길이</Label>
+        <Label className="text-sm text-gray-600">수열 길이</Label>
         <VariableInput
           value={config.colSize}
           blockIndex={blockIndex}
@@ -62,7 +62,7 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
 
         <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
           <div className="space-y-2">
-            <Label className="text-sm text-gray-600">아스키코드 범위</Label>
+            <Label className="text-sm text-gray-600">원소 범위</Label>
             <div className="space-y-2">
               {config.numRange.map((v, idx) => (
                 <div key={idx} className="flex gap-3 justify-center">
@@ -102,7 +102,7 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
       {/* 체크박스 그룹 */}
       <div className="space-y-2">
         {[
-          ["isDistinct", "중복 없는 문자열"],
+          ["isDistinct", "중복 없는 수열"],
           ["randomEmpty", "랜덤한 위치 비우기"],
         ].map(([key, label]) => (
           <div key={key} className="flex items-center gap-2">
@@ -130,4 +130,4 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
   )
 }
 
-export default StringBlock;
+export default IntArrayBlock;

@@ -8,6 +8,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import StringBlock from "@/components/testcase_spec/blocks/string-block";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card";
+import IntArrayBlock from "@/components/testcase_spec/blocks/int-array-block";
 
 const Editor = () => {
   const context = useContext(TestcaseContext);
@@ -19,6 +20,7 @@ const Editor = () => {
     'Graph': (blockIndex: number) => (<GraphBlock blockIndex={blockIndex} key={blockIndex}/>),
     'Matrix': (blockIndex: number) => (<MatrixBlock blockIndex={blockIndex} key={blockIndex}/>),
     'String': (blockIndex: number) => (<StringBlock blockIndex={blockIndex} key={blockIndex}/>),
+    'IntArray': (blockIndex: number) => (<IntArrayBlock blockIndex={blockIndex} key={blockIndex}/>),
   }
 
   return (
@@ -41,7 +43,7 @@ const Editor = () => {
                   <AccordionItem value={`${blockIndex}`}>
                     <HoverCard>
                       <HoverCardTrigger asChild>
-                        <AccordionTrigger>{blocks[blockIndex].visibleType}</AccordionTrigger>
+                        <AccordionTrigger><b>{blocks[blockIndex].visibleType}</b></AccordionTrigger>
                       </HoverCardTrigger>
                       <HoverCardContent side="top" align="end" sideOffset={8} className="bg-white shadow-xl border rounded-lg p-4">
                         <b>설정된 변수 및 범위</b>
