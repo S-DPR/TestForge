@@ -31,9 +31,7 @@ const Editor = () => {
           {blocks.slice(1, blocks.length).map((block, i) => {
             const blockIndex = i+1; // 사전 설정 변수가 있으니까
             return block.visibleType !== 'null' && (
-              <BlockWrapper key={`block-${blockIndex}`} blockIndex={blockIndex}>
-                {child[block.visibleType](blockIndex)}
-              </BlockWrapper>
+              child[block.visibleType](blockIndex)
             )
           })}
           <Button className="mt-6 mx-auto block px-6 py-2 text-base" onClick={() => addBlock('line')}>블럭 추가</Button>
