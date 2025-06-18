@@ -41,7 +41,7 @@ services:
     container_name: auth-db
     restart: always
     env_file:
-      - ./auth_server/.env
+      - ./back/services/auth_server/.env
     volumes:
       - ./databases/auth-db-volume:/var/lib/postgresql/data
     networks:
@@ -52,7 +52,7 @@ services:
     container_name: testcase-db
     restart: always
     env_file:
-      - input-generator-service/.env
+      - ./back/services/input-generator-service/.env
     volumes:
       - ./databases/testcase-db-volume:/var/lib/postgresql/data
     networks:
@@ -63,7 +63,7 @@ services:
     container_name: code-db
     restart: always
     env_file:
-      - execution-service/.env
+      - ./back/services/execution-service/.env
     volumes:
       - ./databases/code-db-volume:/var/lib/postgresql/data
     networks:
