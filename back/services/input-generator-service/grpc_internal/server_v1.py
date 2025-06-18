@@ -25,12 +25,14 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
         repeat_count = request.repeat_count
 
         format_dict = json.loads(format_)
+        testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
+        logger.info("테스트케이스 설정 생성 성공")
+        logger.debug(testcase_config)
 
         try:
             for _ in range(repeat_count):
                 if not context.is_active():
                     break
-                testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
                 result = process(account_id, testcase_config)
                 yield v1_pb2.CreateTestcaseRes(output=result)
         except ConfigValueError as e:
