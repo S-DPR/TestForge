@@ -41,7 +41,7 @@ class GraphConfig(BaseConfig):
     def get_edge_count(self, variables, edge_count) -> int:
         node_count = self.node_count
         if edge_count is not None:
-            return safe_eval(edge_count, variables)
+            return safe_eval(edge_count.replace('$', ''), variables)
         if self.is_perfect:
             return node_count * (node_count - 1) // 2
         if self.is_tree:
