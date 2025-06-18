@@ -9,7 +9,7 @@ services:
   storage-service:
     build:
       context: .
-      dockerfile: storage-service/Dockerfile
+      dockerfile: ./services/storage-service/Dockerfile
     container_name: storage-service
     working_dir: /app
     volumes:
@@ -25,7 +25,7 @@ services:
   input-generator-service:
     build:
       context: .
-      dockerfile: input-generator-service/Dockerfile
+      dockerfile: ./services/input-generator-service/Dockerfile
     container_name: input-generator-service
     working_dir: /app
     volumes:
@@ -40,7 +40,7 @@ services:
   execution-service:
     build:
       context: .
-      dockerfile: execution-service/Dockerfile
+      dockerfile: ./services/execution-service/Dockerfile
     container_name: execution-service
     working_dir: /app
     volumes:
@@ -56,7 +56,7 @@ services:
   auth:
     build:
       context: .
-      dockerfile: auth_server/Dockerfile
+      dockerfile: ./services/auth_server/Dockerfile
     container_name: auth
     restart: always
     env_file:
@@ -74,7 +74,7 @@ services:
   orchestrator:
     build:
       context: .
-      dockerfile: orchestrator/Dockerfile
+      dockerfile: ./services/orchestrator/Dockerfile
     container_name: orchestrator
     working_dir: /app
     volumes:
@@ -88,7 +88,7 @@ services:
   api-gateway:
     build:
       context: .
-      dockerfile: api-gateway/Dockerfile
+      dockerfile: ./services/api-gateway/Dockerfile
     container_name: api-gateway
     restart: always
     volumes:
@@ -102,7 +102,7 @@ services:
   rate-limit-service:
     build:
       context: .
-      dockerfile: rate-limit-service/Dockerfile
+      dockerfile: ./services/rate-limit-service/Dockerfile
     container_name: rate-limit-service
     restart: always
     volumes:
@@ -114,7 +114,7 @@ services:
   gatekeeper-service:
     build:
       context: .
-      dockerfile: gatekeeper-service/Dockerfile
+      dockerfile: ./services/gatekeeper-service/Dockerfile
     container_name: gatekeeper-service
     restart: always
     volumes:
