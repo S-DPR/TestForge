@@ -8,9 +8,10 @@
 
 ## 🛠️ Tech Stack
 
-- **Backend**: FastAPI
+- **Backend**: **Python**(주요 로직), FastAPI(주요 로직 테스트), Django, Gin
+- **Frontend**: Next.js
 - **Database**: PostgreSQL
-- **Infrastructure**: Docker, gRPC
+- **Infrastructure**: Docker, gRPC, Redis, Jenkins
 
 ## ✅ 주요 기능
 
