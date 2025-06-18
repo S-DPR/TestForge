@@ -1,6 +1,6 @@
 import grpc
 import json
-from dacite import from_dict
+from dacite import from_dict, Config
 from concurrent import futures
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from input_generator_service import v1_pb2, v1_pb2_grpc
@@ -24,8 +24,13 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
         format_ = request.format
         repeat_count = request.repeat_count
 
+        logger.info("테스트케이스 설정 생성 시작")
         format_dict = json.loads(format_)
-        testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
+        try:
+            testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
+        except Exception as e:
+            logger.error("테스트케이스 설정 생성 실패", e)
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(e))
         logger.info("테스트케이스 설정 생성 성공")
         logger.debug(testcase_config)
 
