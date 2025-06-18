@@ -24,7 +24,7 @@ const LoginModal = () => {
             <DialogHeader>
               <DialogTitle>로그인</DialogTitle>
             </DialogHeader>
-            <LoginForm setIsRenderLogin={setIsRenderLogin} />
+            <LoginForm setIsRenderLogin={setIsRenderLogin} setLoginModalOpen={setLoginModalOpen} />
           </>) : (
           <>
             <DialogHeader>

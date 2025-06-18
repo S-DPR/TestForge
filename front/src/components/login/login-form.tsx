@@ -11,11 +11,31 @@ import {useState} from "react";
 
 interface LoginFormProps {
   setIsRenderLogin: (isRenderLogin: boolean) => void;
+  setLoginModalOpen: (isOpen: boolean) => void;
 }
 
-const LoginForm = ({ setIsRenderLogin }: LoginFormProps) => {
+const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const login = async (email: string, password: string) => {
+    const res = await fetch('http://localhost:9000/api/account/login/', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: "include",
+    })
+    const data = await res.json()
+    if (!data || !data.message) {
+      setError("아이디 또는 비밀번호가 다릅니다.");
+      return;
+    }
+    setError("");
+    setLoginModalOpen(false);
+  }
 
   return (
     <div className={"flex flex-col gap-6"}>
@@ -53,6 +73,11 @@ const LoginForm = ({ setIsRenderLogin }: LoginFormProps) => {
                 </div>
                 <Input id="password" type="password" onChange={(e) => setPassword(e.target.value)} required />
               </div>
+              {error && (
+                  <div className="text-red-500 text-sm font-semibold">
+                    {error} {/* 3. 에러 메시지 표시 */}
+                  </div>
+              )}
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
                   Login
@@ -73,23 +98,6 @@ const LoginForm = ({ setIsRenderLogin }: LoginFormProps) => {
       </Card>
     </div>
   )
-}
-
-const login = async (email: string, password: string) => {
-  const res = await fetch('http://localhost:9000/api/account/login/', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-    credentials: "include",
-  })
-  const data = await res.json()
-  if (!data || !data.message) {
-    console.log('login failed');
-    return;
-  }
-  console.log('login success');
 }
 
 export default LoginForm;
