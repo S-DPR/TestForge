@@ -17,7 +17,7 @@ type Config = LineConfig | GraphConfig | MatrixConfig;
 export interface BlockSpec {
   type: string; // 실제 타입
   visibleType: string; // ui상 보이는 타입
-  variables: VariableSpec[];
+  variable: VariableSpec[];
   output: OutputType;
   config: AbstractConfig;
   repeat: string;
@@ -48,12 +48,12 @@ interface EditorContextType {
 export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
-  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', visibleType: 'null', variables: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
+  const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', visibleType: 'null', variable: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
 
   const addVariable = (blockIndex: number, variable: VariableSpec) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].variables.push(variable);
+      newBlocks[blockIndex].variable.push(variable);
       return newBlocks;
     })
   }
@@ -61,7 +61,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const updateVariable = (blockIndex: number, variableIndex: number, variable: VariableSpec) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].variables[variableIndex] = variable;
+      newBlocks[blockIndex].variable[variableIndex] = variable;
       return newBlocks;
     })
   }
@@ -69,7 +69,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const removeVariable = (blockIndex: number, variableIndex: number) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].variables = newBlocks[blockIndex].variables.filter((_, idx) => idx !== variableIndex);
+      newBlocks[blockIndex].variable = newBlocks[blockIndex].variable.filter((_, idx) => idx !== variableIndex);
       return newBlocks;
     })
   }
@@ -77,7 +77,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const addVariableRange = (blockIndex: number, variableIndex: number, range: Range) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].variables[variableIndex].ranges.push(range);
+      newBlocks[blockIndex].variable[variableIndex].range.push(range);
       return newBlocks;
     })
   }
@@ -85,7 +85,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const updateVariableRange = (blockIndex: number, variableIndex: number, rangeIndex: number, range: Range) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
-      newBlocks[blockIndex].variables[variableIndex].ranges[rangeIndex] = range;
+      newBlocks[blockIndex].variable[variableIndex].range[rangeIndex] = range;
       return newBlocks;
     })
   }
@@ -168,7 +168,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const addBlock = (type: string) => {
     setBlocks((prev) => [
       ...prev,
-      { type: typeMapping[type], visibleType: type, variables: [], output: {sequence: [], separator: ' '}, config: configs(typeMapping[type]), repeat: '1' }
+      { type: typeMapping[type], visibleType: type, variable: [], output: {sequence: [], separator: ' '}, config: configs(typeMapping[type]), repeat: '1' }
     ])
   }
 

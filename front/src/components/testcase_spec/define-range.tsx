@@ -19,7 +19,7 @@ const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec)
 
   const { blocks, updateVariableRange } = ctx;
   console.log(blocks)
-  const currentRange = blocks[blockIndex].variables[variableIndex].ranges[rangeIndex];
+  const currentRange = blocks[blockIndex].variable[variableIndex].range[rangeIndex];
 
   return (
     <div className="flex justify-center items-center gap-2 w-full">

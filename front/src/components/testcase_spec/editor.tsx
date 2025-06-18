@@ -49,22 +49,22 @@ const Editor = () => {
                       </HoverCardTrigger>
                       <HoverCardContent side="top" align="end" sideOffset={8} className="bg-white shadow-xl border rounded-lg p-4">
                         <b>설정된 변수 및 범위</b>
-                        {block.variables.slice(0, 3).map((variable, i) => (
+                        {block.variable.slice(0, 3).map((variable, i) => (
                           <div key={i} className="flex items-center text-sm">
                             <span className="font-medium max-w-[5.5rem] truncate inline-block">
                               {variable.name ? variable.name : "설정 필요"}
                             </span>
                             <span className="mx-1">:</span>
                             <span className="font-semibold font-medium max-w-[5.5rem] truncate">
-                              {variable.ranges[0]
-                                ? `${variable.ranges[0].min} ~ ${variable.ranges[0].max}`
+                              {variable.range.length
+                                ? `${variable.range[0].min} ~ ${variable.range[0].max}`
                                 : "설정 필요"}
                             </span>
-                            {variable.ranges.length > 1 && <b>{" "}외 {variable.ranges.length-1}개</b>}
+                            {variable.range.length > 1 && <b>{" "}외 {variable.range.length-1}개</b>}
                           </div>
                         ))}
-                        {block.variables.length > 3 && <b>{" "}외 {block.variables.length-3}개</b>}
-                        {block.variables.length == 0 && <div>정의된 변수가 없습니다.</div>}
+                        {block.variable.length > 3 && <b>{" "}외 {block.variable.length-3}개</b>}
+                        {block.variable.length == 0 && <div>정의된 변수가 없습니다.</div>}
                       </HoverCardContent>
                     </HoverCard>
                     <AccordionContent>

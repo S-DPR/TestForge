@@ -17,7 +17,7 @@ import {TestcaseContext} from "@/context/TestcaseContext";
 export interface VariableSpec {
   name: string;
   type: string;
-  ranges: Range[];
+  range: Range[];
   isReserved: boolean;
 }
 
@@ -31,7 +31,7 @@ const Variable = ({ blockIndex, variableIndex }: VariableProps) => {
   if (!context) throw new Error("context 없음. 개판임");
 
   const { blocks, updateVariable, addVariableRange, removeVariable } = context;
-  const currentVariable = blocks[blockIndex].variables[variableIndex];
+  const currentVariable = blocks[blockIndex].variable[variableIndex];
 
   return (
     <div className="space-y-4 p-4 border rounded-md bg-white shadow-sm">
@@ -76,7 +76,7 @@ const Variable = ({ blockIndex, variableIndex }: VariableProps) => {
       <div className="space-y-2">
         <Label className="text-sm text-gray-700">범위</Label>
         <div className="space-y-2">
-          {currentVariable.ranges.map((r, i) => (
+          {currentVariable.range.map((r, i) => (
             <DefineRange
               key={i}
               blockIndex={blockIndex}

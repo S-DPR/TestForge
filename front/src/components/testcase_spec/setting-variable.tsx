@@ -10,7 +10,7 @@ const SettingVariable = ({ blockIndex }: { blockIndex: number }) => {
 
   const { blocks, addVariable } = ctx;
   const currentBlock = blocks[blockIndex]
-  const currentVariable = currentBlock.variables;
+  const currentVariable = currentBlock.variable;
 
   return (<div className="space-y-2">
     <div className="space-y-2">
@@ -31,7 +31,7 @@ const SettingVariable = ({ blockIndex }: { blockIndex: number }) => {
         addVariable(blockIndex, {
           name: "",
           type: "",
-          ranges: [],
+          range: [],
           isReserved: false,
         })
       }

@@ -53,20 +53,20 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
 
     const usableVariables = []
     for (let innerBlockIdx = 0; innerBlockIdx <= blockIndex; innerBlockIdx++) {
-        for (let innerVariableIdx = 0; innerVariableIdx < blocks[innerBlockIdx].variables.length; innerVariableIdx++) {
+        for (let innerVariableIdx = 0; innerVariableIdx < blocks[innerBlockIdx].variable.length; innerVariableIdx++) {
             if (innerBlockIdx === blockIndex && innerVariableIdx > variableIndex-1) { // 현재 보는 variable index는 사용 불가능
                 break;
             }
-            if (!blocks[innerBlockIdx].variables[innerVariableIdx]) {
+            if (!blocks[innerBlockIdx].variable[innerVariableIdx]) {
                 continue;
             }
-            if (blocks[innerBlockIdx].variables[innerVariableIdx].name === '') {
+            if (blocks[innerBlockIdx].variable[innerVariableIdx].name === '') {
                 continue;
             }
-            if (!showChar && blocks[innerBlockIdx].variables[innerVariableIdx].type === 'char') {
+            if (!showChar && blocks[innerBlockIdx].variable[innerVariableIdx].type === 'char') {
                 continue;
             }
-            usableVariables.push(blocks[innerBlockIdx].variables[innerVariableIdx]);
+            usableVariables.push(blocks[innerBlockIdx].variable[innerVariableIdx]);
         }
     }
 
