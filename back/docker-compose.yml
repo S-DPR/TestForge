@@ -13,10 +13,10 @@ services:
     container_name: storage-service
     working_dir: /app
     volumes:
-      - ./storage-service:/app/storage-service
-      - ./kafka_common:/app/kafka_common
-      - ./grpc:/app/grpc
-      - ../../scripts:/app/scripts
+      - ./services/storage-service:/app/storage-service
+      - ./libs/kafka_common:/app/kafka_common
+      - ./libs/grpc:/app/grpc
+      - /home/sdpr/scripts:/app/scripts
     environment:
       - PYTHONPATH=/app/storage-service:/app/storage-service/grpc_internal
     networks:
@@ -29,9 +29,9 @@ services:
     container_name: input-generator-service
     working_dir: /app
     volumes:
-      - ./input-generator-service:/app/input-generator-service
-      - ./kafka_common:/app/kafka_common
-      - ./grpc:/app/grpc
+      - ./services/input-generator-service:/app/input-generator-service
+      - ./libs/kafka_common:/app/kafka_common
+      - ./libs/grpc:/app/grpc
     environment:
       - PYTHONPATH=/app/input-generator-service:/app/input-generator-service/grpc_internal
     networks:
@@ -44,10 +44,10 @@ services:
     container_name: execution-service
     working_dir: /app
     volumes:
-      - ./execution-service:/app/execution-service
-      - ./kafka_common:/app/kafka_common
+      - ./services/execution-service:/app/execution-service
+      - ./libs/kafka_common:/app/kafka_common
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./grpc:/app/grpc
+      - ./libs/grpc:/app/grpc
     environment:
       - PYTHONPATH=/app/execution-service:/app/execution-service/grpc_internal
     networks:
@@ -64,8 +64,8 @@ services:
     environment:
       - PYTHONPATH=/app/auth_server:/app/auth_server/grpc_internal
     volumes:
-      - ./auth_server:/app/auth_server
-      - ./grpc:/app/grpc
+      - ./services/auth_server:/app/auth_server
+      - ./libs/grpc:/app/grpc
     ports:
       - "9000:9000"
     networks:
@@ -78,8 +78,8 @@ services:
     container_name: orchestrator
     working_dir: /app
     volumes:
-      - ./orchestrator:/app/orchestrator
-      - ./grpc:/app/grpc
+      - ./services/orchestrator:/app/orchestrator
+      - ./libs/grpc:/app/grpc
     environment:
       - PYTHONPATH=/app/orchestrator:/app/orchestrator/grpc_internal
     networks:
@@ -92,8 +92,8 @@ services:
     container_name: api-gateway
     restart: always
     volumes:
-      - ./api-gateway:/app/api-gateway
-      - ./grpc:/app/grpc
+      - ./services/api-gateway:/app/api-gateway
+      - ./libs/grpc:/app/grpc
     ports:
       - "9001:9001"
     networks:
@@ -106,8 +106,8 @@ services:
     container_name: rate-limit-service
     restart: always
     volumes:
-      - ./rate-limit-service:/app/rate-limit-service
-      - ./grpc:/app/grpc
+      - ./services/rate-limit-service:/app/rate-limit-service
+      - ./libs/grpc:/app/grpc
     networks:
       - default
 
@@ -118,7 +118,7 @@ services:
     container_name: gatekeeper-service
     restart: always
     volumes:
-      - ./gatekeeper-service:/app/gatekeeper-service
-      - ./grpc:/app/grpc
+      - ./services/gatekeeper-service:/app/gatekeeper-service
+      - ./libs/grpc:/app/grpc
     networks:
       - default
