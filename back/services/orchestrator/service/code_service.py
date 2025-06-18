@@ -9,7 +9,7 @@ from grpc_internal.storage_service import client as file_client
 
 from log_common import get_logger
 
-logger = get_logger()
+logger = get_logger(__name__)
 
 class StreamingTracker:
     def __init__(self, total_chunks):
