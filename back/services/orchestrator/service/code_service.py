@@ -7,6 +7,10 @@ from grpc_internal.input_generator_service import client as tc_client
 from grpc_internal.execution_service import client as code_client
 from grpc_internal.storage_service import client as file_client
 
+from log_common import get_logger
+
+logger = get_logger()
+
 class StreamingTracker:
     def __init__(self, total_chunks):
         self.queue = None
@@ -111,8 +115,6 @@ class CodeServiceAsync:
         account_id = str(uuid.uuid4())
         canceller = Canceller()
         process_metadata = ProcessMetadata(str(uuid.uuid4()), code1, code1_language, code2, code2_language)
-        # chunks = (repeat_count + 99) // 100
-        # tracker = StreamingTracker(chunks)
 
         while repeat_count:
             pushed = min(repeat_count, 100)
@@ -138,6 +140,8 @@ class CodeServiceAsync:
                 break
 
     async def run(self, account_id, format_, code1, code1_language, code2, code2_language, time_limit, repeat_count, tracker, canceller, metadata):
+        logger.info("테스트케이스 생성 및 코드 실행 시작")
+
         code_uuid = metadata.code_uuid
         code1_name = metadata.get_code1_name()
         code2_name = metadata.get_code2_name()
@@ -156,6 +160,7 @@ class CodeServiceAsync:
             second_output_filepath = os.path.join("/script", second_output_filename)
             input_filepath = os.path.join("/script", input_filename + ".in")
 
+            logger.info("코드 실행 시작")
             tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
             task1 = code_client.execute_code_async(account_id, code1_name, code1_language,
                                                    input_filepath, first_output_filepath, time_limit)
@@ -166,6 +171,7 @@ class CodeServiceAsync:
             code1_exitcode = code1_result['exitcode']
             code2_exitcode = code2_result['exitcode']
 
+            logger.info("파일 비교 시작")
             if code1_exitcode != code2_exitcode:
                 ret = f"ERROR FAILED : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
                 canceller.cancel()

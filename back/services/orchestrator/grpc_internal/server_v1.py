@@ -5,6 +5,10 @@ from orchestrator import v1_pb2, v1_pb2_grpc
 from service import code_service
 import grpc.aio
 
+from log_common import get_logger
+
+logger = get_logger(__name__)
+
 class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
     def __init__(self, code_service):
         self.code_service = code_service
@@ -12,6 +16,8 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
         self.TestExecutorRes = getattr(v1_pb2, 'TestExecutorRes', None)
 
     async def TestExecutor(self, request, context):
+        logger.info("TestExecutor 요청 받음")
+        logger.debug(request)
         testcase_format = json.loads(request.testcaseFormat)
         code1 = request.code1
         code1_language = request.code1Language
