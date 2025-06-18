@@ -8,8 +8,8 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.1 && \
 
 ENV PATH="$PATH:/go/bin"
 
-COPY ./gatekeeper-service /app/gatekeeper-service
-COPY ./grpc /app/grpc
+COPY ./services/gatekeeper-service /app/gatekeeper-service
+COPY ./libs/grpc /app/grpc
 WORKDIR /app/gatekeeper-service
 RUN go mod download
 

@@ -8,8 +8,8 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.1 && \
 
 ENV PATH="$PATH:/go/bin"
 
-COPY ./api-gateway /app/api-gateway
-COPY ./grpc /app/grpc
+COPY ./services/api-gateway /app/api-gateway
+COPY ./libs/grpc /app/grpc
 WORKDIR /app/api-gateway
 RUN go mod download
 
