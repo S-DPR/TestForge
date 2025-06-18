@@ -2,9 +2,9 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ./orchestrator /app/orchestrator
+COPY ./services/orchestrator /app/orchestrator
 
-COPY ./kafka_common /app/kafka_common
+COPY ./libs/kafka_common /app/kafka_common
 
 RUN pip install -r /app/orchestrator/requirements.txt
 

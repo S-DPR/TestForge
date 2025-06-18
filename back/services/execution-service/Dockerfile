@@ -2,9 +2,9 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ./execution-service /app/execution-service
+COPY ./services/execution-service /app/execution-service
 
-COPY ./kafka_common /app/kafka_common
+COPY ./libs/kafka_common /app/kafka_common
 
 RUN pip install -r /app/execution-service/requirements.txt
 

@@ -2,9 +2,9 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ./auth_server /app/auth_server
+COPY ./services/auth_server /app/auth_server
 
-COPY ./kafka_common /app/kafka_common
+COPY ./libs/kafka_common /app/kafka_common
 
 RUN pip install -r /app/auth_server/requirements.txt
 

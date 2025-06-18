@@ -2,9 +2,9 @@ FROM python:3.13
 
 WORKDIR /app
 
-COPY ./input-generator-service /app/input-generator-service
+COPY ./services/input-generator-service /app/input-generator-service
 
-COPY ./kafka_common /app/kafka_common
+COPY ./libs/kafka_common /app/kafka_common
 
 RUN pip install -r /app/input-generator-service/requirements.txt
 
