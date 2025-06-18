@@ -6,7 +6,11 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from input_generator_service import v1_pb2, v1_pb2_grpc
 from request.config_structs import TestcaseConfig
 from request.executor import process
+from error.exception import ConfigValueError
 
+from log_common import get_logger
+
+logger = get_logger(__name__)
 
 class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
     def __init__(self):
@@ -14,18 +18,26 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
         self.executor = ProcessPoolExecutor(max_workers=10)
 
     def CreateTestcase(self, request, context):
+        logger.info('테스트케이스 생성 요청 받음')
+        logger.debug(request)
         account_id = request.account_id
         format_ = request.format
         repeat_count = request.repeat_count
 
         format_dict = json.loads(format_)
 
-        for _ in range(request.repeat_count):
-            if not context.is_active():
-                break
-            testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
-            result = process(account_id, testcase_config)
-            yield v1_pb2.CreateTestcaseRes(output=result)
+        try:
+            for _ in range(repeat_count):
+                if not context.is_active():
+                    break
+                testcase_config = from_dict(data_class=TestcaseConfig, data=format_dict)
+                result = process(account_id, testcase_config)
+                yield v1_pb2.CreateTestcaseRes(output=result)
+        except ConfigValueError as e:
+            logger.error("테스트케이스 생성 중 Value 에러 발생", e)
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, e.message)
+        except Exception as e:
+            logger.error("알 수 없는 에러 발생", e)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
