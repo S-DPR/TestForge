@@ -70,7 +70,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
         }
     }
 
-    const blockTypes = [...new Set(blocks.slice(1, blocks.length).map(block => block.type))]
+    const blockTypes = [...new Set(blocks.slice(1, blockIndex+1).map(block => block.type))]
 
     const handleSelect = (val: string) => {
         setOpen(false)
@@ -84,7 +84,7 @@ const VariableInput = ({ blockIndex, variableIndex, isRenderReserved, showChar, 
                     {value || "값 선택 또는 입력"}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[280px] p-0 bg-white border border-gray-200 shadow-md rounded-md z-50">
+            <PopoverContent className="w-[280px] p-0 bg-white border border-gray-200 shadow-md rounded-md z-50 max-h-[300px] overflow-y-auto">
                 <Command>
                     {!showChar && (
                       <CommandGroup
