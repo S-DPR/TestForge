@@ -42,7 +42,6 @@ const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
         color: "#000000"
       }
     })
-    console.log("tetet")
   }
 
   return (

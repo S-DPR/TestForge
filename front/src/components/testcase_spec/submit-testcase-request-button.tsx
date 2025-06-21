@@ -3,6 +3,7 @@ import {BlockSpec, TestcaseContext} from "@/context/TestcaseContext";
 import {useContext} from "react";
 import {CodeContext} from "@/context/CodeContext";
 import {Result, ResultContext} from "@/context/ResultContext";
+import {toast} from "sonner";
 
 const SubmitTestcaseRequestButton = () => {
     const tcCtx = useContext(TestcaseContext);
@@ -24,7 +25,6 @@ const SubmitTestcaseRequestButton = () => {
 
 const sendRequest = async (payload: object, addResult: (result: Result) => void) => {
     try {
-        console.log("ttt")
         const res = await fetch('http://localhost:9001/test-execute', {
             method: 'POST',
             headers: {
@@ -34,9 +34,16 @@ const sendRequest = async (payload: object, addResult: (result: Result) => void)
             body: JSON.stringify(payload),
             credentials: "include"
         });
-        console.log("rerwe")
         if (res.body == null) {
-            console.log('nooo');
+            return;
+        }
+        if (res.status === 401) {
+            toast.error("로그인이 필요합니다.", {
+                style: {
+                    backgroundColor: "#FFB6C1",
+                    color: "#000000"
+                }
+            });
             return;
         }
 
@@ -45,11 +52,8 @@ const sendRequest = async (payload: object, addResult: (result: Result) => void)
         let buffer = '';
 
         while (true) {
-            console.log("tere")
             const { done, value } = await reader.read();
-            console.log("ttt")
             if (done) break;
-            console.log("test")
             buffer += decoder.decode(value, { stream: true });
             let idx;
             while ((idx = buffer.indexOf('\n\n')) >= 0) {
