@@ -69,25 +69,25 @@ const BlockWrapper = ({ blockIndex, defaultSetting, specialSetting, isRenderOutp
           className="w-full"
         >
           <AccordionItem value={"variables"}>
-            <AccordionTrigger>변수 설정</AccordionTrigger>
+            <AccordionTrigger className="hover:no-underline">변수 설정</AccordionTrigger>
             <AccordionContent>
               <SettingVariable blockIndex={blockIndex} />
             </AccordionContent>
           </AccordionItem>
           {defaultSetting && <AccordionItem value={"default-setting"}>
-              <AccordionTrigger>기본 설정</AccordionTrigger>
+              <AccordionTrigger className="hover:no-underline">기본 설정</AccordionTrigger>
               <AccordionContent>
                 {defaultSetting}
               </AccordionContent>
           </AccordionItem>}
           {specialSetting && <AccordionItem value={"special-setting"}>
-              <AccordionTrigger>특수 설정</AccordionTrigger>
+              <AccordionTrigger className="hover:no-underline">특수 설정</AccordionTrigger>
               <AccordionContent>
                 {specialSetting}
               </AccordionContent>
           </AccordionItem>}
           {isRenderOutput && <AccordionItem value={"output"}>
-            <AccordionTrigger>출력 설정</AccordionTrigger>
+            <AccordionTrigger className="hover:no-underline">출력 설정</AccordionTrigger>
             <AccordionContent>
               <Output blockIndex={blockIndex} />
             </AccordionContent>

@@ -1,5 +1,5 @@
 import React, {ReactNode, useContext} from "react";
-import {TestcaseContext} from "@/context/TestcaseContext";
+import {BlockSpec, TestcaseContext} from "@/context/TestcaseContext";
 import LineBlock from "@/components/testcase_spec/blocks/line-block";
 import GraphBlock from "@/components/testcase_spec/blocks/graph-block";
 import MatrixBlock from "@/components/testcase_spec/blocks/matrix-block";
@@ -25,6 +25,23 @@ const Editor = () => {
     'Tree': (blockIndex: number) => (<TreeBlock blockIndex={blockIndex} key={blockIndex}/>),
   }
 
+  const getBlockError: (blockIndex: number) => {color: string, content: string}[] = (blockIndex: number)=> {
+      const currentBlock = blocks[blockIndex];
+      const result: {color: string, content: string}[] = [];
+      if (currentBlock.output.sequence.length === 0) {
+          result.push({color: '#FACC15', content: "출력이 비어있습니다."})
+      }
+      return result;
+  }
+
+  const getBlockColor: (error: {color: string, content: string}[]) => string = (error: {color: string, content: string}[]) => {
+      const keys = error.map(({color}) => color);
+      if (keys.includes('#FACC15')) {
+          return '#FACC15';
+      }
+      return '#000000';
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -40,12 +57,15 @@ const Editor = () => {
           >
             {blocks.slice(1, blocks.length).map((block, i) => {
               const blockIndex = i+1; // 사전 설정 변수가 있으니까
+              const error = getBlockError(blockIndex);
               return block.visibleType !== 'null' && (
                 <div key={blockIndex}>
                   <AccordionItem value={`${blockIndex}`}>
                     <HoverCard>
                       <HoverCardTrigger asChild>
-                        <AccordionTrigger><b>{blocks[blockIndex].visibleType}</b></AccordionTrigger>
+                        <AccordionTrigger className="hover:no-underline">
+                          <b style={{ color: getBlockColor(error) }}>{blocks[blockIndex].visibleType}</b>
+                        </AccordionTrigger>
                       </HoverCardTrigger>
                       <HoverCardContent side="top" align="end" sideOffset={8} className="bg-white shadow-xl border rounded-lg p-4">
                         <b>설정된 변수 및 범위</b>
@@ -65,6 +85,13 @@ const Editor = () => {
                         ))}
                         {block.variable.length > 3 && <b>{" "}외 {block.variable.length-3}개</b>}
                         {block.variable.length == 0 && <div>정의된 변수가 없습니다.</div>}
+
+                        {error.length > 0 && <>
+                          <b>에러</b>
+                          {error.map(({color, content}, idx) => (
+                              <div key={idx} style={{ color: color }}>{content}</div>
+                          ))}
+                        </>}
                       </HoverCardContent>
                     </HoverCard>
                     <AccordionContent>
