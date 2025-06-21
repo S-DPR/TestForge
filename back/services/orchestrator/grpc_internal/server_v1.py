@@ -26,19 +26,25 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
         time_limit = request.timelimit
         repeat_count = request.repeatCount
 
-        tracker = await code_service.StreamingTracker(repeat_count).init()
-        execute = lambda: self.code_service.queue_push_streaming(
-            format_ = testcase_format,
-            code1 = code1,
-            code1_language = code1_language,
-            code2 = code2,
-            code2_language = code2_language,
-            time_limit = time_limit,
-            repeat_count = repeat_count,
-            tracker = tracker
-        )
-        async for ret in execute():
-            yield self.TestExecutorRes(filename=ret['input_filename'],diffStatus=ret['diff_status'])
+        try:
+            tracker = await code_service.StreamingTracker(repeat_count).init()
+            execute = lambda: self.code_service.queue_push_streaming(
+                format_ = testcase_format,
+                code1 = code1,
+                code1_language = code1_language,
+                code2 = code2,
+                code2_language = code2_language,
+                time_limit = time_limit,
+                repeat_count = repeat_count,
+                tracker = tracker
+            )
+            async for ret in execute():
+                print('hihi', flush=1)
+                yield self.TestExecutorRes(filename=ret['input_filename'],diffStatus=ret['diff_status'])
+        except Exception as e:
+            logger.exception("🔥 내부 예외 발생")
+            context.abort(grpc.StatusCode.INTERNAL, "서버 내부 오류")
+            yield self.TestExecutorRes(filename="", diffStatus="ERROR" + str(e))
 
 
 async def serve():

@@ -146,40 +146,45 @@ class CodeServiceAsync:
         code1_name = metadata.get_code1_name()
         code2_name = metadata.get_code2_name()
 
-        async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, canceller):
-            if canceller.is_cancelled():
-                break
-            kth = await metadata.get_kth()
-            input_filename = f"{code_uuid}_{kth}"
-            output_filename = f"{code_uuid}_{kth}"
+        try:
+            async for tc in tc_client.testcase_generate(account_id, format_, repeat_count, canceller):
+                if canceller.is_cancelled():
+                    break
+                kth = await metadata.get_kth()
+                input_filename = f"{code_uuid}_{kth}"
+                output_filename = f"{code_uuid}_{kth}"
 
-            first_output_filename = output_filename + "_1.out"
-            second_output_filename = output_filename + "_2.out"
+                first_output_filename = output_filename + "_1.out"
+                second_output_filename = output_filename + "_2.out"
 
-            first_output_filepath = os.path.join("/script", first_output_filename)
-            second_output_filepath = os.path.join("/script", second_output_filename)
-            input_filepath = os.path.join("/script", input_filename + ".in")
+                first_output_filepath = os.path.join("/script", first_output_filename)
+                second_output_filepath = os.path.join("/script", second_output_filename)
+                input_filepath = os.path.join("/script", input_filename + ".in")
 
-            logger.info("코드 실행 시작")
-            tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
-            task1 = code_client.execute_code_async(account_id, code1_name, code1_language,
+                logger.info("코드 실행 시작")
+                tc_path = file_client.file_save(tc['output'], input_filename, 'in')['filepath']
+                task1 = code_client.execute_code_async(account_id, code1_name, code1_language,
                                                    input_filepath, first_output_filepath, time_limit)
-            task2 = code_client.execute_code_async(account_id, code2_name, code2_language,
+                task2 = code_client.execute_code_async(account_id, code2_name, code2_language,
                                                    input_filepath, second_output_filepath, time_limit)
 
-            code1_result, code2_result = await asyncio.gather(task1, task2)
-            code1_exitcode = code1_result['exitcode']
-            code2_exitcode = code2_result['exitcode']
+                code1_result, code2_result = await asyncio.gather(task1, task2)
+                code1_exitcode = code1_result['exitcode']
+                code2_exitcode = code2_result['exitcode']
 
-            logger.info("파일 비교 시작")
-            if code1_exitcode != code2_exitcode:
-                ret = f"ERROR FAILED : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
-                canceller.cancel()
-            elif code1_exitcode != 0:
-                ret = f"ERROR BUT EQUAL : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
-            else:
-                ret = file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result']
-                if ret != 'EQUAL':
+                logger.info("파일 비교 시작")
+                if code1_exitcode != code2_exitcode:
+                    ret = f"ERROR FAILED : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
                     canceller.cancel()
+                elif code1_exitcode != 0:
+                    ret = f"ERROR BUT EQUAL : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
+                else:
+                    ret = file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result']
+                    if ret != 'EQUAL':
+                        canceller.cancel()
 
-            await tracker.add_result({"input_filename": input_filename, "diff_status": ret})
+                await tracker.add_result({"input_filename": input_filename, "diff_status": ret})
+        except Exception as e:
+            logger.info("테스트케이스 생성 및 비교중 에러 발생 %s", str(e))
+            canceller.cancel()
+            await tracker.add_result({'input_filename': "", 'diff_status': 'ERROR'})
