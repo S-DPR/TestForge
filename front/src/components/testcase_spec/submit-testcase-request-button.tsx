@@ -24,6 +24,7 @@ const SubmitTestcaseRequestButton = () => {
 
 const sendRequest = async (payload: object, addResult: (result: Result) => void) => {
     try {
+        console.log("ttt")
         const res = await fetch('http://localhost:9001/test-execute', {
             method: 'POST',
             headers: {
@@ -33,6 +34,7 @@ const sendRequest = async (payload: object, addResult: (result: Result) => void)
             body: JSON.stringify(payload),
             credentials: "include"
         });
+        console.log("rerwe")
         if (res.body == null) {
             console.log('nooo');
             return;
@@ -43,8 +45,11 @@ const sendRequest = async (payload: object, addResult: (result: Result) => void)
         let buffer = '';
 
         while (true) {
+            console.log("tere")
             const { done, value } = await reader.read();
+            console.log("ttt")
             if (done) break;
+            console.log("test")
             buffer += decoder.decode(value, { stream: true });
             let idx;
             while ((idx = buffer.indexOf('\n\n')) >= 0) {

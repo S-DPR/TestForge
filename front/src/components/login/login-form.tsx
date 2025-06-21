@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {useState} from "react";
+import {toast} from "sonner";
 
 interface LoginFormProps {
   setIsRenderLogin: (isRenderLogin: boolean) => void;
@@ -35,6 +36,13 @@ const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
     }
     setError("");
     setLoginModalOpen(false);
+    toast.success("로그인 성공!", {
+      style: {
+        backgroundColor: "#D1FAE5",
+        color: "#000000"
+      }
+    })
+    console.log("tetet")
   }
 
   return (

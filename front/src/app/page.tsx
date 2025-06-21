@@ -18,10 +18,12 @@ import ResultInputDialog from "@/components/result_viewer/result-input-dialog";
 import LoginButton from "@/components/login/login-button";
 import LoginProvider from "@/context/LoginContext";
 import LoginModal from "@/components/login/login-modal";
+import {Toaster} from "sonner";
 
 export default function Home() {
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8">
+      <Toaster position="bottom-right" />
       <LoginProvider>
         <LoginButton />
         <LoginModal />
