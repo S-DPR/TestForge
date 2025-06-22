@@ -6,23 +6,27 @@ from request.expression import safe_eval
 
 def create_variables(variables: dict[str, tuple[int, str]], variable_format: list[Variable]):
     for variable in variable_format:
-        # name = variable_format['name']
-        # types = variable_format['type']  # 일단 int/char만
-        # ranges = variable_format['range'] # range는 list[(s, e)]
         name, range_, type_ = variable.name, variable.range, variable.type
         if type_ in ['int', 'char']:
             select_range = random.choice(range_)
             start_expression = select_range.min
             end_expression = select_range.max
-            # variable_format['start'] = str(start_expression)
-            # variable_format['end'] = str(end_expression)
             start = safe_eval(str(start_expression).replace("$", ""), variables)
             end = safe_eval(str(end_expression).replace("$", ""), variables)
             if start > end:
                 raise ValueError(f'start cannot be greater than end : {start_expression} : {start}, {end_expression} : {end}')
             variables[name] = (random.randint(start, end), type_)
         elif type_ in ['enum']:
-            select = random.choice(random.choice(range_))
+            options = []
+            for inner_range in range_:
+                inner_option = []
+                for i in inner_range:
+                    if i[0] == '$':
+                        inner_option.append(safe_eval(i.replace('$', ''), variables))
+                        continue
+                    inner_option.append(i)
+                options.append(inner_option)
+            select = random.choice(random.choice(options))
             variables[name] = (select, 'str')
     return variables
 
