@@ -54,13 +54,6 @@ class GraphConfig(BaseConfig):
         if not 0 <= e <= 1_000_000:
             raise ConfigValueError('edge_count', f"edge_count가 너무 크거나 작습니다. 0 이상 100만 이하의 수만 사용할 수 있습니다. edge_count : {e}")
 
-        if self.is_perfect:
-            if not self.is_connect:
-                raise ConfigValueError("edge_count", "완전그래프가 연결그래프가 아닐 수 없습니다.")
-            expected = n * (n - 1) // 2
-            if e != expected:
-                raise ConfigValueError("edge_count", f"완전그래프는 간선 개수가 {expected}여야 합니다. 현재 {e}개입니다.")
-
         min_edge = n - 1
         max_edge = n * (n - 1) // 2
 
