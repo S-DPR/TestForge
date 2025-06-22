@@ -1,5 +1,6 @@
 import ast
 import operator as op
+from error import VariableNotFoundError
 
 operators = {
     ast.Add: op.add,
@@ -23,7 +24,7 @@ def safe_eval(expr, variables=None):
         elif isinstance(node, ast.Name):
             if node.id in variables:
                 return variables[node.id][0]
-            raise ValueError(f"정의되지 않은 변수: {node.id}")
+            raise VariableNotFoundError(node.id, f"정의되지 않은 변수: {node.id}")
         elif isinstance(node, ast.BinOp):
             return operators[type(node.op)](_eval(node.left), _eval(node.right))
         elif isinstance(node, ast.UnaryOp):
