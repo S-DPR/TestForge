@@ -26,9 +26,7 @@ class GraphConfig(BaseConfig):
                 mx = safe_eval(weight.max.replace('$', ''), variables)
                 self.weight_range.append(IntRange(mn, mx))
 
-        self.is_perfect = config.is_perfect # 완전그래프 여부
-        # is_connect = config.get('is_connect', True) # 연결그래프 여부
-        self.is_connect = True # 일단 이거 켜두자 너무 복잡해진다
+        self.is_connect = config.is_connect # 연결그래프 여부
         self.is_cycle = config.is_cycle # 사이클 여부
         # is_self_cycle = config.get('is_self_cycle', False) 이건 일반적으로 문제에 없으니까 나중에 생각하자
         self.edge_count = self.get_edge_count(variables, config.edge_count) # 간선 개수
@@ -53,8 +51,8 @@ class GraphConfig(BaseConfig):
     def validate(self) -> None:
         n = self.node_count
         e = self.edge_count
-        if not 1 <= n <= 1_000_000:
-            raise ConfigValueError('node_count', f"node_count가 너무 크거나 작습니다. 1 이상 100만 이하의 수만 사용할 수 있습니다. node_count : {n}")
+        if not 1 <= n <= 1_000:
+            raise ConfigValueError('node_count', f"node_count가 너무 크거나 작습니다. 1 이상 1000 이하의 수만 사용할 수 있습니다. node_count : {n}")
         if not 0 <= e <= 1_000_000:
             raise ConfigValueError('edge_count', f"edge_count가 너무 크거나 작습니다. 0 이상 100만 이하의 수만 사용할 수 있습니다. edge_count : {e}")
 
@@ -76,20 +74,6 @@ class GraphConfig(BaseConfig):
 
 class GraphGenerator(BaseGenerator):
     def generate(self, variables, output: Output, config: GraphConfig):
-        def create_perfect_graph():
-            graph = []
-            start, end = config.start, config.end
-            for _s in range(start, end+1):
-                for _e in range(_s+1, end+1):
-                    self.set_variable(variables, _s, _e, config.weight_range)
-                    # variables['_s'] = (_s, 'int')
-                    # variables['_e'] = (_e, 'int')
-                    # if config.weight_range is not None:
-                    #     w = random.randint(*config.weight_range)
-                    #     variables['_w'] = (w, 'int')
-                    graph.extend(line_generator.generate(variables, output, config))
-            return graph
-
         # 초기 vis는 cur을 제외한 모든 노드가 한 번씩 들어간 데이터
         def create_tree(cur, vis):
             graph = []
@@ -99,67 +83,49 @@ class GraphGenerator(BaseGenerator):
             while vis:
                 nxt = vis.pop()
                 self.set_variable(variables, cur, nxt, config.weight_range)
-                # variables['_s'] = (cur, 'int')
-                # variables['_e'] = (nxt, 'int')
-                # if config.weight_range is not None:
-                #     w = random.randint(*config.weight_range)
-                #     variables['_w'] = (w, 'int')
                 graph.extend(line_generator.generate(variables, output, config))
                 graph.extend(create_tree(nxt, vis))
             return graph
 
-        def create_general_graph(left_edge_count):
+        def create_general_graph():
             start, end = config.start, config.end
-            nodes = [*range(start, end + 1)]
-            random.shuffle(nodes)
-            all_nodes = set(nodes)
-            deq = deque([nodes.pop()])
-            conn_graph = [set() for _ in ' '*(end+1)]
-            single_conn_graph = [[] for _ in ' '*(end+1)]
+            graph = []
 
-            # bfs를 통해 일단 연결그래프 그리기
-            while deq:
-                cur = deq.popleft()
-                if not min(len(nodes), left_edge_count): continue
-                connect_nodes = random.randint(1, min(len(nodes), left_edge_count))
-                left_edge_count -= connect_nodes
-                for _ in range(connect_nodes):
-                    nxt = nodes.pop()
-                    conn_graph[cur].add(nxt)
-                    conn_graph[nxt].add(cur)
-                    single_conn_graph[cur].append(nxt)
-                    deq.append(nxt)
+            # connect상태인 경우 트리 구성해두기
+            using_edges = set()
+            if config.is_connect:
+                nodes = [*range(start, end+1)]
+                random.shuffle(nodes)
+                deq = deque([nodes.pop()])
+                while nodes:
+                    cur = deq.popleft()
+                    conn_edge_count = random.randint(1, min(3, len(nodes))) # 유사 성게 생성 방지
+                    for _ in range(conn_edge_count):
+                        nxt = nodes.pop()
+                        using_edges.add((nxt, cur))
+                        using_edges.add((cur, nxt))
+                        self.set_variable(variables, cur, nxt, config.weight_range)
+                        graph.extend(line_generator.generate(variables, output, config))
+                        deq.append(nxt)
 
-            # 남은 간선은 이어지지 않은 간선끼리 이어주기
-            nodes = [*all_nodes]
-            for cur in nodes:
-                not_conn = list(all_nodes^{ cur }^conn_graph[cur])
-                connect_nodes = random.randint(0, min(len(not_conn), left_edge_count))
-                left_edge_count -= connect_nodes
-                for _ in range(connect_nodes):
-                    nxt = not_conn.pop()
-                    conn_graph[cur].add(nxt)
-                    conn_graph[nxt].add(cur)
-                    single_conn_graph[cur].append(nxt)
+            # 모든 간선을 만든 뒤 그중에 N개를 뽑자
+            edges = [(_s, _e) for _s in range(start, end+1) for _e in range(_s+1, end+1) if (_s, _e) not in using_edges]
+            random.shuffle(edges)
+            for i in edges:
+                random.shuffle(i)
 
             # 라인 만들기
-            graph = []
-            edges = [[_s, _e] for _s in range(start, end+1) for _e in single_conn_graph[_s]]
-            random.shuffle(edges)
-            for i in edges: random.shuffle(i)
-            for _s, _e in edges:
+            for _s, _e in edges[:config.edge_count]:
                 self.set_variable(variables, _s, _e, config.weight_range)
                 graph.extend(line_generator.generate(variables, output, config))
             return graph
 
-        if config.is_perfect:
-            graph = create_perfect_graph()
-        elif config.is_tree:
+        if config.is_tree:
             nodes = [*range(config.start, config.end+1)]
             random.shuffle(nodes)
             graph = create_tree(nodes.pop(), nodes)
         else:
-            graph = create_general_graph(config.edge_count)
+            graph = create_general_graph()
         return graph
 
     def set_variable(self, variables, _s, _e, weight_range: list[IntRange]):

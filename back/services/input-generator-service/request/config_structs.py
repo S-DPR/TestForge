@@ -66,7 +66,6 @@ class GraphConfigDataclass:
     edge_count: str = None
     is_zero_start: bool = False
     weight_range: list[Range] = field(default_factory=list)
-    is_perfect: bool = False
     is_connect: bool = False
     is_cycle: bool = False
 
