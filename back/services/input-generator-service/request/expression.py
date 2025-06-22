@@ -1,6 +1,6 @@
 import ast
 import operator as op
-from error import VariableNotFoundError
+from error.exception import VariableNotFoundError
 
 operators = {
     ast.Add: op.add,
