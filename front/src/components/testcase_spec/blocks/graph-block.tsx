@@ -12,7 +12,6 @@ export interface GraphConfig extends AbstractConfig {
   nodeCount: string;
   edgeCount: string;
   weightRange: Range[];
-  isPerfect: boolean;
   isConnect: boolean;
   isCycle: boolean;
 }
@@ -120,16 +119,6 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={config.isPerfect}
-            id="is-perfect"
-            onCheckedChange={(chk) =>
-              updateConfig({ ...config, isPerfect: !!chk.valueOf() })
-            }
-          />
-          <Label htmlFor="is-perfect">완전그래프 여부</Label>
-        </div>
         <div className="flex items-center gap-2">
           <Checkbox
             checked={config.isConnect}
