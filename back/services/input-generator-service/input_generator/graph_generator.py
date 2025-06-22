@@ -40,8 +40,6 @@ class GraphConfig(BaseConfig):
         node_count = self.node_count
         if edge_count is not None:
             return safe_eval(edge_count.replace('$', ''), variables)
-        if self.is_perfect:
-            return node_count * (node_count - 1) // 2
         if self.is_tree:
             return node_count - 1
         if self.is_connect:
