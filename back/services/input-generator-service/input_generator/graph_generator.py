@@ -100,7 +100,7 @@ class GraphGenerator(BaseGenerator):
                         deq.append(nxt)
 
             # 모든 간선을 만든 뒤 그중에 N개를 뽑자
-            edges = [(_s, _e) for _s in range(start, end+1) for _e in range(_s+1, end+1) if (_s, _e) not in using_edges]
+            edges = [[_s, _e] for _s in range(start, end+1) for _e in range(_s+1, end+1) if (_s, _e) not in using_edges]
             random.shuffle(edges)
             for i in edges:
                 random.shuffle(i)
