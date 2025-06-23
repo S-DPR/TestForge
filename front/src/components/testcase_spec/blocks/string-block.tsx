@@ -3,7 +3,7 @@ import {Button} from "@/components/ui/button";
 import VariableInput from "@/components/testcase_spec/variable-input";
 import React, {useContext} from "react";
 import {TestcaseContext} from "@/context/TestcaseContext";
-import {Range} from "@/components/testcase_spec/define-range";
+import DefineRange, {Range} from "@/components/testcase_spec/define-range";
 import {Checkbox} from "@/components/ui/checkbox";
 import {MatrixConfig} from "@/components/testcase_spec/blocks/matrix-block";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
@@ -46,6 +46,15 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
     })
   }
 
+  const deleteNumRange = (numRangeIndex: number) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      const cfg: MatrixConfig = newBlocks[blockIndex].config as MatrixConfig;
+      cfg.numRange = cfg.numRange.filter((_, idx) => idx !== numRangeIndex);
+      return newBlocks;
+    })
+  }
+
   config.numType = 'char';
 
   const defaultSetting = (
@@ -65,26 +74,16 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
             <Label className="text-sm text-gray-600">아스키코드 범위</Label>
             <div className="space-y-2">
               {config.numRange.map((v, idx) => (
-                <div key={idx} className="flex gap-3 justify-center">
-                  <VariableInput
-                    blockIndex={blockIndex}
-                    variableIndex={10}
-                    showChar={false}
-                    value={v.min}
-                    onChange={(val) =>
-                      updateNumRange(idx, { ...v, min: val })
-                    }
-                  />
-                  <VariableInput
-                    blockIndex={blockIndex}
-                    variableIndex={10}
-                    showChar={false}
-                    value={v.max}
-                    onChange={(val) =>
-                      updateNumRange(idx, { ...v, max: val })
-                    }
-                  />
-                </div>
+                <DefineRange
+                  key={idx}
+                  blockIndex={blockIndex}
+                  variableIndex={10}
+                  minValue={v.min}
+                  maxValue={v.max}
+                  onMinChange={(val) => updateNumRange(idx, { ...v, min: val })}
+                  onMaxChange={(val) => updateNumRange(idx, { ...v, max: val })}
+                  onDeleteClick={() => deleteNumRange(idx)}
+                />
               ))}
             </div>
             <div className={"flex justify-center"}>

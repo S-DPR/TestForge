@@ -30,7 +30,7 @@ const Variable = ({ blockIndex, variableIndex }: VariableProps) => {
   const context = useContext(TestcaseContext);
   if (!context) throw new Error("context 없음. 개판임");
 
-  const { blocks, updateVariable, addVariableRange, removeVariable } = context;
+  const { blocks, updateVariable, addVariableRange, removeVariable, updateVariableRange, deleteVariableRange } = context;
   const currentVariable = blocks[blockIndex].variable[variableIndex];
 
   return (
@@ -81,7 +81,19 @@ const Variable = ({ blockIndex, variableIndex }: VariableProps) => {
               key={i}
               blockIndex={blockIndex}
               variableIndex={variableIndex}
-              rangeIndex={i}
+              minValue={r.min}
+              maxValue={r.max}
+              onMinChange={(val) =>
+                updateVariableRange(blockIndex, variableIndex, i, {
+                  ...r,
+                  min: val,
+                })}
+              onMaxChange={(val) =>
+                updateVariableRange(blockIndex, variableIndex, i, {
+                  ...r,
+                  max: val,
+                })}
+              onDeleteClick={() => deleteVariableRange(blockIndex, variableIndex, i)}
             />
           ))}
         </div>

@@ -3,7 +3,7 @@ import {Button} from "@/components/ui/button";
 import VariableInput from "@/components/testcase_spec/variable-input";
 import React, {useContext} from "react";
 import {AbstractConfig, TestcaseContext} from "@/context/TestcaseContext";
-import {Range} from "@/components/testcase_spec/define-range";
+import DefineRange, {Range} from "@/components/testcase_spec/define-range";
 import {Checkbox} from "@/components/ui/checkbox";
 import BlockWrapper from "@/components/testcase_spec/block-wrapper";
 import {Card} from "@/components/ui/card";
@@ -49,6 +49,15 @@ const TreeBlock = ({ blockIndex }: TreeBlockProps) => {
     })
   }
 
+  const deleteWeightRange = (rangeIndex: number) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      const cfg: GraphConfig = newBlocks[blockIndex].config as GraphConfig;
+      cfg.weightRange = cfg.weightRange.filter((_, idx) => idx !== rangeIndex);
+      return newBlocks;
+    })
+  }
+
   const addWeightRange = () => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
@@ -80,28 +89,16 @@ const TreeBlock = ({ blockIndex }: TreeBlockProps) => {
           <Label className="text-sm text-gray-600">가중치 범위</Label>
           <div className="space-y-2">
             {config.weightRange.map((v, idx) => (
-              <div key={`weight-range-${idx}`} className="flex gap-3 justify-center">
-                <VariableInput
-                  key={`weight-range-${idx}-min`}
-                  blockIndex={blockIndex}
-                  variableIndex={10}
-                  showChar={false}
-                  value={v.min}
-                  onChange={(val) =>
-                    updateWeightRange(idx, { ...v, min: val })
-                  }
-                />
-                <VariableInput
-                  key={`weight-range-${idx}-max`}
-                  blockIndex={blockIndex}
-                  variableIndex={10}
-                  showChar={false}
-                  value={v.max}
-                  onChange={(val) =>
-                    updateWeightRange(idx, { ...v, max: val })
-                  }
-                />
-              </div>
+              <DefineRange
+                key={idx}
+                blockIndex={blockIndex}
+                variableIndex={10}
+                minValue={v.min}
+                maxValue={v.max}
+                onMinChange={(val) => updateWeightRange(idx, { ...v, min: val })}
+                onMaxChange={(val) => updateWeightRange(idx, { ...v, max: val })}
+                onDeleteClick={() => deleteWeightRange(idx)}
+              />
             ))}
           </div>
           <div className="flex pt-4 justify-center">

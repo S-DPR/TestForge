@@ -33,6 +33,7 @@ interface EditorContextType {
 
   addVariableRange: (blockIndex: number, variableIndex: number, range: Range) => void;
   updateVariableRange: (blockIndex: number, variableIndex: number, rangeIndex: number, range: Range) => void;
+  deleteVariableRange: (blockIndex: number, variableIndex: number, rangeIndex: number) => void;
 
   addBlock: (type: string) => void;
   addOutputSequence: (blockIndex: number) => void;
@@ -86,6 +87,14 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
     setBlocks((prev) => {
       const newBlocks = structuredClone(prev);
       newBlocks[blockIndex].variable[variableIndex].range[rangeIndex] = range;
+      return newBlocks;
+    })
+  }
+
+  const deleteVariableRange = (blockIndex: number, variableIndex: number, rangeIndex: number) => {
+    setBlocks((prev) => {
+      const newBlocks = structuredClone(prev);
+      newBlocks[blockIndex].variable[variableIndex].range = newBlocks[blockIndex].variable[variableIndex].range.filter((_, idx) => idx !== rangeIndex);
       return newBlocks;
     })
   }
@@ -207,7 +216,7 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TestcaseContext.Provider value={{
-      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence, deleteBlockType
+      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence, deleteBlockType, deleteVariableRange
     }}>
       {children}
     </TestcaseContext.Provider>

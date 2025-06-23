@@ -10,44 +10,37 @@ export type Range = {
 interface DefineRangeSpec {
     blockIndex: number;
     variableIndex: number;
-    rangeIndex: number;
+    minValue: string;
+    maxValue: string;
+    onMinChange: (value: string) => void;
+    onMaxChange: (value: string) => void;
+    onDeleteClick: () => void;
 }
 
-const DefineRange = ({ blockIndex, variableIndex, rangeIndex }: DefineRangeSpec) => {
+const DefineRange = ({ blockIndex, variableIndex, minValue, maxValue, onMinChange, onMaxChange, onDeleteClick }: DefineRangeSpec) => {
   const ctx = useContext(TestcaseContext);
   if (!ctx) throw new Error("context 없음. 개판임.");
-
-  const { blocks, updateVariableRange } = ctx;
-  console.log(blocks)
-  const currentRange = blocks[blockIndex].variable[variableIndex].range[rangeIndex];
 
   return (
     <div className="flex justify-center items-center gap-2 w-full">
       <VariableInput
         blockIndex={blockIndex}
         variableIndex={variableIndex}
-        value={currentRange.min}
+        value={minValue}
         showChar={false}
-        onChange={(val) =>
-          updateVariableRange(blockIndex, variableIndex, rangeIndex, {
-            ...currentRange,
-            min: val,
-          })
-        }
+        onChange={(val) => onMinChange(val)}
       />
       <span className="text-gray-500 text-sm"> to </span>
       <VariableInput
         blockIndex={blockIndex}
         variableIndex={variableIndex}
-        value={currentRange.max}
+        value={maxValue}
         showChar={false}
-        onChange={(val) =>
-          updateVariableRange(blockIndex, variableIndex, rangeIndex, {
-            ...currentRange,
-            max: val,
-          })
-        }
+        onChange={(val) => onMaxChange(val)}
       />
+      <a onClick={onDeleteClick} style={{ cursor: 'pointer' }}>
+        ❌
+      </a>
     </div>
   );
 }
