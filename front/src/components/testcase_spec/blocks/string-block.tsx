@@ -58,8 +58,8 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
   config.numType = 'char';
 
   const defaultSetting = (
-    <>
-      <div className="space-y-1">
+    <div className="space-y-5">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">문자열 길이</Label>
         <VariableInput
           value={config.colSize}
@@ -68,8 +68,10 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
           variableIndex={10}
           onChange={(val) => updateConfig({ ...config, colSize: val })}
         />
+      </div>
 
-        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
+      <div className="flex flex-col space-y-1">
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white space-y-3">
           <div className="space-y-2">
             <Label className="text-sm text-gray-600">아스키코드 범위</Label>
             <div className="space-y-2">
@@ -94,7 +96,7 @@ const StringBlock = ({ blockIndex }: StringBlockProps) => {
           </div>
         </Card>
       </div>
-    </>
+    </div>
   )
   const specialSetting = (
     <>

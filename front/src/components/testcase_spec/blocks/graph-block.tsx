@@ -63,8 +63,8 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
   }
 
   const defaultSetting = (
-    <>
-      <div className="space-y-1">
+    <div className="space-y-5">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">노드 개수</Label>
         <VariableInput
           value={config.nodeCount}
@@ -75,7 +75,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
         />
       </div>
 
-      <div className="space-y-1">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">간선 개수</Label>
         <VariableInput
           value={config.edgeCount}
@@ -85,13 +85,13 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           onChange={(val) => updateConfig({ ...config, edgeCount: val })}
         />
       </div>
-    </>
+    </div>
   )
 
   const specialSetting = (
-    <>
+    <div className="space-y-5">
       <div className="space-y-2">
-        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white space-y-3">
           <Label className="text-sm text-gray-600">가중치 범위</Label>
           <div className="space-y-2">
             {config.weightRange.map((v, idx) => (
@@ -107,7 +107,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
               />
             ))}
           </div>
-          <div className="flex pt-4 justify-center">
+          <div className="flex justify-center">
             <Button size="sm" onClick={addWeightRange}>
               수 범위 추가
             </Button>
@@ -137,7 +137,7 @@ const GraphBlock = ({ blockIndex }: GraphBlockProps) => {
           <Label htmlFor="is-cycle">사이클 여부</Label>
         </div>
       </div>
-    </>
+    </div>
   )
 
   return (

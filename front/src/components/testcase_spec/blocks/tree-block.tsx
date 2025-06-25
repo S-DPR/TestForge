@@ -85,7 +85,7 @@ const TreeBlock = ({ blockIndex }: TreeBlockProps) => {
   const specialSetting = (
     <>
       <div className="space-y-2">
-        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white space-y-3">
           <Label className="text-sm text-gray-600">가중치 범위</Label>
           <div className="space-y-2">
             {config.weightRange.map((v, idx) => (

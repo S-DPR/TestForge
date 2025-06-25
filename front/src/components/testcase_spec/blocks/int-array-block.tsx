@@ -59,8 +59,8 @@ const IntArrayBlock = ({ blockIndex }: IntArrayBlockProps) => {
   config.numType = 'int';
 
   const defaultSetting = (
-    <>
-      <div className="space-y-1">
+    <div className="space-y-5">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">수열 길이</Label>
         <VariableInput
           value={config.colSize}
@@ -69,8 +69,10 @@ const IntArrayBlock = ({ blockIndex }: IntArrayBlockProps) => {
           variableIndex={10}
           onChange={(val) => updateConfig({ ...config, colSize: val })}
         />
+      </div>
 
-        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
+      <div className="flex flex-col space-y-1">
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white space-y-3">
           <div className="space-y-2">
             <Label className="text-sm text-gray-600">원소 범위</Label>
             <div className="space-y-2">
@@ -95,7 +97,7 @@ const IntArrayBlock = ({ blockIndex }: IntArrayBlockProps) => {
           </div>
         </Card>
       </div>
-    </>
+    </div>
   )
   const specialSetting = (
     <>

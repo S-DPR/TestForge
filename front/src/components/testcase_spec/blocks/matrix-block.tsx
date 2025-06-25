@@ -69,8 +69,8 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
   }
 
   const defaultSetting = (
-    <>
-      <div className="space-y-1">
+    <div className="space-y-5">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">가로 길이</Label>
         <VariableInput
           value={config.colSize}
@@ -81,7 +81,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
         />
       </div>
 
-      <div className="space-y-1">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">세로 길이</Label>
         <VariableInput
           value={config.rowSize}
@@ -92,7 +92,7 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
         />
       </div>
 
-      <div className="space-y-1">
+      <div className="flex flex-col space-y-1">
         <Label className="text-sm text-gray-600">내부 타입</Label>
         <Select
           value={config.numType}
@@ -111,31 +111,33 @@ const MatrixBlock = ({ blockIndex }: MatrixBlockProps) => {
         </Select>
       </div>
 
-      <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white">
-        <div className="space-y-2">
-          <Label className="text-sm text-gray-600">수 범위</Label>
+      <div className="flex flex-col space-y-1">
+        <Card className="p-4 rounded-2xl shadow-md border border-gray-200 bg-white space-y-3">
           <div className="space-y-2">
-            {config.numRange.map((v, idx) => (
-              <DefineRange
-                key={idx}
-                blockIndex={blockIndex}
-                variableIndex={10}
-                minValue={v.min}
-                maxValue={v.max}
-                onMinChange={(val) => updateNumRange(idx, { ...v, min: val })}
-                onMaxChange={(val) => updateNumRange(idx, { ...v, max: val })}
-                onDeleteClick={() => deleteNumRange(idx)}
-              />
-            ))}
+            <Label className="text-sm text-gray-600">수 범위</Label>
+            <div className="space-y-2">
+              {config.numRange.map((v, idx) => (
+                <DefineRange
+                  key={idx}
+                  blockIndex={blockIndex}
+                  variableIndex={10}
+                  minValue={v.min}
+                  maxValue={v.max}
+                  onMinChange={(val) => updateNumRange(idx, { ...v, min: val })}
+                  onMaxChange={(val) => updateNumRange(idx, { ...v, max: val })}
+                  onDeleteClick={() => deleteNumRange(idx)}
+                />
+              ))}
+            </div>
+            <div className={"flex justify-center"}>
+              <Button size="sm" onClick={addNumRange}>
+                수 범위 추가
+              </Button>
+            </div>
           </div>
-          <div className={"flex justify-center"}>
-            <Button size="sm" onClick={addNumRange}>
-              수 범위 추가
-            </Button>
-          </div>
-        </div>
-      </Card>
-    </>
+        </Card>
+      </div>
+    </div>
   )
 
   const specialSetting = (
