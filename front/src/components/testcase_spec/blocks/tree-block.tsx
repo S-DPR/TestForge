@@ -69,7 +69,7 @@ const TreeBlock = ({ blockIndex }: TreeBlockProps) => {
 
   const defaultSetting = (
     <>
-      <div className="space-y-1">
+      <div className="space-y-1 flex flex-col">
         <Label className="text-sm text-gray-600">노드 개수</Label>
         <VariableInput
           value={config.nodeCount}

@@ -52,7 +52,7 @@ const BlockWrapper = ({ blockIndex, defaultSetting, specialSetting, isRenderOutp
         </Select>
       </CardHeader>
       <CardContent className="pt-4">
-        <div className="space-y-1">
+        <div className="space-y-1 flex flex-col">
           <Label className="text-sm text-gray-700">반복 횟수</Label>
           <VariableInput
             value={currentBlock.repeat}
