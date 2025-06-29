@@ -30,7 +30,7 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, rateLimitService servi
 	accountId := accountIdAny.(string)
 
 	count := req.RepeatCount
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(c)
 	defer cancel()
 
 	if accountId == "" {

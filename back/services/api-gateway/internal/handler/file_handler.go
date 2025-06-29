@@ -2,7 +2,6 @@ package handler
 
 import (
 	"bff/internal/service"
-	"context"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +18,7 @@ func NewStorageHandler(FileService service.StorageServiceInterface) *StorageHand
 }
 
 func (h *StorageHandler) Read(c *gin.Context, filename string) {
-	fileReadRes, err := h.StorageHandlerService.Read(filename, context.Background())
+	fileReadRes, err := h.StorageHandlerService.Read(filename, c)
 	if err != nil {
 		c.Error(err)
 		return

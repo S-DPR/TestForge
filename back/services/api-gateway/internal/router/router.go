@@ -1,6 +1,7 @@
 package router
 
 import (
+	input_generator_servicev1 "bff/grpc_internal/input_generator_service"
 	orchestratorv1 "bff/grpc_internal/orchestrator"
 	rate_limit_servicev1 "bff/grpc_internal/rate_limit_service"
 	storage_servicev1 "bff/grpc_internal/storage_service"
@@ -24,6 +25,43 @@ func New() *gin.Engine {
 		AllowCredentials: true,
 	}))
 	r.Use(middleware.AuthMiddleware())
+
+	presetGrpcClient, _ := input_generator_servicev1.NewInputGenGRPCClient("input-generator-service:50051", insecure.NewCredentials())
+	presetService := service.NewPresetClientService(presetGrpcClient)
+	presetHandler := handler.NewPresetHandler(presetService)
+	preset := r.Group("/preset")
+	preset.POST("", func(c *gin.Context) {
+		var req input_generator_servicev1.PresetCreateRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		presetHandler.CreatePreset(c, &req)
+	})
+	preset.PUT("", func(c *gin.Context) {
+		var req input_generator_servicev1.PresetUpdateRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		presetHandler.UpdatePreset(c, &req)
+	})
+	preset.DELETE("/:presetId", func(c *gin.Context) {
+		presetId := c.Param("presetId")
+		presetHandler.DeletePreset(c, &input_generator_servicev1.PresetIdRequest{PresetId: presetId})
+	})
+	preset.GET("/:presetId", func(c *gin.Context) {
+		presetId := c.Param("presetId")
+		presetHandler.GetPreset(c, &input_generator_servicev1.PresetIdRequest{PresetId: presetId})
+	})
+	preset.POST("/search", func(c *gin.Context) {
+		var req input_generator_servicev1.PresetListRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		presetHandler.GetAllPresets(c, &req)
+	})
 
 	rateLimitRrpcClient, _ := rate_limit_servicev1.NewRateLimitGRPCClient("rate-limit-service:50051", insecure.NewCredentials())
 	rateLimitService := service.NewRateLimitService(rateLimitRrpcClient)
