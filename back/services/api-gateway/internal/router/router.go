@@ -27,7 +27,7 @@ func New() *gin.Engine {
 	r.Use(middleware.AuthMiddleware())
 
 	presetGrpcClient, _ := input_generator_servicev1.NewInputGenGRPCClient("input-generator-service:50051", insecure.NewCredentials())
-	presetService := service.NewPresetClientService(presetGrpcClient)
+	presetService := service.NewPresetService(presetGrpcClient)
 	presetHandler := handler.NewPresetHandler(presetService)
 	preset := r.Group("/preset")
 	preset.POST("", func(c *gin.Context) {

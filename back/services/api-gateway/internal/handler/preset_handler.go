@@ -32,13 +32,12 @@ func (h *PresetHandler) CreatePreset(c *gin.Context, req *preset_servicev1.Prese
 	}
 
 	c.JSON(200, gin.H{
-		"preset_id":   res.PresetID,
-		"preset_name": res.PresetName,
-		"preset_type": res.PresetType,
-		"content":     res.Content,
-		"account_id":  res.AccountID,
-		"create_dt":   res.CreateDt.AsTime(),
-		"update_dt":   res.UpdateDt.AsTime(),
+		"presetId":   res.PresetId,
+		"presetName": res.PresetName,
+		"presetType": res.PresetType,
+		"content":    res.Content,
+		"createDt":   res.CreateDt.AsTime().Format(time.RFC3339),
+		"updateDt":   res.UpdateDt.AsTime().Format(time.RFC3339),
 	})
 }
 
@@ -49,12 +48,12 @@ func (h *PresetHandler) GetPreset(c *gin.Context, req *preset_servicev1.PresetId
 		return
 	}
 	c.JSON(200, gin.H{
-		"preset_id":   res.PresetId,
-		"preset_name": res.PresetName,
-		"preset_type": res.PresetType,
-		"content":     res.Content,
-		"create_dt":   res.CreateDt.AsTime(),
-		"update_dt":   res.UpdateDt.AsTime(),
+		"presetId":   res.PresetId,
+		"presetName": res.PresetName,
+		"presetType": res.PresetType,
+		"content":    res.Content,
+		"createDt":   res.CreateDt.AsTime().Format(time.RFC3339),
+		"updateDt":   res.UpdateDt.AsTime().Format(time.RFC3339),
 	})
 }
 
@@ -67,12 +66,12 @@ func (h *PresetHandler) GetAllPresets(c *gin.Context, req *preset_servicev1.Pres
 	response := []gin.H{}
 	for _, p := range res.Presets {
 		response = append(response, gin.H{
-			"preset_id":   p.PresetId,
-			"preset_name": p.PresetName,
-			"preset_type": p.PresetType,
-			"content":     p.Content,
-			"create_dt":   p.CreateDt.AsTime(),
-			"update_dt":   p.UpdateDt.AsTime(),
+			"presetId":   p.PresetId,
+			"presetName": p.PresetName,
+			"presetType": p.PresetType,
+			"content":    p.Content,
+			"createDt":   p.CreateDt.AsTime().Format(time.RFC3339),
+			"updateDt":   p.UpdateDt.AsTime().Format(time.RFC3339),
 		})
 	}
 
@@ -88,27 +87,20 @@ func (h *PresetHandler) UpdatePreset(c *gin.Context, req *preset_servicev1.Prese
 		return
 	}
 	c.JSON(200, gin.H{
-		"preset_id":   res.PresetId,
-		"preset_name": res.PresetName,
-		"preset_type": res.PresetType,
-		"content":     res.Content,
-		"create_dt":   res.CreateDt.AsTime(),
-		"update_dt":   res.UpdateDt.AsTime(),
+		"presetId":   res.PresetId,
+		"presetName": res.PresetName,
+		"presetType": res.PresetType,
+		"content":    res.Content,
+		"createDt":   res.CreateDt.AsTime().Format(time.RFC3339),
+		"updateDt":   res.UpdateDt.AsTime().Format(time.RFC3339),
 	})
 }
 
 func (h *PresetHandler) DeletePreset(c *gin.Context, req *preset_servicev1.PresetIdRequest) {
-	res, err := h.PresetHandlerService.DeletePreset(c, req)
+	_, err := h.PresetHandlerService.DeletePreset(c, req)
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	c.JSON(200, gin.H{
-		"preset_id":   res.PresetId,
-		"preset_name": res.PresetName,
-		"preset_type": res.PresetType,
-		"content":     res.Content,
-		"create_dt":   res.CreateDt.AsTime(),
-		"update_dt":   res.UpdateDt.AsTime(),
-	})
+	c.JSON(200, gin.H{})
 }
