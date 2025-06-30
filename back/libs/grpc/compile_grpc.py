@@ -18,6 +18,7 @@ with importlib.resources.path("grpc_tools", "_proto") as proto_include:
     args = [
         "",
         f"-I=/app/grpc",
+        f"-I={proto_include}",
         f"--python_out=/app/{folder}/grpc_internal",
         f"--grpc_python_out=/app/{folder}/grpc_internal",
         *proto_files
