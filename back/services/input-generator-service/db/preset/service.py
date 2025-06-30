@@ -1,5 +1,7 @@
+import uuid
 from uuid import UUID
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from db.preset.model import Preset
@@ -37,7 +39,12 @@ def get_all_presets(db: Session, account_id: UUID, page: int = 0, size: int = 10
     offset = page * size
     return (
         db.query(Preset)
-        .filter(Preset.visibility == 'PUBLIC' or Preset.account_id == account_id)
+        .filter(
+            or_(
+                Preset.visibility == 'PUBLIC',
+                Preset.account_id == account_id
+            )
+        )
         .offset(offset)
         .limit(size)
         .all()

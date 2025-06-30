@@ -3,6 +3,7 @@ from db.sessions import engine
 from db.tcgen.model import TcGen
 from db.tcgen_block.model import TcGenBlock
 from db.tcgen_file.model import TcGenFile
+from db.preset.model import Preset
 
 if __name__ == "__main__":
     print("✅ Creating all tables...")

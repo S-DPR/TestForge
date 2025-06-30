@@ -70,23 +70,23 @@ class PresetServicer(v1_pb2_grpc.PresetServicer):
     def CreatePreset(self, request, context):
         logger.info("프리셋 생성 요청")
         try:
-            db: Session = get_db()
-            data = schema.PresetCreate(
-                preset_name=request.preset_name,
-                preset_type=request.preset_type,
-                content=request.content,
-                account_id=UUID(request.account_id) if request.account_id else None
-            )
-            preset = service.create_preset(db, data)
-            return v1_pb2.PresetResponse(
-                preset_id=str(preset.preset_id),
-                preset_name=preset.preset_name,
-                preset_type=preset.preset_type,
-                content=preset.content,
-                account_id=str(preset.account_id) if preset.account_id else "",
-                create_dt=to_proto_timestamp(preset.create_dt),
-                update_dt=to_proto_timestamp(preset.update_dt),
-            )
+            with get_db() as db:
+                data = schema.PresetCreate(
+                    preset_name=request.preset_name,
+                    preset_type=request.preset_type,
+                    content=request.content,
+                    account_id=str(request.account_id) if request.account_id else None
+                )
+                preset = service.create_preset(db, data)
+                return v1_pb2.PresetResponse(
+                    preset_id=str(preset.preset_id),
+                    preset_name=preset.preset_name,
+                    preset_type=preset.preset_type,
+                    content=preset.content,
+                    account_id=str(preset.account_id) if preset.account_id else "",
+                    create_dt=to_proto_timestamp(preset.create_dt),
+                    update_dt=to_proto_timestamp(preset.update_dt),
+                )
         except Exception as e:
             logger.error("프리셋 생성 중 에러: %s", e)
             context.abort(grpc.StatusCode.INTERNAL, "프리셋 생성 실패")
@@ -94,20 +94,20 @@ class PresetServicer(v1_pb2_grpc.PresetServicer):
     def GetPreset(self, request, context):
         logger.info("프리셋 단건 조회")
         try:
-            db: Session = get_db()
-            preset = service.get_preset(db, UUID(request.preset_id))
-            if not preset:
-                context.abort(grpc.StatusCode.NOT_FOUND, "Preset not found")
+            with get_db() as db:
+                preset = service.get_preset(db, str(request.preset_id))
+                if not preset:
+                    context.abort(grpc.StatusCode.NOT_FOUND, "Preset not found")
 
-            return v1_pb2.PresetResponse(
-                preset_id=str(preset.preset_id),
-                preset_name=preset.preset_name,
-                preset_type=preset.preset_type,
-                content=preset.content,
-                account_id=str(preset.account_id) if preset.account_id else "",
-                create_dt=to_proto_timestamp(preset.create_dt),
-                update_dt=to_proto_timestamp(preset.update_dt),
-            )
+                return v1_pb2.PresetResponse(
+                    preset_id=str(preset.preset_id),
+                    preset_name=preset.preset_name,
+                    preset_type=preset.preset_type,
+                    content=preset.content,
+                    account_id=str(preset.account_id) if preset.account_id else "",
+                    create_dt=to_proto_timestamp(preset.create_dt),
+                    update_dt=to_proto_timestamp(preset.update_dt),
+                )
         except Exception as e:
             logger.error("프리셋 조회 실패: %s", e)
             context.abort(grpc.StatusCode.INTERNAL, "프리셋 조회 실패")
@@ -115,27 +115,27 @@ class PresetServicer(v1_pb2_grpc.PresetServicer):
     def GetAllPresets(self, request, context):
         logger.info("프리셋 목록 조회")
         try:
-            db: Session = get_db()
-            presets = service.get_all_presets(
-                db=db,
-                account_id=UUID(request.account_id),
-                page=request.page,
-                size=request.size,
-            )
-            return v1_pb2.PresetListResponse(
-                presets=[
-                    v1_pb2.PresetResponse(
-                        preset_id=str(p.preset_id),
-                        preset_name=p.preset_name,
-                        preset_type=p.preset_type,
-                        content=p.content,
-                        account_id=str(p.account_id) if p.account_id else "",
-                        create_dt=to_proto_timestamp(p.create_dt),
-                        update_dt=to_proto_timestamp(p.update_dt),
-                    )
-                    for p in presets
-                ]
-            )
+            with get_db() as db:
+                presets = service.get_all_presets(
+                    db=db,
+                    account_id=str(request.account_id),
+                    page=request.page,
+                    size=request.size,
+                )
+                return v1_pb2.PresetListResponse(
+                    presets=[
+                        v1_pb2.PresetResponse(
+                            preset_id=str(p.preset_id),
+                            preset_name=p.preset_name,
+                            preset_type=p.preset_type,
+                            content=p.content,
+                            account_id=str(p.account_id) if p.account_id else "",
+                            create_dt=to_proto_timestamp(p.create_dt),
+                            update_dt=to_proto_timestamp(p.update_dt),
+                        )
+                        for p in presets
+                    ]
+                )
         except Exception as e:
             logger.error("프리셋 리스트 조회 실패: %s", e)
             context.abort(grpc.StatusCode.INTERNAL, "프리셋 리스트 조회 실패")
@@ -143,15 +143,15 @@ class PresetServicer(v1_pb2_grpc.PresetServicer):
     def UpdatePreset(self, request, context):
         logger.info("프리셋 수정 요청")
         try:
-            db: Session = get_db()
-            data = schema.PresetUpdate(
-                preset_id=UUID(request.preset_id),
-                preset_name=request.preset_name,
-                preset_type=request.preset_type,
-                content=request.content,
-                account_id=UUID(request.account_id) if request.account_id else None
-            )
-            preset = service.update_preset(db, data)
+            with get_db() as db:
+                data = schema.PresetUpdate(
+                    preset_id=str(request.preset_id),
+                    preset_name=request.preset_name,
+                    preset_type=request.preset_type,
+                    content=request.content,
+                    account_id=str(request.account_id) if request.account_id else None
+                )
+                preset = service.update_preset(db, data)
             if not preset:
                 context.abort(grpc.StatusCode.NOT_FOUND, "Preset not found")
 
@@ -171,9 +171,9 @@ class PresetServicer(v1_pb2_grpc.PresetServicer):
     def DeletePreset(self, request, context):
         logger.info("프리셋 삭제 요청")
         try:
-            db: Session = get_db()
-            result = service.delete_preset(db, UUID(request.preset_id))
-            return v1_pb2.DeletePresetResponse(success=result)
+            with get_db() as db:
+                result = service.delete_preset(db, str(request.preset_id))
+                return v1_pb2.DeletePresetResponse(success=result)
         except Exception as e:
             logger.error("프리셋 삭제 실패: %s", e)
             context.abort(grpc.StatusCode.INTERNAL, "프리셋 삭제 실패")
