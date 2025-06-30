@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {useState} from "react";
+import {toast} from "sonner";
 
 interface RegisterFormProps {
   setIsRenderLogin: (isRenderLogin: boolean) => void;
@@ -18,6 +19,35 @@ const RegisterForm = ({ setIsRenderLogin }: RegisterFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const register = async (email: string, password: string) => {
+    const res = await fetch('http://localhost:9000/api/account/register/', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: "include",
+    })
+    const data = await res.json();
+    if (res.status >= 400) {
+      console.log(data)
+      toast.success("회원가입에 실패했습니다. : " + data.email.join(", "), {
+        style: {
+          backgroundColor: "#FFB6C1",
+          color: "#000000"
+        }
+      });
+      return;
+    }
+    setIsRenderLogin(true);
+    toast.success("회원가입 성공!", {
+      style: {
+        backgroundColor: "#D1FAE5",
+        color: "#000000"
+      }
+    });
+  }
 
   return (
     <div className={cn("flex flex-col gap-6")}>
@@ -73,23 +103,6 @@ const RegisterForm = ({ setIsRenderLogin }: RegisterFormProps) => {
       </Card>
     </div>
   )
-}
-
-const register = async (email: string, password: string) => {
-  const res = await fetch('http://localhost:9000/api/account/register/', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-    credentials: "include",
-  })
-  const data = await res.json()
-  if (res.status >= 400) {
-    console.log('register failed' + data.message);
-    return;
-  }
-  console.log('register success');
 }
 
 export default RegisterForm;
