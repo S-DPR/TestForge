@@ -23,9 +23,19 @@ export interface BlockSpec {
   repeat: string;
 }
 
+export interface PresetSpec {
+  presetId: string;
+  presetName: string;
+  content: BlockSpec[];
+  ownerId: string;
+}
+
 interface EditorContextType {
   blocks: BlockSpec[];
   setBlocks: React.Dispatch<React.SetStateAction<BlockSpec[]>>;
+
+  preset: PresetSpec;
+  setPreset: React.Dispatch<React.SetStateAction<PresetSpec>>;
 
   addVariable: (blockIndex: number, variable: VariableSpec) => void;
   updateVariable: (blockIndex: number, variableIndex: number, variable: VariableSpec) => void;
@@ -50,6 +60,7 @@ export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', visibleType: 'null', variable: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
+  const [preset, setPreset] = React.useState<PresetSpec>({ presetId: "", presetName: "", content: blocks, ownerId: "" });
 
   const addVariable = (blockIndex: number, variable: VariableSpec) => {
     setBlocks((prev) => {
@@ -216,7 +227,8 @@ export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TestcaseContext.Provider value={{
-      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence, deleteBlockType, deleteVariableRange
+      blocks, setBlocks, addVariable, updateVariable, removeVariable, addVariableRange, updateVariableRange, addBlock, addOutputSequence, updateOutputSequence, updateBlockType, updateBlockRepeat, updateSeparator, removeOutputSequence, deleteBlockType, deleteVariableRange,
+      preset, setPreset
     }}>
       {children}
     </TestcaseContext.Provider>
