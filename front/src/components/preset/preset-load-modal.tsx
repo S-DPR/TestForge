@@ -5,6 +5,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
 import {clsx} from "clsx";
+import PresetPagination from "@/components/preset/preset-pagination";
 
 interface PresetLoadModalProps {
   presetLoadModalOpen: boolean;
@@ -18,6 +19,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
   const { blocks, setBlocks, preset, setPreset } = ctx;
   const [ presetData, setPresetData ] = useState<PresetSpec[]>([]);
   const [ search, setSearch ] = useState("");
+  const [ currentPage, setCurrentPage ] = useState(0);
 
   const savePreset = async (presetName: string) => {
     const request = {
@@ -47,7 +49,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
         },
         body: JSON.stringify({
           size: 20,
-          page: 0,
+          page: currentPage,
         }),
         credentials: "include"
       })
@@ -55,7 +57,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
       setPresetData(data.presets);
     };
     innerFn();
-  }, [presetLoadModalOpen])
+  }, [presetLoadModalOpen, currentPage]);
 
   useEffect(() => {
     if (!preset.presetId) return;
@@ -112,6 +114,8 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
           </div>
         ))}
         </div>
+
+        <PresetPagination maxPages={10} currentPage={currentPage} setCurrentPage={setCurrentPage} />
       </DialogContent>
     </Dialog>
   )

@@ -31,7 +31,7 @@ const PresetButton = () => {
   }
 
   return (
-    <>
+    <div className={"flex gap-3"}>
       <PresetLoadModal presetLoadModalOpen={open} setPresetLoadModalOpen={setOpen} />
       <Button
         size="sm"
@@ -47,7 +47,7 @@ const PresetButton = () => {
       >
         프리셋 저장하기
       </Button>
-    </>
+    </div>
   )
 }
 
