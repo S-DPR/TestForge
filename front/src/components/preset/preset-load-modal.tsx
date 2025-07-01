@@ -36,6 +36,15 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
       },
       credentials: 'include',
     })
+    if (response.status === 401) {
+      toast.error("로그인이 필요합니다.", {
+        style: {
+          backgroundColor: "#FFB6C1",
+          color: "#000000"
+        }
+      });
+      return;
+    }
     const data = await response.json();
     setPresetData(prev => {
       let newPresetData = [data, ...prev];
