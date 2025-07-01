@@ -90,7 +90,10 @@ func (h *PresetHandler) GetAllPresets(c *gin.Context, req *model.PresetListReqDT
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"presets": response,
+		"presets":     response,
+		"maxPage":     res.MaxPage,
+		"totalCount":  res.TotalCount,
+		"currentPage": res.CurrentPage,
 	})
 }
 
