@@ -37,14 +37,14 @@ def update_preset(db: Session, data: schema.PresetUpdate):
 
 def get_all_presets(db: Session, account_id: UUID, page: int = 0, size: int = 100):
     offset = page * size
+
+    conditions = [Preset.visibility == 'PUBLIC']
+    if account_id:
+        conditions.append(Preset.account_id == account_id)
+
     return (
         db.query(Preset)
-        .filter(
-            or_(
-                Preset.visibility == 'PUBLIC',
-                Preset.account_id == account_id
-            )
-        )
+        .filter(or_(*conditions))
         .offset(offset)
         .limit(size)
         .all()
