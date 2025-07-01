@@ -5,15 +5,15 @@ import (
 )
 
 type PresetCreateReqDTO struct {
-	PresetName string `json:"preset_name"`
-	PresetType string `json:"preset_type"`
+	PresetName string `json:"presetName"`
+	PresetType string `json:"presetType"`
 	Content    string `json:"content"`
 }
 
 type PresetUpdateReqDTO struct {
-	PresetId   string `json:"preset_id"`
-	PresetName string `json:"preset_name"`
-	PresetType string `json:"preset_type"`
+	PresetId   string `json:"presetId"`
+	PresetName string `json:"presetName"`
+	PresetType string `json:"presetType"`
 	Content    string `json:"content"`
 }
 
@@ -27,13 +27,13 @@ type PresetListReqDTO struct {
 }
 
 type PresetResDTO struct {
-	PresetId   string                 `json:"preset_id"`
-	PresetName string                 `json:"preset_name"`
-	PresetType string                 `json:"preset_type"`
+	PresetId   string                 `json:"presetId"`
+	PresetName string                 `json:"presetName"`
+	PresetType string                 `json:"presetType"`
 	Content    string                 `json:"content"`
-	AccountId  string                 `json:"account_id"`
-	CreateDt   *timestamppb.Timestamp `json:"create_dt"`
-	UpdateDt   *timestamppb.Timestamp `json:"update_dt"`
+	AccountId  string                 `json:"accountId"`
+	CreateDt   *timestamppb.Timestamp `json:"createDt"`
+	UpdateDt   *timestamppb.Timestamp `json:"updateDt"`
 }
 
 type PresetListResDTO struct {
