@@ -20,6 +20,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
   const [ presetData, setPresetData ] = useState<PresetSpec[]>([]);
   const [ search, setSearch ] = useState("");
   const [ currentPage, setCurrentPage ] = useState(0);
+  const [ maxPage, setMaxPage ] = useState(0);
 
   const savePreset = async (presetName: string) => {
     const request = {
@@ -36,6 +37,11 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
       credentials: 'include',
     })
     const data = await response.json();
+    setPresetData(prev => {
+      let newPresetData = [data, ...prev];
+      newPresetData = newPresetData.slice(0, 20);
+      return newPresetData;
+    })
     return data;
   }
 
@@ -55,6 +61,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
       })
       const data = await response.json();
       setPresetData(data.presets);
+      setMaxPage(data.maxPage);
     };
     innerFn();
   }, [presetLoadModalOpen, currentPage]);
@@ -115,7 +122,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
         ))}
         </div>
 
-        <PresetPagination maxPages={10} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <PresetPagination maxPages={maxPage} currentPage={currentPage} setCurrentPage={setCurrentPage} />
       </DialogContent>
     </Dialog>
   )
