@@ -28,6 +28,7 @@ export interface PresetSpec {
   presetName: string;
   content: BlockSpec[];
   ownerId: string;
+  presetType: string;
 }
 
 interface EditorContextType {
@@ -60,7 +61,7 @@ export const TestcaseContext = createContext<EditorContextType | null>(null);
 
 export const TestcaseProvider = ({ children }: { children: ReactNode }) => {
   const [blocks, setBlocks] = useState<BlockSpec[]>([{ type: 'null', visibleType: 'null', variable: [], output: { sequence: [], separator: '' }, config: {} as LineConfig, repeat: '' }]);
-  const [preset, setPreset] = React.useState<PresetSpec>({ presetId: "", presetName: "", content: blocks, ownerId: "" });
+  const [preset, setPreset] = React.useState<PresetSpec>({ presetId: "", presetName: "", content: blocks, ownerId: "", presetType: "" });
 
   const addVariable = (blockIndex: number, variable: VariableSpec) => {
     setBlocks((prev) => {

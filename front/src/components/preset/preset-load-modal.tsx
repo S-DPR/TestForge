@@ -1,8 +1,10 @@
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import React, {useContext, useEffect, useState} from "react";
-import {BlockSpec, PresetSpec, TestcaseContext} from "@/context/TestcaseContext";
+import {PresetSpec, TestcaseContext} from "@/context/TestcaseContext";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
+import {toast} from "sonner";
+import {clsx} from "clsx";
 
 interface PresetLoadModalProps {
   presetLoadModalOpen: boolean;
@@ -44,7 +46,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          size: 5,
+          size: 20,
           page: 0,
         }),
         credentials: "include"
@@ -73,6 +75,17 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
     innerFn();
   }, [preset.presetId, setBlocks, setPreset])
 
+  const getCardColor = (type: string): string => {
+    switch (type) {
+      case "CUSTOM":
+        return "bg-blue-50 border border-blue-300";
+      case "BAEKJOON":
+        return "bg-green-50 border border-green-300";
+      default:
+        return "bg-orange-50 border border-orange-300";
+    }
+  };
+
   return (
     <Dialog open={presetLoadModalOpen} onOpenChange={setPresetLoadModalOpen}>
       <DialogContent className="sm:max-w-4xl">
@@ -89,7 +102,7 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
         {presetData.map((item, i) => (
           <div
             key={i}
-            className= "h-12 flex items-center justify-center font-semibold rounded-lg shadow-sm cursor-pointer hover:brightness-95 transition"
+            className= {clsx("h-12 flex items-center justify-center font-semibold rounded-lg shadow-sm cursor-pointer hover:brightness-95 transition", getCardColor(item.presetType))}
             onClick={() => {
               setPreset(item);
               setPresetLoadModalOpen(false);
