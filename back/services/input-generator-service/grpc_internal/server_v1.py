@@ -133,8 +133,11 @@ class PresetServicer(v1_pb2_grpc.PresetServicer):
                             create_dt=to_proto_timestamp(p.create_dt),
                             update_dt=to_proto_timestamp(p.update_dt),
                         )
-                        for p in presets
-                    ]
+                        for p in presets['presets']
+                    ],
+                    max_page= presets['max_page'],
+                    total_count= presets['total_count'],
+                    current_page= presets['current_page']
                 )
         except Exception as e:
             logger.error("프리셋 리스트 조회 실패: %s", e)

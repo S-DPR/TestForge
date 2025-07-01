@@ -42,13 +42,24 @@ def get_all_presets(db: Session, account_id: UUID, page: int = 0, size: int = 10
     if account_id:
         conditions.append(Preset.account_id == account_id)
 
-    return (
-        db.query(Preset)
-        .filter(or_(*conditions))
+    base_query = db.query(Preset).filter(or_(*conditions))
+
+    total_count = base_query.count()
+    max_pages = (total_count+size-1) // size
+
+    presets = (
+        base_query
         .offset(offset)
         .limit(size)
         .all()
     )
+
+    return {
+        "presets": presets,
+        "max_page": max_pages,
+        "total_count": total_count,
+        "current_page": page
+    }
 
 def get_preset(db: Session, preset_id: UUID):
     return db.query(Preset).filter(Preset.preset_id == preset_id).first()
