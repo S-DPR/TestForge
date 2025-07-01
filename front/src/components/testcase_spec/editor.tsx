@@ -12,6 +12,7 @@ import IntArrayBlock from "@/components/testcase_spec/blocks/int-array-block";
 import TreeBlock from "@/components/testcase_spec/blocks/tree-block";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem} from "@/components/ui/command";
+import PresetButton from "@/components/preset/preset-button";
 
 const Editor = () => {
   const context = useContext(TestcaseContext);
@@ -50,7 +51,7 @@ const Editor = () => {
         <CardTitle>테스트케이스 명세 설정</CardTitle>
         <CardDescription>테스트케이스가 어떻게 구성되어있는지 적는 공간입니다.</CardDescription>
         <div className="absolute top-4 right-4">
-
+          <PresetButton />
         </div>
       </CardHeader>
       <CardContent>
