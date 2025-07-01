@@ -15,7 +15,6 @@ func New() *gin.Engine {
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
 	}))
-	r.Use(middleware.AuthMiddleware())
 
 	RegisterPresetRoutes(r)
 	RegisterExecutorRoutes(r)
