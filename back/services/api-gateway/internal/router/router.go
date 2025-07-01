@@ -31,7 +31,7 @@ func New() *gin.Engine {
 	presetHandler := handler.NewPresetHandler(presetService)
 	preset := r.Group("/preset")
 	preset.POST("", func(c *gin.Context) {
-		var req input_generator_servicev1.PresetCreateRequest
+		var req model.PresetCreateReqDTO
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -39,7 +39,7 @@ func New() *gin.Engine {
 		presetHandler.CreatePreset(c, &req)
 	})
 	preset.PUT("", func(c *gin.Context) {
-		var req input_generator_servicev1.PresetUpdateRequest
+		var req model.PresetUpdateReqDTO
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -48,14 +48,14 @@ func New() *gin.Engine {
 	})
 	preset.DELETE("/:presetId", func(c *gin.Context) {
 		presetId := c.Param("presetId")
-		presetHandler.DeletePreset(c, &input_generator_servicev1.PresetIdRequest{PresetId: presetId})
+		presetHandler.DeletePreset(c, &model.PresetIdReqDTO{PresetId: presetId})
 	})
 	preset.GET("/:presetId", func(c *gin.Context) {
 		presetId := c.Param("presetId")
-		presetHandler.GetPreset(c, &input_generator_servicev1.PresetIdRequest{PresetId: presetId})
+		presetHandler.GetPreset(c, &model.PresetIdReqDTO{PresetId: presetId})
 	})
 	preset.POST("/search", func(c *gin.Context) {
-		var req input_generator_servicev1.PresetListRequest
+		var req model.PresetListReqDTO
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return

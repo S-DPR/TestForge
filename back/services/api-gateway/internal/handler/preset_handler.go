@@ -1,7 +1,7 @@
 package handler
 
 import (
-	preset_servicev1 "bff/grpc_internal/input_generator_service"
+	"bff/internal/model"
 	"bff/internal/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,19 +13,25 @@ type PresetHandler struct {
 }
 
 type PresetServiceInterface interface {
-	CreatePreset(c *gin.Context, req *preset_servicev1.PresetCreateRequest)
-	GetPreset(c *gin.Context, req *preset_servicev1.PresetIdRequest)
-	GetAllPresets(c *gin.Context, req *preset_servicev1.PresetListRequest)
-	UpdatePreset(c *gin.Context, req *preset_servicev1.PresetUpdateRequest)
-	DeletePreset(c *gin.Context, req *preset_servicev1.PresetIdRequest)
+	CreatePreset(c *gin.Context, req *model.PresetCreateReqDTO)
+	GetPreset(c *gin.Context, req *model.PresetIdReqDTO)
+	GetAllPresets(c *gin.Context, req *model.PresetListReqDTO)
+	UpdatePreset(c *gin.Context, req *model.PresetUpdateReqDTO)
+	DeletePreset(c *gin.Context, req *model.PresetIdReqDTO)
 }
 
 func NewPresetHandler(service service.PresetServiceInterface) *PresetHandler {
 	return &PresetHandler{service}
 }
 
-func (h *PresetHandler) CreatePreset(c *gin.Context, req *preset_servicev1.PresetCreateRequest) {
-	res, err := h.PresetHandlerService.CreatePreset(c, req)
+func (h *PresetHandler) CreatePreset(c *gin.Context, req *model.PresetCreateReqDTO) {
+	accountIdAny, exist := c.Get("accountId")
+	if !exist {
+		c.JSON(401, gin.H{"error": "account id not found"})
+	}
+	accountId := accountIdAny.(string)
+
+	res, err := h.PresetHandlerService.CreatePreset(c, req, accountId)
 	if err != nil {
 		c.Error(err)
 		return
@@ -41,7 +47,7 @@ func (h *PresetHandler) CreatePreset(c *gin.Context, req *preset_servicev1.Prese
 	})
 }
 
-func (h *PresetHandler) GetPreset(c *gin.Context, req *preset_servicev1.PresetIdRequest) {
+func (h *PresetHandler) GetPreset(c *gin.Context, req *model.PresetIdReqDTO) {
 	res, err := h.PresetHandlerService.GetPreset(c, req)
 	if err != nil {
 		c.Error(err)
@@ -57,8 +63,14 @@ func (h *PresetHandler) GetPreset(c *gin.Context, req *preset_servicev1.PresetId
 	})
 }
 
-func (h *PresetHandler) GetAllPresets(c *gin.Context, req *preset_servicev1.PresetListRequest) {
-	res, err := h.PresetHandlerService.GetAllPresets(c, req)
+func (h *PresetHandler) GetAllPresets(c *gin.Context, req *model.PresetListReqDTO) {
+	accountIdAny, exist := c.Get("accountId")
+	if !exist {
+		c.JSON(401, gin.H{"error": "account id not found"})
+	}
+	accountId := accountIdAny.(string)
+
+	res, err := h.PresetHandlerService.GetAllPresets(c, req, accountId)
 	if err != nil {
 		c.Error(err)
 		return
@@ -80,8 +92,14 @@ func (h *PresetHandler) GetAllPresets(c *gin.Context, req *preset_servicev1.Pres
 	})
 }
 
-func (h *PresetHandler) UpdatePreset(c *gin.Context, req *preset_servicev1.PresetUpdateRequest) {
-	res, err := h.PresetHandlerService.UpdatePreset(c, req)
+func (h *PresetHandler) UpdatePreset(c *gin.Context, req *model.PresetUpdateReqDTO) {
+	accountIdAny, exist := c.Get("accountId")
+	if !exist {
+		c.JSON(401, gin.H{"error": "account id not found"})
+	}
+	accountId := accountIdAny.(string)
+
+	res, err := h.PresetHandlerService.UpdatePreset(c, req, accountId)
 	if err != nil {
 		c.Error(err)
 		return
@@ -96,8 +114,14 @@ func (h *PresetHandler) UpdatePreset(c *gin.Context, req *preset_servicev1.Prese
 	})
 }
 
-func (h *PresetHandler) DeletePreset(c *gin.Context, req *preset_servicev1.PresetIdRequest) {
-	_, err := h.PresetHandlerService.DeletePreset(c, req)
+func (h *PresetHandler) DeletePreset(c *gin.Context, req *model.PresetIdReqDTO) {
+	accountIdAny, exist := c.Get("accountId")
+	if !exist {
+		c.JSON(401, gin.H{"error": "account id not found"})
+	}
+	accountId := accountIdAny.(string)
+
+	_, err := h.PresetHandlerService.DeletePreset(c, req, accountId)
 	if err != nil {
 		c.Error(err)
 		return
