@@ -67,9 +67,9 @@ message PresetResponse {
 
 message PresetListResponse {
   repeated PresetResponse presets = 1;
-  int32 maxPage = 2;
-  int32 totalCount = 3;
-  int32 currentPage = 4;
+  int32 max_page = 2;
+  int32 total_count = 3;
+  int32 current_page = 4;
 }
 
 message DeletePresetResponse {
