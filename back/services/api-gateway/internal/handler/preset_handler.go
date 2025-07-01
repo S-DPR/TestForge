@@ -65,10 +65,10 @@ func (h *PresetHandler) GetPreset(c *gin.Context, req *model.PresetIdReqDTO) {
 
 func (h *PresetHandler) GetAllPresets(c *gin.Context, req *model.PresetListReqDTO) {
 	accountIdAny, exist := c.Get("accountId")
-	if !exist {
-		c.JSON(401, gin.H{"error": "account id not found"})
+	accountId := ""
+	if exist {
+		accountId = accountIdAny.(string)
 	}
-	accountId := accountIdAny.(string)
 
 	res, err := h.PresetHandlerService.GetAllPresets(c, req, accountId)
 	if err != nil {
