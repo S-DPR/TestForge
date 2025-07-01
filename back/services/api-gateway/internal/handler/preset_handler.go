@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bff/internal/middleware"
 	"bff/internal/model"
 	"bff/internal/service"
 	"github.com/gin-gonic/gin"
@@ -64,6 +65,7 @@ func (h *PresetHandler) GetPreset(c *gin.Context, req *model.PresetIdReqDTO) {
 }
 
 func (h *PresetHandler) GetAllPresets(c *gin.Context, req *model.PresetListReqDTO) {
+	middleware.SetAccountId(c)
 	accountIdAny, exist := c.Get("accountId")
 	accountId := ""
 	if exist {

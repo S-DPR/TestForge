@@ -24,19 +24,25 @@ func getGatekeeperService() *service.GatekeeperService {
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, err := c.Cookie("access_token")
-		if err != nil || token == "" {
+		if !SetAccountId(c) {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing or invalid token"})
 			return
 		}
-
-		accountId, err := getGatekeeperService().ValidateJwt(token, context.Background())
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
-			return
-		}
-
-		c.Set("accountId", accountId)
 		c.Next()
 	}
+}
+
+func SetAccountId(c *gin.Context) bool {
+	token, err := c.Cookie("access_token")
+	if err != nil || token == "" {
+		return false
+	}
+
+	accountId, err := getGatekeeperService().ValidateJwt(token, context.Background())
+	if err != nil {
+		return false
+	}
+
+	c.Set("accountId", accountId)
+	return true
 }
