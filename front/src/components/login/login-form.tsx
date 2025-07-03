@@ -14,7 +14,7 @@ interface LoginFormProps {
 const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
   const ctx = useContext(LoginContext);
   if (!ctx) throw new Error("또또또 콘텍스트 에러야");
-  const { setAccessToken, request } = ctx;
+  const { request, updateToken } = ctx;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +33,7 @@ const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
     }
     setError("");
     setLoginModalOpen(false);
-    setAccessToken(data.accessToken);
+    updateToken(data.access);
     toast.success("로그인 성공!", {
       style: {
         backgroundColor: "#D1FAE5",

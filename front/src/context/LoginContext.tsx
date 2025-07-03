@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode} from "react";
+import React, {createContext, ReactNode, useState} from "react";
 import {toast} from "sonner";
 
 interface LoginContextType {
@@ -7,7 +7,9 @@ interface LoginContextType {
   isRenderLogin: boolean;
   setIsRenderLogin: (open: boolean) => void;
   setAccessToken: (accessToken: string) => void;
+  setExpiresAt: (expiresAt: number) => void;
 
+  updateToken: (accessToken: string) => void;
   request: ({ url, method, body, header }: RequestType) => Promise<Response>;
 }
 
@@ -32,8 +34,18 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
   const [loginModalOpen, setLoginModalOpen] = React.useState(false);
   const [isRenderLogin, setIsRenderLogin] = React.useState(true);
   const [accessToken, setAccessToken] = React.useState("");
+  const [expiresAt, setExpiresAt] = useState(Number.MAX_SAFE_INTEGER);
 
   const request = async ({ url, method, body = {}, header = {} }: RequestType) => {
+    if (Math.floor(Date.now() / 1000) >= expiresAt) {
+      const res = await request({
+        url: 'http://localhost:9000/refresh/',
+        method: HTTP_METHOD.POST,
+      })
+      const data = await res.json();
+      updateToken(data.access);
+    }
+
     const finalHeader = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
@@ -65,7 +77,14 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
     return response;
   }
 
-  return (<LoginContext.Provider value={{ loginModalOpen, setLoginModalOpen, isRenderLogin, setIsRenderLogin, setAccessToken, request }}>
+  const updateToken = (accessToken: string) => {
+    console.log(atob(accessToken.split('.')[1]));
+    const payload = JSON.parse(atob(accessToken.split('.')[1]));
+    setAccessToken(accessToken);
+    setExpiresAt(payload.exp);
+  }
+
+  return (<LoginContext.Provider value={{ loginModalOpen, setLoginModalOpen, isRenderLogin, setIsRenderLogin, setAccessToken, setExpiresAt, updateToken, request }}>
       {children}
     </LoginContext.Provider>
   );
