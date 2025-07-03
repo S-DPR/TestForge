@@ -22,7 +22,7 @@ import {Toaster} from "sonner";
 
 export default function Home() {
   return (
-    <div className="max-w-4xl w-full mx-auto px-4 py-8">
+    <div className="max-w-4xl w-full mx-auto px-4 py-8 flex flex-col gap-2">
       <Toaster position="bottom-right" />
       <LoginProvider>
         <LoginButton />
@@ -50,7 +50,9 @@ export default function Home() {
                   <ResultOuterBox/>
                 </TabsContent>
               </Tabs>
-              <SubmitTestcaseRequestButton />
+              <div className="flex justify-center mt-2">
+                <SubmitTestcaseRequestButton />
+              </div>
             </ResultProvider>
           </TestcaseProvider>
         </CodeProvider>
