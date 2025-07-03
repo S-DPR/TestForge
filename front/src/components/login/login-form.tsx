@@ -24,7 +24,8 @@ const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
     const res = await request({
       url: 'http://localhost:9000/account/login/',
       method: HTTP_METHOD.POST,
-      body: { email, password }
+      body: { email, password },
+      viewToast: false
     });
     const data = await res.json();
     if (!data || !data.access) {

@@ -31,13 +31,7 @@ const SubmitTestcaseRequestButton = () => {
                 body: payload,
                 header: { 'Accept': 'text/event-stream' }
             })
-            if (!res.body) {
-                toast.error("오류가 발생했습니다. 다시 시도해주세요.", {
-                    style: {
-                        backgroundColor: "#FFB6C1",
-                        color: "#000000"
-                    }
-                });
+            if (res.status >= 300 || !res.body) {
                 return;
             }
             const reader = res.body.getReader();

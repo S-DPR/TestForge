@@ -21,14 +21,15 @@ const RegisterForm = ({ setIsRenderLogin }: RegisterFormProps) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const register = async (email: string, password: string) => {
+    console.log("hihi")
     const res = await request({
       url: 'http://localhost:9000/account/register/',
       method: HTTP_METHOD.POST,
       body: { email, password },
+      viewToast: false
     })
-    const data = await res.json();
     if (res.status >= 400) {
-      toast.success("회원가입에 실패했습니다. : " + data.email.join(", "), {
+      toast.success("회원가입에 실패했습니다.", {
         style: {
           backgroundColor: "#FFB6C1",
           color: "#000000"

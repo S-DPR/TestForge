@@ -20,6 +20,8 @@ interface RequestType {
   method: HTTP_METHOD;
   body?: object;
   header?: object;
+
+  viewToast?: boolean;
 }
 
 export enum HTTP_METHOD {
@@ -35,16 +37,18 @@ export const LoginContext = createContext<LoginContextType | null>(null);
 const LoginProvider = ({ children }: { children: ReactNode }) => {
   const [loginModalOpen, setLoginModalOpen] = React.useState(false);
   const [isRenderLogin, setIsRenderLogin] = React.useState(true);
-  const [accessToken, setAccessToken] = React.useState("");
+  const [accessToken, setAccessToken] = React.useState("noAuth");
   const [expiresAt, setExpiresAt] = useState(Number.MAX_SAFE_INTEGER);
 
-  const request = async ({ url, method, body = {}, header = {} }: RequestType) => {
+  const request = async ({ url, method, body = {}, header = {}, viewToast = true }: RequestType) => {
+    const authHeader: object = hasToken() ? {'Authorization': `Bearer ${accessToken}`} : {};
     const finalHeader = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+      ...authHeader,
       ...header,
     }
 
+    console.log(Math.floor(Date.now() / 1000) >= expiresAt);
     if (Math.floor(Date.now() / 1000) >= expiresAt) {
       const res = await fetch('http://localhost:9000/refresh/', {
         method: HTTP_METHOD.POST,
@@ -55,41 +59,46 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
       updateToken(data.access);
     }
 
+    const innerBody = method == HTTP_METHOD.GET ? {} : {'body': JSON.stringify(body)};
+
     const response = await fetch(url, {
       method: method,
       headers: finalHeader,
-      body: JSON.stringify(body),
       credentials: "include",
+      ...innerBody,
     })
     if (response.status === 401) {
-      toast.error("로그인이 필요합니다.", {
-        style: {
-          backgroundColor: "#FFB6C1",
-          color: "#000000"
-        }
-      });
+      if (viewToast) {
+        toast.error("로그인이 필요합니다.", {
+          style: {
+            backgroundColor: "#FFB6C1",
+            color: "#000000"
+          }
+        });
+      }
       return response;
     }
     if (!(200 <= response.status && response.status < 300)) {
-      toast.error("오류가 발생했습니다. 다시 시도해주세요.", {
-        style: {
-          backgroundColor: "#FFB6C1",
-          color: "#000000"
-        }
-      })
+      if (viewToast) {
+        toast.error("오류가 발생했습니다. 다시 시도해주세요.", {
+          style: {
+            backgroundColor: "#FFB6C1",
+            color: "#000000"
+          }
+        })
+      }
     }
     return response;
   }
 
   const updateToken = (accessToken: string) => {
-    console.log(atob(accessToken.split('.')[1]));
     const payload = JSON.parse(atob(accessToken.split('.')[1]));
     setAccessToken(accessToken);
     setExpiresAt(payload.exp);
   }
 
   const hasToken = () => {
-    return accessToken.length > 0;
+    return accessToken !== 'noAuth';
   }
 
   const logout = async () => {
@@ -107,7 +116,7 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
       });
       return;
     }
-    setAccessToken("");
+    setAccessToken("noAuth");
     setExpiresAt(Number.MAX_SAFE_INTEGER);
     toast.error("로그아웃에 성공했습니다.", {
       style: {
