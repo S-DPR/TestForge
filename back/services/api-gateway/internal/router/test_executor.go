@@ -22,7 +22,7 @@ func RegisterExecutorRoutes(r *gin.Engine) {
 
 	exec := r.Group("/test-execute", middleware.AuthMiddleware())
 	{
-		exec.POST("/test-execute", func(c *gin.Context) {
+		exec.POST("", func(c *gin.Context) {
 			var req model.TestExecutorReqDTO
 			if err := c.ShouldBindJSON(&req); err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

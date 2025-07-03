@@ -15,7 +15,7 @@ func RegisterStorageRoutes(r *gin.Engine) {
 
 	file := r.Group("file")
 	{
-		file.GET("/file/:filename", func(c *gin.Context) {
+		file.GET("/:filename", func(c *gin.Context) {
 			filename := c.Param("filename")
 			storageHandler.Read(c, filename)
 		})
