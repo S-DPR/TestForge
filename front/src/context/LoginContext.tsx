@@ -10,6 +10,8 @@ interface LoginContextType {
   setExpiresAt: (expiresAt: number) => void;
 
   updateToken: (accessToken: string) => void;
+  hasToken: () => boolean;
+  logout: () => void;
   request: ({ url, method, body, header }: RequestType) => Promise<Response>;
 }
 
@@ -86,7 +88,36 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
     setExpiresAt(payload.exp);
   }
 
-  return (<LoginContext.Provider value={{ loginModalOpen, setLoginModalOpen, isRenderLogin, setIsRenderLogin, setAccessToken, setExpiresAt, updateToken, request }}>
+  const hasToken = () => {
+    return accessToken.length > 0;
+  }
+
+  const logout = async () => {
+    const res = await request({
+      url: 'http://localhost:9000/account/logout/',
+      method: HTTP_METHOD.POST,
+    })
+    const data = await res.json();
+    if (!data.message) {
+      toast.error('로그아웃에 실패했습니다.', {
+        style: {
+          backgroundColor: "#FFB6C1",
+          color: "#000000"
+        }
+      });
+      return;
+    }
+    setAccessToken("");
+    setExpiresAt(Number.MAX_SAFE_INTEGER);
+    toast.error("로그아웃에 성공했습니다.", {
+      style: {
+        backgroundColor: "#FFB6C1",
+        color: "#000000"
+      }
+    });
+  }
+
+  return (<LoginContext.Provider value={{ loginModalOpen, setLoginModalOpen, isRenderLogin, setIsRenderLogin, setAccessToken, setExpiresAt, updateToken, hasToken, logout, request }}>
       {children}
     </LoginContext.Provider>
   );
