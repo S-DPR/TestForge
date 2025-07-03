@@ -4,81 +4,73 @@ import {useContext} from "react";
 import {CodeContext} from "@/context/CodeContext";
 import {Result, ResultContext} from "@/context/ResultContext";
 import {toast} from "sonner";
+import {HTTP_METHOD, LoginContext} from "@/context/LoginContext";
 
 const SubmitTestcaseRequestButton = () => {
     const tcCtx = useContext(TestcaseContext);
     const codeCtx = useContext(CodeContext);
     const resultCtx = useContext(ResultContext);
+    const loginCtx = useContext(LoginContext);
+
     if (!tcCtx) throw new Error("또 tc ctx 에러야");
     if (!codeCtx) throw new Error("또 code ctx 에러야");
     if (!resultCtx) throw new Error("또 result ctx 에러야");
+    if (!loginCtx) throw new Error("또또또 login 콘텍스트 에러야");
 
     const { blocks } = tcCtx;
     const { code1, lang1, code2, lang2, repeatCount } = codeCtx;
     const { addResult, initResult } = resultCtx;
+    const { request } = loginCtx;
 
-    return <Button onClick={() => {
-        initResult()
-        sendRequest(buildPayload(code1, lang1, code2, lang2, repeatCount, blocks), addResult)
-    }}>제출</Button>
-}
 
-const sendRequest = async (payload: object, addResult: (result: Result) => void) => {
-    try {
-        const res = await fetch('http://localhost:9001/test-execute', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'text/event-stream',
-            },
-            body: JSON.stringify(payload),
-            credentials: "include"
-        });
-        if (res.body == null) {
-            return;
-        }
-        if (res.status === 401) {
-            toast.error("로그인이 필요합니다.", {
+    const sendRequest = async (payload: object) => {
+        try {
+            const res = await request({
+                url: 'http://localhost:9001/test-execute',
+                method: HTTP_METHOD.POST,
+                body: payload,
+                header: { 'Accept': 'text/event-stream' }
+            })
+            if (!res.body) {
+                toast.error("오류가 발생했습니다. 다시 시도해주세요.", {
+                    style: {
+                        backgroundColor: "#FFB6C1",
+                        color: "#000000"
+                    }
+                });
+                return;
+            }
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                let idx;
+                while ((idx = buffer.indexOf('\n\n')) >= 0) {
+                    const eventStr = buffer.slice(0, idx).trim();
+                    buffer = buffer.slice(idx + 2);
+                    if (eventStr) addResult(handleEvent(eventStr));
+                }
+            }
+            toast.success("처리가 완료되었습니다.", {
                 style: {
-                    backgroundColor: "#FFB6C1",
+                    backgroundColor: "#D1FAE5",
                     color: "#000000"
                 }
             });
-            return;
+        } catch (err) {
+            console.error(err);
         }
-        if (!(200 <= res.status && res.status < 300)) {
-            toast.error("오류가 발생했습니다. 다시 시도해주세요.", {
-                style: {
-                    backgroundColor: "#FFB6C1",
-                    color: "#000000"
-                }
-            })
-        }
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            let idx;
-            while ((idx = buffer.indexOf('\n\n')) >= 0) {
-                const eventStr = buffer.slice(0, idx).trim();
-                buffer = buffer.slice(idx + 2);
-                if (eventStr) addResult(handleEvent(eventStr));
-            }
-        }
-        toast.success("처리가 완료되었습니다.", {
-            style: {
-                backgroundColor: "#D1FAE5",
-                color: "#000000"
-            }
-        });
-    } catch (err) {
-        console.error(err);
     }
+
+
+    return <Button onClick={() => {
+        initResult()
+        sendRequest(buildPayload(code1, lang1, code2, lang2, repeatCount, blocks))
+    }}>제출</Button>
 }
 
 const buildPayload = (code1: string, lang1: string, code2: string, lang2: string, repeatCount: number, blocks: BlockSpec[]) => {

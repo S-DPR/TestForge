@@ -1,14 +1,10 @@
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {useState} from "react";
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardDescription, CardHeader,} from "@/components/ui/card"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {useContext, useState} from "react";
 import {toast} from "sonner";
+import {HTTP_METHOD, LoginContext} from "@/context/LoginContext";
 
 interface LoginFormProps {
   setIsRenderLogin: (isRenderLogin: boolean) => void;
@@ -16,26 +12,28 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ setIsRenderLogin, setLoginModalOpen }: LoginFormProps) => {
+  const ctx = useContext(LoginContext);
+  if (!ctx) throw new Error("또또또 콘텍스트 에러야");
+  const { setAccessToken, request } = ctx;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const login = async (email: string, password: string) => {
-    const res = await fetch('http://localhost:9000/api/account/login/', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-      credentials: "include",
-    })
-    const data = await res.json()
-    if (!data || !data.message) {
+    const res = await request({
+      url: 'http://localhost:9000/account/login/',
+      method: HTTP_METHOD.POST,
+      body: { email, password }
+    });
+    const data = await res.json();
+    if (!data || !data.access) {
       setError("아이디 또는 비밀번호가 다릅니다.");
       return;
     }
     setError("");
     setLoginModalOpen(false);
+    setAccessToken(data.accessToken);
     toast.success("로그인 성공!", {
       style: {
         backgroundColor: "#D1FAE5",

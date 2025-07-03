@@ -2,29 +2,31 @@ import {Button} from "@/components/ui/button";
 import React, {useContext, useState} from "react";
 import {TestcaseContext} from "@/context/TestcaseContext";
 import PresetLoadModal from "@/components/preset/preset-load-modal";
+import {HTTP_METHOD, LoginContext} from "@/context/LoginContext";
 
 const PresetButton = () => {
   const ctx = useContext(TestcaseContext);
+  const loginCtx = useContext(LoginContext);
+
   if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
+  if (!loginCtx) throw new Error("login Context error");
 
   const { blocks, preset } = ctx;
+  const { request } = loginCtx;
 
   const [open, setOpen] = useState(false);
 
   const updatePreset = async () => {
-    const request = {
+    const req = {
       presetId: preset.presetId,
       presetName: preset.presetName,
       presetType: 'CUSTOM',
       content: JSON.stringify(blocks),
     }
-    const response = await fetch('http://localhost:9001/preset', {
-      method: 'PUT',
-      body: JSON.stringify(request),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: 'include',
+    const response = await request({
+      url: 'http://localhost:9001/preset',
+      method: HTTP_METHOD.PUT,
+      body: req,
     })
     const data = await response.json();
     return data;

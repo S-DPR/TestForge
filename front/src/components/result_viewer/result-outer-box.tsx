@@ -1,10 +1,4 @@
-import React, {ReactNode, useContext} from "react";
-import {TestcaseContext} from "@/context/TestcaseContext";
-import LineBlock from "@/components/testcase_spec/blocks/line-block";
-import GraphBlock from "@/components/testcase_spec/blocks/graph-block";
-import MatrixBlock from "@/components/testcase_spec/blocks/matrix-block";
-import BlockWrapper from "@/components/testcase_spec/block-wrapper";
-import {Button} from "@/components/ui/button";
+import React from "react";
 import ResultBox from "@/components/result_viewer/result-box";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 

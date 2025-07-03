@@ -1,37 +1,33 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {useState} from "react";
+import {cn} from "@/lib/utils"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardDescription, CardHeader,} from "@/components/ui/card"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {useContext, useState} from "react";
 import {toast} from "sonner";
+import {HTTP_METHOD, LoginContext} from "@/context/LoginContext";
 
 interface RegisterFormProps {
   setIsRenderLogin: (isRenderLogin: boolean) => void;
 }
 
 const RegisterForm = ({ setIsRenderLogin }: RegisterFormProps) => {
+  const ctx = useContext(LoginContext);
+  if (!ctx) throw new Error("또또또 콘텍스트 에러야");
+  const { request } = ctx;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const register = async (email: string, password: string) => {
-    const res = await fetch('http://localhost:9000/api/account/register/', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-      credentials: "include",
+    const res = await request({
+      url: 'http://localhost:9000/account/register/',
+      method: HTTP_METHOD.POST,
+      body: { email, password },
     })
     const data = await res.json();
     if (res.status >= 400) {
-      console.log(data)
       toast.success("회원가입에 실패했습니다. : " + data.email.join(", "), {
         style: {
           backgroundColor: "#FFB6C1",

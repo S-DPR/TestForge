@@ -1,21 +1,22 @@
 import {useContext} from "react";
 import {Result, ResultContext} from "@/context/ResultContext";
 import {clsx} from "clsx";
+import {HTTP_METHOD, LoginContext} from "@/context/LoginContext";
 
 const ResultBox = () => {
   const ctx = useContext(ResultContext);
+  const loginCtx = useContext(LoginContext);
+
   if (!ctx) throw new Error("Can't find result context");
+  if (!loginCtx) throw new Error("Can't find login context");
 
   const { results, setInputSelected, setInputDialogOpen } = ctx;
+  const { request } = loginCtx;
 
   const handleClick = async (result: Result) => {
-    const res = await fetch(`http://localhost:9001/file/${result.filename}`, {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include"
+    const res = await request({
+      url: `http://localhost:9001/file/${result.filename}`,
+      method: HTTP_METHOD.GET,
     })
     const text = await res.text();
     const data = JSON.parse(text);

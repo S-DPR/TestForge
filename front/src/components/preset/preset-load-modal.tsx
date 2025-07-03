@@ -3,9 +3,9 @@ import React, {useContext, useEffect, useState} from "react";
 import {PresetSpec, TestcaseContext} from "@/context/TestcaseContext";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {toast} from "sonner";
 import {clsx} from "clsx";
 import PresetPagination from "@/components/preset/preset-pagination";
+import {HTTP_METHOD, LoginContext} from "@/context/LoginContext";
 
 interface PresetLoadModalProps {
   presetLoadModalOpen: boolean;
@@ -14,37 +14,28 @@ interface PresetLoadModalProps {
 
 const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: PresetLoadModalProps) => {
   const ctx = useContext(TestcaseContext);
+  const loginCtx = useContext(LoginContext);
   if (!ctx) throw new Error("context 없음. 개판임 ㅠ");
+  if (!loginCtx) throw new Error("login context error");
 
   const { blocks, setBlocks, preset, setPreset } = ctx;
+  const { request } = loginCtx;
   const [ presetData, setPresetData ] = useState<PresetSpec[]>([]);
   const [ search, setSearch ] = useState("");
   const [ currentPage, setCurrentPage ] = useState(0);
   const [ maxPage, setMaxPage ] = useState(0);
 
   const savePreset = async (presetName: string) => {
-    const request = {
+    const req = {
       presetName: presetName,
       presetType: 'CUSTOM',
       content: JSON.stringify(blocks),
     }
-    const response = await fetch('http://localhost:9001/preset', {
-      method: 'POST',
-      body: JSON.stringify(request),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: 'include',
+    const response = await request({
+      url: 'http://localhost:9001/preset',
+      method: HTTP_METHOD.POST,
+      body: req,
     })
-    if (response.status === 401) {
-      toast.error("로그인이 필요합니다.", {
-        style: {
-          backgroundColor: "#FFB6C1",
-          color: "#000000"
-        }
-      });
-      return;
-    }
     const data = await response.json();
     setPresetData(prev => {
       let newPresetData = [data, ...prev];
@@ -57,33 +48,24 @@ const PresetLoadModal = ({ presetLoadModalOpen, setPresetLoadModalOpen }: Preset
   useEffect(() => {
     if (!presetLoadModalOpen) return;
     const innerFn = async () => {
-      const response = await fetch(`http://localhost:9001/preset/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          size: 20,
-          page: currentPage,
-        }),
-        credentials: "include"
+      const response = await request({
+        url: `http://localhost:9001/preset/search`,
+        method: HTTP_METHOD.POST,
+        body: { size: 20, page: currentPage },
       })
       const data = await response.json();
       setPresetData(data.presets);
       setMaxPage(data.maxPage);
     };
     innerFn();
-  }, [presetLoadModalOpen, currentPage]);
+  }, [presetLoadModalOpen, currentPage, request]);
 
   useEffect(() => {
     if (!preset.presetId) return;
     const innerFn = async () => {
-      const response = await fetch(`http://localhost:9001/preset/${preset.presetId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include"
+      const response = await request({
+        url: `http://localhost:9001/preset/${preset.presetId}`,
+        method: HTTP_METHOD.GET,
       })
       const text = await response.text();
       const data = JSON.parse(text);
