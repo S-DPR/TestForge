@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
+	"strings"
 )
 
 var gatekeeperService *service.GatekeeperService
@@ -33,11 +34,12 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 func SetAccountId(c *gin.Context) bool {
-	token, err := c.Cookie("access_token")
-	if err != nil || token == "" {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 		return false
 	}
 
+	token := strings.TrimPrefix(authHeader, "Bearer ")
 	accountId, err := getGatekeeperService().ValidateJwt(token, context.Background())
 	if err != nil {
 		return false
