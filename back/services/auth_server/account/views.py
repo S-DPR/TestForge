@@ -94,7 +94,21 @@ class CookieTokenRefreshView(TokenRefreshView):
         serializer.is_valid(raise_exception=True)
 
         access = serializer.validated_data["access"]
-        return Response({"access": access})
+        refresh = serializer.validated_data.get("refresh")
+
+        res = Response({"access": access})
+
+        if refresh:
+            res.set_cookie(
+                key="refresh_token",
+                value=str(refresh),
+                httponly=True,
+                # secure=True,
+                samesite="Strict",
+                max_age=7 * 24 * 60 * 60
+            )
+
+        return res
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
