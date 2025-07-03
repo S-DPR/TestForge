@@ -111,7 +111,7 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
     setExpiresAt(Number.MAX_SAFE_INTEGER);
     toast.error("로그아웃에 성공했습니다.", {
       style: {
-        backgroundColor: "#FFB6C1",
+        backgroundColor: "#D1FAE5",
         color: "#000000"
       }
     });
