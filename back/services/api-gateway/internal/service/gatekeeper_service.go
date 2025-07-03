@@ -10,7 +10,7 @@ type GatekeeperService struct {
 }
 
 type GatekeeperInterface interface {
-	ValidateJwt(filename string, ctx context.Context) (*gatekeeperServicev1.ValidateJwtRes, error)
+	ValidateJwt(token string, ctx context.Context) (*gatekeeperServicev1.ValidateJwtRes, error)
 }
 
 func NewGatekeeperService(client gatekeeperServicev1.GatekeeperInterface) *GatekeeperService {
