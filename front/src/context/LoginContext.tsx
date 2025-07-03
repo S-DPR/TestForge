@@ -37,20 +37,22 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
   const [expiresAt, setExpiresAt] = useState(Number.MAX_SAFE_INTEGER);
 
   const request = async ({ url, method, body = {}, header = {} }: RequestType) => {
-    if (Math.floor(Date.now() / 1000) >= expiresAt) {
-      const res = await request({
-        url: 'http://localhost:9000/refresh/',
-        method: HTTP_METHOD.POST,
-      })
-      const data = await res.json();
-      updateToken(data.access);
-    }
-
     const finalHeader = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`,
       ...header,
     }
+
+    if (Math.floor(Date.now() / 1000) >= expiresAt) {
+      const res = await fetch('http://localhost:9000/refresh/', {
+        method: HTTP_METHOD.POST,
+        headers: finalHeader,
+        credentials: 'include',
+      })
+      const data = await res.json();
+      updateToken(data.access);
+    }
+
     const response = await fetch(url, {
       method: method,
       headers: finalHeader,
