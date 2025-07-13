@@ -18,3 +18,10 @@ class PresetNotFoundError(ValueError):
         self.reason = reason
         message = f"{key}라는 ID를 가진 프리셋이 존재하지 않습니다. {reason}"
         super().__init__(message)
+
+class BlockExecutionError(ValueError):
+    def __init__(self, block_index: int, original: Exception):
+        self.block_index = block_index
+        self.original = original
+        self.message = f"{block_index} 블럭 에러: {str(original)}"
+        super().__init__(self.message)

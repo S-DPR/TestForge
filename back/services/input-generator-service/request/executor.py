@@ -1,5 +1,6 @@
 from dacite import from_dict
 
+from error.exception import ConfigValueError, VariableNotFoundError, BlockExecutionError
 from request.config_structs import TestcaseConfig, LineConfigDataclass, GraphConfigDataclass, \
     MatrixConfigDataclass, QueryConfigDataclass, TestcaseBlockConfig, Output, Variable, Range
 from input_generator.base_generator import BaseGenerator, BaseConfig
@@ -56,7 +57,7 @@ def process(account_id, testcaseConfig: TestcaseConfig):
     variable_format, lines = testcaseConfig.variable_format, testcaseConfig.lines
     result = []
     variables = create_variables({}, variable_format)
-    for line in lines:
+    for idx, line in enumerate(lines, 1):
         config = line.config
         line_type = line.type
 
@@ -68,9 +69,14 @@ def process(account_id, testcaseConfig: TestcaseConfig):
         variables['_repeat'] = repeat_count
         current_line_data = []
         generator, gen_config = resolve_generator_config(line_type, variables, config)
-        for _ in range(repeat_count):
-            variables |= create_variables(variables, variable_format)
-            current_line_data.extend(generator.generate(variables, output, gen_config))
+        try:
+            for _ in range(repeat_count):
+                variables |= create_variables(variables, variable_format)
+                current_line_data.extend(generator.generate(variables, output, gen_config))
+        except ConfigValueError as e:
+            raise BlockExecutionError(idx, e)
+        except VariableNotFoundError as e:
+            raise BlockExecutionError(idx, e)
         for line_data in current_line_data:
             result.append(output.separator.join(map(str, line_data)))
     # save_database(account_id, "", testcaseConfig)

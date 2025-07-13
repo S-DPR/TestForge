@@ -8,7 +8,7 @@ from concurrent.futures import ProcessPoolExecutor
 from input_generator_service import v1_pb2, v1_pb2_grpc
 from request.config_structs import TestcaseConfig
 from request.executor import process
-from error.exception import ConfigValueError, VariableNotFoundError
+from error.exception import BlockExecutionError
 
 from sqlalchemy.orm import Session
 from db.sessions import get_db
@@ -48,11 +48,8 @@ class TestcaseServicer(v1_pb2_grpc.TestcaseServicer):
                     break
                 result = process(account_id, testcase_config)
                 yield v1_pb2.CreateTestcaseRes(output=result)
-        except ConfigValueError as e:
+        except BlockExecutionError as e:
             logger.error("테스트케이스 생성 중 Value 에러 발생 : %s", e)
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, e.message)
-        except VariableNotFoundError as e:
-            logger.error("변수 찾기 실패 에러 발생 : %s", e)
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, e.message)
         except Exception as e:
             logger.error("알 수 없는 에러 발생 : %s", e)
