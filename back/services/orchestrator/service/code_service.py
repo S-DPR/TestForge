@@ -9,7 +9,7 @@ from grpc_internal.storage_service import client as file_client
 
 from log_common import get_logger
 
-from back.services.orchestrator.error.exception import CreateTestcaseError
+from error.exception import CreateTestcaseError
 
 logger = get_logger(__name__)
 
