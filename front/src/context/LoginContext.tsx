@@ -50,7 +50,7 @@ const LoginProvider = ({ children }: { children: ReactNode }) => {
 
     console.log(Math.floor(Date.now() / 1000) >= expiresAt);
     if (Math.floor(Date.now() / 1000) >= expiresAt) {
-      const res = await fetch('http://localhost:9000/refresh/', {
+      const res = await fetch('http://localhost:9000/account/refresh/', {
         method: HTTP_METHOD.POST,
         headers: finalHeader,
         credentials: 'include',
