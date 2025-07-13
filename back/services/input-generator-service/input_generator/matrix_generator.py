@@ -5,7 +5,7 @@ from types import NoneType
 
 from request.config_structs import Output
 from request.expression import safe_eval_helper, safe_eval
-from error.exception import ConfigValueError
+from error.exception import ConfigValueError, VariableNotFoundError
 from input_generator.base_generator import BaseConfig, BaseGenerator, TYPE_FUNCTION
 
 from input_generator.line_generator import line_generator
@@ -34,6 +34,8 @@ class MatrixConfig(BaseConfig):
             return []
         try:
             ranges_as_int = [*map(lambda x: [safe_eval(x.min, variables), safe_eval(x.max, variables)], ranges)]
+        except VariableNotFoundError as e:
+            raise e
         except Exception as e:
             print(e)
             return []

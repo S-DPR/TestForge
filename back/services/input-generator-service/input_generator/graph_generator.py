@@ -1,9 +1,9 @@
 import random
 from collections import deque
 
-from request.config_structs import Output, GraphConfigDataclass, Range, IntRange
-from request.expression import safe_eval_helper, safe_eval
-from error.exception import ConfigValueError
+from request.config_structs import Output, GraphConfigDataclass, IntRange
+from request.expression import safe_eval
+from error.exception import ConfigValueError, VariableNotFoundError
 from input_generator.base_generator import BaseGenerator, BaseConfig
 from input_generator.line_generator import line_generator
 
@@ -12,6 +12,8 @@ class GraphConfig(BaseConfig):
         print(config.node_count)
         try:
             self.node_count = safe_eval(config.node_count.replace('$', ''), variables)  # 노드 개수
+        except VariableNotFoundError as e:
+            raise e
         except ValueError:
             raise ConfigValueError('node_count', 'node_count는 그래프 config에 반드시 포함되어있어야 합니다.')
 
