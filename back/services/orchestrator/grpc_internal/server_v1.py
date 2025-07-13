@@ -7,6 +7,8 @@ import grpc.aio
 
 from log_common import get_logger
 
+from back.services.orchestrator.error.exception import CreateTestcaseError
+
 logger = get_logger(__name__)
 
 class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
@@ -39,8 +41,11 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
                 tracker = tracker
             )
             async for ret in execute():
-                print('hihi', flush=1)
                 yield self.TestExecutorRes(filename=ret['input_filename'],diffStatus=ret['diff_status'])
+        except CreateTestcaseError as e:
+            logger.exception("테스트케이스 생성 중 에러 발생")
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, e.details)
+            yield self.TestExecutorRes(filename="", diffStatus="ERROR" + e.details)
         except Exception as e:
             logger.exception("🔥 내부 예외 발생")
             context.abort(grpc.StatusCode.INTERNAL, "서버 내부 오류")

@@ -1,6 +1,11 @@
 import grpc.aio
 import json
+
+from grpc import StatusCode
 from input_generator_service import v1_pb2_grpc, v1_pb2
+
+from back.services.orchestrator.error.exception import CreateTestcaseError
+
 
 async def testcase_generate(account_id, format_, repeat_count, canceller):
     async with grpc.aio.insecure_channel("input-generator-service:50051") as channel:
@@ -19,6 +24,10 @@ async def testcase_generate(account_id, format_, repeat_count, canceller):
                     call.cancel()
                     break
                 yield {"output": response.output}
-        except Exception as e:
-            print(e, flush=1)
-            raise e
+        except grpc.aio.AioRpcError as e:
+            if e.code() == StatusCode.INVALID_ARGUMENT:
+                print(f"[gRPC 에러 - INVALID_ARGUMENT]: {e.details()}", flush=True)
+                raise CreateTestcaseError(f"입력값 문제: {e.details()}")
+            else:
+                print(f"[gRPC 에러 - {e.code().name}]: {e.details()}", flush=True)
+                raise
