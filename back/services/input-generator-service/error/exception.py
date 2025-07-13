@@ -23,5 +23,5 @@ class BlockExecutionError(ValueError):
     def __init__(self, block_index: int, original: Exception):
         self.block_index = block_index
         self.original = original
-        self.message = f"{block_index} 블럭 에러: {str(original)}"
+        self.message = f"{block_index}번째 블럭에서 에러가 발생했습니다.\n{str(original)}"
         super().__init__(self.message)

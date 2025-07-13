@@ -27,7 +27,7 @@ async def testcase_generate(account_id, format_, repeat_count, canceller):
         except grpc.aio.AioRpcError as e:
             if e.code() == StatusCode.INVALID_ARGUMENT:
                 print(f"[gRPC 에러 - INVALID_ARGUMENT]: {e.details()}", flush=True)
-                raise CreateTestcaseError(f"입력값 문제: {e.details()}")
+                raise CreateTestcaseError(e.details())
             else:
                 print(f"[gRPC 에러 - {e.code().name}]: {e.details()}", flush=True)
                 raise

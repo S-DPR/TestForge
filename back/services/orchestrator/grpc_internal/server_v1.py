@@ -44,11 +44,11 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
         except CreateTestcaseError as e:
             logger.exception("테스트케이스 생성 중 에러 발생")
             await context.abort(grpc.StatusCode.INVALID_ARGUMENT, e.details)
-            yield self.TestExecutorRes(filename="", diffStatus="ERROR" + e.details)
+            yield self.TestExecutorRes(filename="", diffStatus=e.details)
         except Exception as e:
             logger.exception("🔥 내부 예외 발생")
             await context.abort(grpc.StatusCode.INTERNAL, "서버 내부 오류")
-            yield self.TestExecutorRes(filename="", diffStatus="ERROR" + str(e))
+            yield self.TestExecutorRes(filename="", diffStatus=str(e))
 
 
 async def serve():
