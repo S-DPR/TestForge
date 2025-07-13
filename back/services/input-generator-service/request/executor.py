@@ -68,14 +68,16 @@ def process(account_id, testcaseConfig: TestcaseConfig):
         repeat_count = safe_eval(line.repeat.replace('$', ''), variables)
         variables['_repeat'] = repeat_count
         current_line_data = []
-        generator, gen_config = resolve_generator_config(line_type, variables, config)
         try:
+            generator, gen_config = resolve_generator_config(line_type, variables, config)
             for _ in range(repeat_count):
                 variables |= create_variables(variables, variable_format)
                 current_line_data.extend(generator.generate(variables, output, gen_config))
         except ConfigValueError as e:
             raise BlockExecutionError(idx, e)
         except VariableNotFoundError as e:
+            raise BlockExecutionError(idx, e)
+        except Exception as e:
             raise BlockExecutionError(idx, e)
         for line_data in current_line_data:
             result.append(output.separator.join(map(str, line_data)))
