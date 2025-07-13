@@ -9,6 +9,8 @@ from grpc_internal.storage_service import client as file_client
 
 from log_common import get_logger
 
+from back.services.orchestrator.error.exception import CreateTestcaseError
+
 logger = get_logger(__name__)
 
 class StreamingTracker:
@@ -184,6 +186,11 @@ class CodeServiceAsync:
                         canceller.cancel()
 
                 await tracker.add_result({"input_filename": input_filename, "diff_status": ret})
+        except CreateTestcaseError as e:
+            logger.info("테스트케이스 생성중 에러 발생 %s", str(e))
+            canceller.cancel()
+            await tracker.add_result({'input_filename': "", 'diff_status': 'ERROR'})
+            raise e
         except Exception as e:
             logger.info("테스트케이스 생성 및 비교중 에러 발생 %s", str(e))
             canceller.cancel()

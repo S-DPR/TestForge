@@ -4,7 +4,7 @@ import json
 from grpc import StatusCode
 from input_generator_service import v1_pb2_grpc, v1_pb2
 
-from back.services.orchestrator.error.exception import CreateTestcaseError
+from orchestrator.error.exception import CreateTestcaseError
 
 
 async def testcase_generate(account_id, format_, repeat_count, canceller):
