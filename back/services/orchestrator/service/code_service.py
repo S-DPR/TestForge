@@ -13,7 +13,7 @@ from log_common import get_logger
 
 from error.exception import CreateTestcaseError
 
-from back.services.orchestrator.dto.tracker import TrackerData
+from dto.tracker import TrackerData
 
 logger = get_logger(__name__)
 
