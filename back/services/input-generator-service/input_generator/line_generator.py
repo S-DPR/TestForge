@@ -1,3 +1,4 @@
+from error.exception import VariableNotFoundError
 from request.config_structs import Output, LineConfigDataclass
 from input_generator.base_generator import BaseGenerator, BaseConfig, TYPE_FUNCTION
 
@@ -12,8 +13,11 @@ class LineGenerator(BaseGenerator):
         line_data = []
         for seq in output.sequence:
             if seq[0] == '$':
-                value, types = variables[seq[1:]]
-                line_data.append(str(TYPE_FUNCTION[types](value)))
+                try:
+                    value, types = variables[seq[1:]]
+                    line_data.append(str(TYPE_FUNCTION[types](value)))
+                except KeyError as e:
+                    raise VariableNotFoundError(seq[1:], f"정의되지 않은 변수: {seq[1:]}")
             else:
                 line_data.append(seq)
         return [line_data]
