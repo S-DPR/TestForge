@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/status"
 	"io"
 	"strings"
 )
@@ -64,7 +65,17 @@ func (h *TestExecutorHandler) TestExecute(c *gin.Context, rateLimitService servi
 			break
 		}
 		if err != nil {
-			c.Error(err)
+			st, ok := status.FromError(err)
+			if ok {
+				message := st.Message()
+				c.JSON(400, gin.H{
+					"error": message,
+				})
+			} else {
+				c.JSON(500, gin.H{
+					"error": "알 수 없는 에러 발생",
+				})
+			}
 			return
 		}
 
