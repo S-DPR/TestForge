@@ -1,7 +1,9 @@
 import asyncio
 import os
 import uuid
+from asyncio import Queue
 from collections import defaultdict
+from typing import Optional
 
 from grpc_internal.input_generator_service import client as tc_client
 from grpc_internal.execution_service import client as code_client
@@ -11,11 +13,13 @@ from log_common import get_logger
 
 from error.exception import CreateTestcaseError
 
+from back.services.orchestrator.dto.tracker import TrackerData
+
 logger = get_logger(__name__)
 
 class StreamingTracker:
     def __init__(self, total_chunks):
-        self.queue = None
+        self.queue: Optional[Queue[TrackerData]] = None
         self.remaining = total_chunks
 
     async def init(self):
@@ -25,9 +29,13 @@ class StreamingTracker:
     async def add_result(self, result):
         await self.queue.put(result)
 
-    async def results(self):
+    async def results(self) -> TrackerData:
+        if self.queue is None:
+            raise Exception('Queue is empty')
         while self.remaining:
             result = await self.queue.get()
+            if result.error_status is not None:
+                raise result.error_status
             self.remaining -= 1
             yield result
 
@@ -176,22 +184,20 @@ class CodeServiceAsync:
 
                 logger.info("파일 비교 시작")
                 if code1_exitcode != code2_exitcode:
-                    ret = f"ERROR FAILED : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
+                    ret = "FAIL"
                     canceller.cancel()
                 elif code1_exitcode != 0:
-                    ret = f"ERROR BUT EQUAL : code1 - {code1_exitcode}, code2 - {code2_exitcode}"
+                    ret = "EQUAL FAIL"
                 else:
                     ret = file_client.file_diff("/app/scripts", first_output_filename, second_output_filename)['result']
                     if ret != 'EQUAL':
                         canceller.cancel()
-
-                await tracker.add_result({"input_filename": input_filename, "diff_status": ret})
+                await tracker.add_result(TrackerData(input_filename, ret, str(code1_exitcode), str(code2_exitcode), None))
         except CreateTestcaseError as e:
             logger.info("테스트케이스 생성중 에러 발생 %s", str(e))
             canceller.cancel()
-            await tracker.add_result({'input_filename': "", 'diff_status': 'ERROR'})
-            raise e
+            await tracker.add_result(TrackerData("", "ERROR", "-", "-", e))
         except Exception as e:
             logger.info("테스트케이스 생성 및 비교중 에러 발생 %s", str(e))
             canceller.cancel()
-            await tracker.add_result({'input_filename': "", 'diff_status': 'ERROR'})
+            await tracker.add_result(TrackerData("", "ERROR", "-", "-", e))

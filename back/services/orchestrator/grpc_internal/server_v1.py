@@ -41,7 +41,7 @@ class TestForgeServiceServicer(v1_pb2_grpc.TestForgeServiceServicer):
                 tracker = tracker
             )
             async for ret in execute():
-                yield self.TestExecutorRes(filename=ret['input_filename'],diffStatus=ret['diff_status'])
+                yield self.TestExecutorRes(filename=ret.filename,diffStatus=ret.diff_status)
         except CreateTestcaseError as e:
             logger.exception("테스트케이스 생성 중 에러 발생")
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, e.details)
